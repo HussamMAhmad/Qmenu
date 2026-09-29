@@ -31,7 +31,7 @@ function Main() {
 
               <span>منصة إدارة قوائم المطاعم الرقمية الأحدث</span>
             </div>
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900  leading-[1.2] sm:leading-[1.18] lg:leading-[1.15] tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900  leading-[1.2] sm:leading-[1.18] lg:leading-[1.15] tracking-tight mb-6">
               حوّل منيو مطعمك إلى <br className="hidden sm:block" />
               <span className="inline-block pb-2 bg-gradient-to-l from-brand-700 via-brand-500 to-brand-400 bg-clip-text text-transparent drop-shadow-sm">
                 تجربة تفاعلية ذكية

@@ -1,6 +1,6 @@
 import React from "react";
 import { Header } from "@/components/Layouts";
-import { Main, Features , HowItWorks , Pricing} from "@/components/Sections";
+import { Main, Features , HowItWorks , Pricing , Faq} from "@/components/Sections";
 
 function Home() {
   return (
@@ -10,6 +10,7 @@ function Home() {
       <Features />
       <HowItWorks />
       <Pricing />
+      <Faq />
     </div>
   );
 }

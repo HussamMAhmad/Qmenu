@@ -12,6 +12,7 @@
   --color-brand-600: #f44336;
   --color-brand-700: #e63920;
   --color-brand-900: #bf360c;
+  --font-cairo : var(--font-cairo) , system-ui , sans-serif;
 }
 
 @theme inline {

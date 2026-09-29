@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 
-const geistCairo = Cairo({
+const cairo = Cairo({
   variable: "--font-cairo",
-  subsets: ["latin"],
+  subsets: ["arabic", "latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -16,10 +17,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       dir="rtl"
-      lang="en"
-      className={`${geistCairo.variable} h-full antialiased`}
+      lang="ar"
+      className={`${cairo.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col font-cairo">{children}</body>
     </html>
   );
 }
