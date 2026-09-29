@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
+      dir="rtl"
       lang="en"
       className={`${geistCairo.variable} h-full antialiased`}
     >

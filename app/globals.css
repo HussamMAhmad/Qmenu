@@ -164,6 +164,9 @@
 }
 
 @layer utilities {
+  .mobile-menu-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
   .glass-nav {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px);
