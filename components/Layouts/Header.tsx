@@ -46,10 +46,9 @@ function Header() {
             >
               تسجيل الدخول
             </Link>
-
             <Link
               href="/register"
-              className="hidden md:inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-brand-500 to-amber-500 hover:from-brand-600 hover:to-amber-600 shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/35 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+              className="group hidden md:inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-brand-700 via-brand-500 to-brand-400 hover:from-brand-800 hover:via-brand-600 hover:to-brand-500 shadow-md shadow-brand-500/20 hover:shadow-lg hover:shadow-brand-500/35 hover:-translate-y-0.5 active:scale-95 transition-all duration-200 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50"
             >
               <span>ابدأ مجاناً</span>
             </Link>
