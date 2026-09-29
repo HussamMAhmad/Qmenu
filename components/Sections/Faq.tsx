@@ -16,7 +16,6 @@ export default function Faq() {
       <div className="absolute top-1/2 -right-32 w-96 h-96 bg-brand-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200/60 text-brand-600 text-xs font-bold mb-4">
             <HelpCircle className="w-3.5 h-3.5" />
@@ -26,7 +25,8 @@ export default function Faq() {
             كل ما تحتاجه لمعرفته عن منيوك
           </h2>
           <p className="text-slate-600 font-medium text-base max-w-xl mx-auto leading-relaxed">
-            إجابات شاطبة ومباشرة عن أكثر الاستفسارات وروداً حول الميزات، الخطط، وآلية العمل.
+            إجابات شاطبة ومباشرة عن أكثر الاستفسارات وروداً حول الميزات، الخطط،
+            وآلية العمل.
           </p>
         </div>
 
@@ -49,8 +49,12 @@ export default function Faq() {
 
         <div className="mt-12 text-center p-6 rounded-2xl bg-slate-50 border border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-right">
-            <h4 className="font-bold text-slate-900 text-sm sm:text-base">لديك سؤال آخر لم نجب عليه؟</h4>
-            <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">فريق الدعم الفني جاهز لمساعدتك على مدار الساعة.</p>
+            <h4 className="font-bold text-slate-900 text-sm sm:text-base">
+              لديك سؤال آخر لم نجب عليه؟
+            </h4>
+            <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">
+              فريق الدعم الفني جاهز لمساعدتك على مدار الساعة.
+            </p>
           </div>
           <a
             href="#contact"
@@ -60,7 +64,6 @@ export default function Faq() {
             <span>تواصل مع الدعم</span>
           </a>
         </div>
-
       </div>
     </section>
   );

@@ -5,7 +5,7 @@ import { FaLongArrowAltLeft, FaPlayCircle } from "react-icons/fa";
 function Main() {
   return (
     <section
-      className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden"
+      className="relative pt-32 pb-20 lg:pt-35 lg:pb-32 overflow-hidden"
       id="home"
     >
       <div
