@@ -4,12 +4,12 @@ function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="py-20 lg:py-28 relative overflow-hidden bg-white"
+      className="py-20 lg:py-28 relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-20">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-4 tracking-tight">
-            كيف تنطلق مع منيوك؟
+            كيف تنطلق مع كيومنيو؟
           </h2>
           <p className="text-slate-600 font-medium text-base sm:text-lg">
             3 خطوات بسيطة تفصلك عن امتلاك أحدث تقنيات تقديم قوائم الطعام.
