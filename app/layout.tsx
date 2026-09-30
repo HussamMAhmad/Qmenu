@@ -20,7 +20,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="ar"
       className={`${cairo.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-cairo">{children}</body>
+      <body className="min-h-full flex flex-col font-cairo selection:bg-brand-500 selection:text-white">
+        {children}
+      </body>
     </html>
   );
 }
