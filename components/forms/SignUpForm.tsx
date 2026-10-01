@@ -11,8 +11,10 @@ import { formSchemaSignUp } from "@/lib/validation";
 import { FormDefaultValue } from "@/constants";
 import { useState } from "react";
 import { SignUp } from "@/actions/auth.actions";
+import { useRouter } from "next/navigation";
 
 function SignUpForm() {
+  const router = useRouter();
   const [isloading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchemaSignUp>>({
     resolver: zodResolver(formSchemaSignUp),
@@ -25,6 +27,7 @@ function SignUpForm() {
       const result = await SignUp(data);
       if (result?.success) {
         console.log("success signUp");
+        router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
       }
     } catch (e) {
       console.log("failed to sign up ", e);

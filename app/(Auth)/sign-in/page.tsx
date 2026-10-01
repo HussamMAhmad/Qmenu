@@ -1,9 +1,25 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import { google } from "@/public/assets";
 import SignInForm from "@/components/forms/SignInForm";
+import { signInWithGoogle } from "@/actions/OAuth.actions";
+import CustomButton from "@/components/CustomButton";
+import { useState } from "react";
 
 function SignIn() {
+  const [loading, setLoading] = useState(false);
+  async function handleLogin() {
+    console.log("here");
+    setLoading(true);
+    try {
+      await signInWithGoogle();
+    } catch (e) {
+      alert("فشل تسجيل الدخول يرجى المحاولة لاحقا");
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <div className="max-w-md w-full mx-auto my-auto">
       <div className="mb-8 text-right">
@@ -15,13 +31,14 @@ function SignIn() {
         </p>
       </div>
 
-      <button
-        type="button"
-        className="w-full py-3 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-sm transition-all flex items-center justify-center gap-3 mb-6 cursor-pointer"
+      <CustomButton
+        isLoading={loading}
+        onClick={handleLogin}
+        className="w-full py-5 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-sm transition-all flex items-center justify-center gap-3 mb-6 cursor-pointer"
       >
         <Image src={google} alt="google" width={20} height={20} />
-        <span>المتابعة باستخدام Google</span>
-      </button>
+        <span>التسجيل باستخدام Google</span>
+      </CustomButton>
 
       <div className="relative flex items-center justify-center mb-6">
         <div className="border-t border-slate-200 w-full" />

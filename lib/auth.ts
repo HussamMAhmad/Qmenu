@@ -9,6 +9,14 @@ import { after } from "next/server";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      prompt: "select_account",
+    },
+  },
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "sqlite", ...etc
   }),
@@ -18,6 +26,7 @@ export const auth = betterAuth({
   plugins: [
     nextCookies(),
     emailOTP({
+      sendVerificationOnSignUp: true,
       async sendVerificationOTP({ email, otp, type }) {
         let subject = "رمز التحقق - Menuak";
         let message = "رمز التحقق الخاص بك هو:";
