@@ -5,6 +5,11 @@ import { nextCookies } from "better-auth/next-js";
 import { emailOTP } from "better-auth/plugins";
 import { Resend } from "resend";
 import { after } from "next/server";
+import {
+  EMAIL_VERIFICATION,
+  RESET_PASSWORD_TEMPLATE,
+  SECURITY_ALERT_TEMPLATE,
+} from "@/components/EmailTemplate/email-templete-auth";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -22,6 +27,21 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+    // add on existing user sign up feature
+    revokeSessionsOnPasswordReset: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      void resend.emails.send({
+        from: "Q-menu <onboarding@resend.dev>",
+        to: user.email,
+        subject: "إعادة تعيين كلمة المرور - Q-Menu",
+        html: RESET_PASSWORD_TEMPLATE.replaceAll("{{RESET_LINK}}", url),
+      });
+    },
+    onPasswordReset: async ({ user }, request) => {
+      console.log("");
+      // send verfication email
+    },
   },
   plugins: [
     nextCookies(),
@@ -29,16 +49,12 @@ export const auth = betterAuth({
       sendVerificationOnSignUp: true,
       async sendVerificationOTP({ email, otp, type }) {
         let subject = "رمز التحقق - Menuak";
-        let message = "رمز التحقق الخاص بك هو:";
         if (type === "sign-in") {
           subject = "رمز تسجيل الدخول - Menuak";
-          message = "رمز تسجيل الدخول السريع:";
         } else if (type === "email-verification") {
           subject = "تأكيد البريد الإلكتروني - Menuak";
-          message = "رمز تأكيد بريدك الإلكتروني هو:";
         } else {
           subject = "إعادة تعيين كلمة المرور - Menuak";
-          message = "رمز إعادة تعيين كلمة المرور:";
         }
         after(async () => {
           try {
@@ -46,16 +62,7 @@ export const auth = betterAuth({
               from: "Q-menu <onboarding@resend.dev>",
               to: [email],
               subject,
-              html: `
-            <div style="direction: rtl; font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; text-align: right;">
-              <h2>أهلاً بك في Menuak 👋</h2>
-              <p>${message}</p>
-              <div style="background-color: #f4f4f5; padding: 16px; border-radius: 8px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #ff5722; margin: 20px 0;">
-                ${otp}
-              </div>
-              <p style="font-size: 13px; color: #777;">هذا الرمز صالِح لفترة قصيرة فقط. لا تشاركه مع أحد.</p>
-            </div>
-          `,
+              html: EMAIL_VERIFICATION.replaceAll("{{OTP_CODE}}", otp),
             });
           } catch (e) {
             console.log("error with send email", e);

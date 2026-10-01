@@ -10,16 +10,14 @@ import { authClient } from "@/lib/auth.client";
 import { Mail, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
+import { useRouter } from "next/navigation";
 
 interface OtpVerificationProps {
   email: string;
-  onSuccess?: () => void;
 }
 
-export function OtpVerificationForm({
-  email,
-  onSuccess,
-}: OtpVerificationProps) {
+export function OtpVerificationForm({ email }: OtpVerificationProps) {
+  const router = useRouter();
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
   const OTP_LENGTH = 6;
@@ -62,7 +60,8 @@ export function OtpVerificationForm({
       setValue("");
     } else {
       setSuccessMessage("تم تأكيد البريد الإلكتروني بنجاح!");
-      if (onSuccess) onSuccess();
+      router.refresh();
+      router.push("/onboarding");
     }
   };
 

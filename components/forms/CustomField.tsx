@@ -70,7 +70,7 @@ function RenderField<TFieldValues extends FieldValues>({
             </label>
             {forgetPassword && (
               <Link
-                href="#forgot-password"
+                href="/forget-password"
                 className="text-xs font-semibold text-brand-500 hover:text-brand-700 transition-colors"
               >
                 نسيت كلمة المرور؟

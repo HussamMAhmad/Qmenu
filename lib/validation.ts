@@ -24,3 +24,11 @@ export const formSchemaSignIn = z.object({
   email: z.email({ message: "البريد الإلكتروني غير صحيح" }),
   password: z.string().min(1, { message: "كلمة المرور مطلوبة" }),
 });
+
+export const formSchemaResetPassword = z.object({
+  password: z.string().min(1, { message: "كلمة المرور مطلوبة" }),
+});
+
+export const formSchemaForgetPassword = z.object({
+  email: z.email({ message: "البريد الإلكتروني غير صحيح" }),
+});

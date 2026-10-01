@@ -9,9 +9,13 @@ import CustomField from "@/components/forms/CustomField";
 import { FormFieldType } from "@/lib/types";
 import { formSchemaSignIn } from "@/lib/validation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { SignIn } from "@/actions/auth.actions";
 
 function SignInForm() {
+  const router = useRouter();
   const [loading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof formSchemaSignIn>>({
     resolver: zodResolver(formSchemaSignIn),
     defaultValues: {
@@ -20,9 +24,23 @@ function SignInForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchemaSignIn>) {
+  async function onSubmit(data: z.infer<typeof formSchemaSignIn>) {
     setIsLoading(true);
-    console.log("submit data is : ", data);
+    setError(null);
+    try {
+      const result = await SignIn(data);
+      if (result?.success) {
+        console.log("success signIn");
+        router.push(`/onboarding`);
+      }else {
+        setError(result?.error || "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور");
+      }
+    } catch (e) {
+      console.log("failed to sign in ", e);
+      setError("حدث خطأ غير متوقع في الاتصال، يرجى المحاولة لاحقاً");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -45,6 +63,11 @@ function SignInForm() {
           forgetPassword={true}
         />
       </FieldGroup>
+      {error && (
+        <div className="p-3 bg-brand-50 border border-brand-100 rounded-xl text-xs text-brand-700 font-semibold leading-relaxed">
+          {error}
+        </div>
+      )}
       <CustomButton
         isLoading={loading}
         className="w-full py-6 px-4 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/35 transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer mt-6"

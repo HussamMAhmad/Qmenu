@@ -2,8 +2,17 @@ import React from "react";
 import Image from "next/image";
 import { icon } from "@/public/assets";
 import { Sparkles, CheckCircle2, ShieldCheck } from "lucide-react";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-function layout({ children }: { children: React.ReactNode }) {
+async function layout({ children }: { children: React.ReactNode }) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  if (session?.user?.emailVerified) {
+    redirect("/dashboard");
+  }
   return (
     <div className=" bg-slate-50">
       <div className="w-full bg-white flex justify-center lg:justify-end relative">
