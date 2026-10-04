@@ -1,5 +1,6 @@
 "use server";
 import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function SignUp({ name, email, password }: USER) {
   try {
@@ -9,7 +10,16 @@ export async function SignUp({ name, email, password }: USER) {
         email,
         password,
       },
+      headers: await headers(),
     });
+
+    const data = await auth.api.sendVerificationOTP({
+      body: {
+        email, // required, Email address to send the OTP.
+        type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+      },
+    });
+
     if (!response) return { success: false, error: "failed to create account" };
     return { success: true, data: response };
   } catch (e) {
@@ -32,7 +42,11 @@ export async function SignIn({
         callbackURL: "/dashboard",
       }, // we can handle the error if it is't show on screen
     });
-    if (!response) return { success: false, error: "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور" };
+    if (!response)
+      return {
+        success: false,
+        error: "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور",
+      };
     return { success: true, data: response };
   } catch (e) {
     console.log("failed to sign in", e);

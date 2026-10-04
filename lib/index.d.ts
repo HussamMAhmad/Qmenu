@@ -4,3 +4,15 @@ interface USER {
   password: string;
 }
 
+interface RestaurantOnboarding {
+  name: string;
+  description?: string;
+  exchangeRate: number;
+  whatsappNumber?: string;
+  subscriptionEnd?: Date;
+  showUSD?: boolean;
+}
+
+interface VerifyEmailPageProps {
+  searchParams: Promise<{ [key: string]: string }>;
+}

@@ -44,9 +44,8 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    nextCookies(),
     emailOTP({
-      sendVerificationOnSignUp: true,
+      sendVerificationOnSignUp: false,
       async sendVerificationOTP({ email, otp, type }) {
         let subject = "رمز التحقق - Menuak";
         if (type === "sign-in") {
@@ -70,5 +69,6 @@ export const auth = betterAuth({
         });
       },
     }),
+    nextCookies(),
   ],
 });

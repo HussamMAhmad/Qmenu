@@ -48,7 +48,7 @@ export function OtpVerificationForm({ email }: OtpVerificationProps) {
     setLoading(true);
     setErrorMessage(null);
 
-    const { error } = await authClient.emailOtp.verifyEmail({
+    const { error } = await authClient.signIn.emailOtp({
       email,
       otp: otpToSubmit,
     });
@@ -61,7 +61,7 @@ export function OtpVerificationForm({ email }: OtpVerificationProps) {
     } else {
       setSuccessMessage("تم تأكيد البريد الإلكتروني بنجاح!");
       router.refresh();
-      router.push("/onboarding");
+      router.push(`/onboarding`);
     }
   };
 

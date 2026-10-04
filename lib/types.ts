@@ -7,4 +7,5 @@ export enum FormFieldType {
   DATA_PICKER = "dataPicker",
   SELECT = "select",
   SKELETON = "skeleton",
+  NUMBER = "Number",
 }

@@ -7,12 +7,11 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
 async function layout({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  if (session?.user?.emailVerified) {
-    redirect("/dashboard");
-  }
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  console.log(session);
+
+  if (session?.user) redirect("/dashboard");
   return (
     <div className=" bg-slate-50">
       <div className="w-full bg-white flex justify-center lg:justify-end relative">

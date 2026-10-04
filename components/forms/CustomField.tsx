@@ -134,6 +134,28 @@ function RenderField<TFieldValues extends FieldValues>({
           </label>
         </div>
       );
+    case FormFieldType.NUMBER:
+      return (
+        <div className="relative">
+          <Input
+            {...field}
+            id={name}
+            type="number"
+            step="any"
+            aria-invalid={fieldState.invalid}
+            placeholder={placeholder}
+            autoComplete="off"
+            onChange={(e) => {
+              const value = e.target.valueAsNumber;
+              field.onChange(isNaN(value) ? "" : value);
+            }}
+            className="w-full pr-10 pl-4 py-5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-brand-500! focus:bg-white! focus:ring-2 focus:ring-brand-500/10! transition-all text-right font-medium"
+          />
+          {Icon ? (
+            <Icon className="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2" />
+          ) : null}
+        </div>
+      );
     default:
       break;
   }

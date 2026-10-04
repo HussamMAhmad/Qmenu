@@ -32,3 +32,20 @@ export const formSchemaResetPassword = z.object({
 export const formSchemaForgetPassword = z.object({
   email: z.email({ message: "البريد الإلكتروني غير صحيح" }),
 });
+
+export const restaurantOnboardingSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: "اسم المطعم يجب أن يكون مكوناً من حرفين على الأقل" })
+    .max(50, { message: "اسم المطعم طويل جداً" }),
+  description: z
+    .string()
+    .min(10, { message: "يرجى كتابة وصف قصير لا يقل عن 10 أحرف" })
+    .max(160, { message: "الوصف يجب ألا يتجاوز 160 حرفاً" }),
+  exchangeRate: z
+    .number({ message: "يرجى إدخال رقم صحيح لسعر الصرف" })
+    .positive({ message: "سعر الصرف يجب أن يكون أكبر من 0" }),
+  whatsappNumber: z
+    .e164("يرجى إدخال رقم واتساب صحيح مصحوباً بالرمز الدولي")
+    .optional(),
+});

@@ -3,10 +3,6 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { OtpVerificationForm } from "@/components/forms/Otp-verification-form";
 
-interface VerifyEmailPageProps {
-  searchParams: Promise<{ [key: string]: string }>;
-}
-
 export default async function VerifyEmailPage({
   searchParams,
 }: VerifyEmailPageProps) {
@@ -16,13 +12,9 @@ export default async function VerifyEmailPage({
     redirect("/sign-in");
   }
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+   const session = await auth.api.getSession({ headers: await headers() });
 
-  if (session?.user?.emailVerified) {
-    redirect("/dashboard");
-  }
+  if (session?.user) redirect("/dashboard");
 
   return (
     <div className="max-h-screen bg-gray-50/50 flex items-center justify-center p-4">
