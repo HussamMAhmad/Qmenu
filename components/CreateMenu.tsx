@@ -26,7 +26,7 @@ function CreateMenu({ resturantName }: { resturantName: string }) {
         dir="rtl"
       >
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10">
-          <Image src={check} alt="check" width={300} height={300} />
+          <Image src={check} alt="check" width={300} height={300} unoptimized/>
         </div>
 
         <AlertDialogHeader className="mt-4 space-y-2 text-center sm:text-center">

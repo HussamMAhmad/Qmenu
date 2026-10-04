@@ -1,6 +1,7 @@
 "use server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function SignUp({ name, email, password }: USER) {
   try {
@@ -50,6 +51,17 @@ export async function SignIn({
     return { success: true, data: response };
   } catch (e) {
     console.log("failed to sign in", e);
+  }
+}
+
+export async function SignOut() {
+  try {
+    await auth.api.signOut({
+      headers: await headers(),
+    });
+    redirect("/sign-in");
+  } catch (e) {
+    console.error("Failed to sign out:", e);
   }
 }
 

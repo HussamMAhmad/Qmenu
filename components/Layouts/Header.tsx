@@ -99,7 +99,7 @@ function Header() {
 
                 <div className="pt-3 mt-2 border-t border-slate-100 flex flex-col gap-2">
                   <Link
-                    href="/login"
+                    href="/sign-in"
                     onClick={() => setOpen(false)}
                     className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200/80 text-slate-700 font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all text-xs active:scale-[0.98]"
                   >
@@ -107,7 +107,7 @@ function Header() {
                   </Link>
 
                   <Link
-                    href="/register"
+                    href="/sign-up"
                     onClick={() => setOpen(false)}
                     className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold shadow-md shadow-brand-500/20 transition-all text-xs active:scale-[0.98]"
                   >

@@ -7,12 +7,14 @@ import { Menu, X, LogOut, Store, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { navItems } from "@/data/dashboard.constants";
+import CustomButton from "../CustomButton";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { SignOut } from "@/actions/auth.actions";
 
 interface DashboardLayoutContentProps {
   children: React.ReactNode;
@@ -27,11 +29,23 @@ export default function DashboardLayoutContent({
 }: DashboardLayoutContentProps) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isActive = (itemHref: string, exact?: boolean) => {
     if (exact) return pathname === itemHref;
     return pathname.startsWith(itemHref);
   };
+
+  async function handleSignOut() {
+    setIsLoading(true);
+    try {
+      await SignOut();
+    } catch (e) {
+      console.log("failed to sign out somthing wrong",e);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
@@ -85,14 +99,14 @@ export default function DashboardLayoutContent({
             <p className="font-semibold text-slate-700">المستخدم الحالي</p>
             <p className="truncate text-slate-500 mt-0.5">{userName}</p>
           </div>
-
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 rounded-xl text-xs font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
-          >
-            <LogOut className="h-4 w-4" />
-            تسجيل الخروج
-          </Button>
+          <CustomButton
+              onClick={handleSignOut}
+              isLoading={isLoading}
+              className="w-full bg-slate-50/50 justify-start gap-3 rounded-xl text-xs font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+            >
+              <LogOut className="h-4 w-4" />
+              تسجيل الخروج
+            </CustomButton>
         </div>
       </aside>
 
@@ -125,7 +139,7 @@ export default function DashboardLayoutContent({
             </Button>
           </div>
         </header>
-          <div className="mx-auto max-w-7xl">{children}</div>
+        <div className="mx-auto max-w-7xl">{children}</div>
       </div>
 
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -175,13 +189,14 @@ export default function DashboardLayoutContent({
           </div>
 
           <div className="border-t border-slate-100 pt-4">
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-3 rounded-xl text-slate-600 hover:bg-red-50 hover:text-red-600"
+            <CustomButton
+              onClick={handleSignOut}
+              isLoading={isLoading}
+              className="w-full bg-slate-50/50 justify-start gap-3 rounded-xl text-slate-600 hover:bg-red-50 hover:text-red-600"
             >
               <LogOut className="h-4 w-4" />
               تسجيل الخروج
-            </Button>
+            </CustomButton>
           </div>
         </SheetContent>
       </Sheet>

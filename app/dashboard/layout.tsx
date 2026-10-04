@@ -14,7 +14,7 @@ export default async function DashboardLayout({
   });
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/sign-in");
   }
 
   const restaurant = await prisma.restaurant.findUnique({
