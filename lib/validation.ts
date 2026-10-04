@@ -49,3 +49,9 @@ export const restaurantOnboardingSchema = z.object({
     .e164("يرجى إدخال رقم واتساب صحيح مصحوباً بالرمز الدولي")
     .optional(),
 });
+
+export const exchangeRateOverview = z.object({
+  exchangeRate: z
+    .number({ message: "يرجى إدخال رقم صحيح لسعر الصرف" })
+    .positive({ message: "سعر الصرف يجب أن يكون أكبر من 0" }),
+});
