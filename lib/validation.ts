@@ -55,3 +55,36 @@ export const exchangeRateOverview = z.object({
     .number({ message: "يرجى إدخال رقم صحيح لسعر الصرف" })
     .positive({ message: "سعر الصرف يجب أن يكون أكبر من 0" }),
 });
+
+export const Category = z.object({
+  name: z
+    .string()
+    .min(2, { message: "اسم القسم يجب أن يكون مكوناً من حرفين على الأقل" })
+    .max(50, { message: "اسم القسم طويل جداً" }),
+});
+
+export const CreateItemsSchema = z.object({
+  categoryId: z.string().min(1, { message: "يرجى اختيار القسم الرئيسي" }),
+  nameAr: z
+    .string()
+    .min(2, { message: "اسم الوجبة يجب ان يكون مكونا من حرفين على الاقل" })
+    .max(50, { message: "اسم الوجبة طويل جدا" }),
+  nameEn: z
+    .string()
+    .max(50, { message: "اسم الوجبة طويل جدا" })
+    .optional()
+    .or(z.literal("")),
+  description: z
+    .string()
+    .max(200, { message: "الوصف طويل جدا" })
+    .optional()
+    .or(z.literal("")),
+  priceSyp: z
+    .number({ message: "يرجى إدخال رقم صحيح للسعر بالسوري" })
+    .positive({ message: "سعر الصرف يجب أن يكون أكبر من 0" }),
+  priceUsd: z
+    .number({ message: "يرجى إدخال رقم صحيح للسعر بالدولار" })
+    .min(0, { message: "السعر يجب أن يكون 0 أو أكثر" }),
+  prepTime: z.string().optional().or(z.literal("")),
+  isAvailable: z.boolean(),
+});

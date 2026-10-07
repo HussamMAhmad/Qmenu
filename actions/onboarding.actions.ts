@@ -3,9 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 
-export const CompleteOnboarding = async (
-  data: RestaurantOnboarding
-) => {
+export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -67,4 +65,4 @@ export const CompleteOnboarding = async (
     console.log("failed to create restaurant onboarding", e);
     return { success: false, error: "failed to update restaurant data" };
   }
-};
+}

@@ -8,6 +8,13 @@ import {
   Path,
   ControllerFieldState,
 } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { IconType } from "react-icons";
@@ -41,7 +48,7 @@ function RenderField<TFieldValues extends FieldValues>({
   fieldState: ControllerFieldState;
   props: CustomProps<TFieldValues>;
 }) {
-  const { fieldtype, name, placeholder, Icon, forgetPassword } = props;
+  const { fieldtype, name, placeholder, Icon, forgetPassword, label } = props;
   const [showPassword, setShowPassword] = useState(false);
   switch (fieldtype) {
     case FormFieldType.INPUT:
@@ -134,6 +141,23 @@ function RenderField<TFieldValues extends FieldValues>({
           </label>
         </div>
       );
+    case FormFieldType.CHECKBOX:
+      return (
+        <div className="flex items-center gap-2.5 select-none">
+          <Checkbox
+            id={name}
+            checked={field.value}
+            onCheckedChange={field.onChange}
+            className="h-4 w-4 shrink-0 rounded border-slate-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/20 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-brand-500 data-[state=checked]:border-brand-500 data-[state=checked]:text-white cursor-pointer"
+          />
+          <label
+            htmlFor={name}
+            className="text-xs font-semibold text-slate-700 leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            {label}
+          </label>
+        </div>
+      );
     case FormFieldType.NUMBER:
       return (
         <div className="relative">
@@ -156,6 +180,25 @@ function RenderField<TFieldValues extends FieldValues>({
           ) : null}
         </div>
       );
+    case FormFieldType.SELECT:
+      return (
+        <Select
+          dir="rtl"
+          value={field.value || ""}
+          onValueChange={field.onChange}
+          defaultValue={field.value}
+        >
+          <SelectTrigger className="w-full rounded-xl border border-slate-200 bg-white px-4 py-5 text-sm font-medium text-slate-800 transition-all hover:border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50">
+            <SelectValue placeholder={placeholder} />
+          </SelectTrigger>
+          <SelectContent
+            position="popper"
+            className=" rounded-xl border border-slate-100 bg-white p-1 shadow-lg shadow-slate-200/50"
+          >
+            <SelectGroup className="space-y-0.5">{props.children}</SelectGroup>
+          </SelectContent>
+        </Select>
+      );
     default:
       break;
   }
@@ -171,14 +214,16 @@ function CustomField<TFieldValues extends FieldValues>(
       control={control}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          {fieldtype !== FormFieldType.CHECKBOXTERMS && label && (
-            <FieldLabel
-              htmlFor={name}
-              className="block text-xs font-bold text-slate-700 mb-1.5 text-right"
-            >
-              {label}
-            </FieldLabel>
-          )}
+          {fieldtype !== FormFieldType.CHECKBOXTERMS &&
+            fieldtype !== FormFieldType.CHECKBOX &&
+            label && (
+              <FieldLabel
+                htmlFor={name}
+                className="block text-xs font-bold text-slate-700 mb-1.5 text-right"
+              >
+                {label}
+              </FieldLabel>
+            )}
           <RenderField field={field} fieldState={fieldState} props={props} />
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>

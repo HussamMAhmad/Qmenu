@@ -1,5 +1,3 @@
-"use client";
-import React, { useState } from "react";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -20,9 +18,11 @@ import QrCardOverview from "@/components/dashboard/QrCardOverview";
 import SubscriptionIsFree from "@/components/dashboard/SubscriptionIsFree";
 import RecentDishes from "@/components/dashboard/RecentDishes";
 import ExchangeRateForm from "@/components/dashboard/ExchangeRateForm";
+import { getRestaurant } from "@/lib/queries/dashboard";
+import { getCurrentUser } from "@/lib/auth-helper";
+import { countItems } from "@/lib/queries/dashboard";
 
-export default function DashboardOverviewPage() {
-  const [isMenuLive, setIsMenuLive] = useState<boolean>(true);
+export default async function DashboardOverviewPage() {
   const subscription = {
     planName: "الخطة التجريبية (Free)",
     isFree: true,
@@ -31,9 +31,11 @@ export default function DashboardOverviewPage() {
     maxDishes: 20,
     currentDishes: 14,
   };
-
-  const restaurantSlug = "al-sultan";
-  const [exchangeRate, setExchangeRate] = useState<number>(14000);
+  const user = await getCurrentUser();
+  const restaurant = await getRestaurant(user.id);
+  const restaurantName = restaurant?.name ?? "مطعم غير معروف";
+  const exchangeRate = Number(restaurant?.exchangeRate) ?? "0";
+  const dishesCount = await countItems(user.id);
   return (
     <main className="min-h-screen bg-[#f7f8fa] px-2 py-4 text-slate-800 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1440px] space-y-6">
@@ -49,7 +51,7 @@ export default function DashboardOverviewPage() {
               </span>
             </div>
             <h1 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-              أهلاً بك، مطعم السلطان 👋
+              أهلاً بك، {restaurantName}
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
               كل ما يخص المنيو والاشتراك وسعر الصرف في مكان واحد، مع نظرة سريعة
@@ -58,7 +60,7 @@ export default function DashboardOverviewPage() {
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
             <Link
-              href={`/m/${restaurantSlug}`}
+              href={`/m/${restaurantName}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -84,24 +86,7 @@ export default function DashboardOverviewPage() {
                   </span>
                   سعر الصرف المعتمد
                 </div>
-
-                <div className="mt-5 flex items-end gap-3">
-                  <span className="text-5xl font-black tracking-tight sm:text-6xl">
-                    {exchangeRate.toLocaleString("en-US")}
-                  </span>
-                  <span className="mb-2 text-sm font-bold text-slate-400">
-                    ل.س / $
-                  </span>
-                </div>
-
-                <p className="mt-4 max-w-md text-xs leading-6 text-slate-400">
-                  يتم استخدام السعر الحالي تلقائياً لحساب أسعار المنيو بالليرة
-                  السورية فوراً للزبائن.
-                </p>
-
-                <div className="mt-6 flex max-w-sm items-center gap-2">
-                  <ExchangeRateForm/>
-                </div>
+                <ExchangeRateForm exchangeRate={exchangeRate} />
               </div>
               <SubscriptionCard />
             </div>
@@ -112,13 +97,13 @@ export default function DashboardOverviewPage() {
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <OverviewCard
             title="الوجبات المعروضة"
-            value={subscription.currentDishes}
+            value={dishesCount}
             valueSuffix={`/ ${subscription.maxDishes}`}
             subtext={
               <p className="text-slate-500">
                 متبقي{" "}
                 <span className="font-extrabold text-brand-700">
-                  {subscription.maxDishes - subscription.currentDishes}
+                  {subscription.maxDishes - dishesCount}
                 </span>{" "}
                 وجبات
               </p>
@@ -138,17 +123,9 @@ export default function DashboardOverviewPage() {
           />
           <OverviewCard
             title="حالة المنيو"
-            value={isMenuLive ? "مفعّل" : "معطّل"}
+            value="مفعّل"
             subtext={
-              <p
-                className={
-                  isMenuLive
-                    ? "font-bold text-emerald-700"
-                    : "font-bold text-slate-400"
-                }
-              >
-                {isMenuLive ? "يظهر للعملاء الآن" : "مخفي عن العملاء"}
-              </p>
+              <p className="font-bold text-emerald-700">يظهر للعملاء الآن</p>
             }
             icon={CheckCircle2}
             iconBgColor="bg-emerald-50"

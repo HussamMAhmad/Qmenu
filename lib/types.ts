@@ -1,7 +1,8 @@
 export enum FormFieldType {
   INPUT = "Input",
   PASSWORD = "PassWord",
-  CHECKBOXTERMS = "Checkbox",
+  CHECKBOX = "Checkbox",
+  CHECKBOXTERMS = "CheckboxTerms",
   TEXTAREA = "Textarea",
   PHONE_INPUT = "phoneInput",
   DATA_PICKER = "dataPicker",
