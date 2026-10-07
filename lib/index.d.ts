@@ -38,10 +38,11 @@ interface Category {
 type CreateItem = {
   categoryId: string;
   nameAr: string;
-  nameEn?: string;
-  description?: string ;
+  nameEn?: string | null;
+  description?: string | null;
   priceSyp: number;
   priceUsd: number;
-  prepTime?: string ;
+  prepTime?: string | null;
   isAvailable: boolean;
+  imageUrl?: string | null;
 };

@@ -24,14 +24,12 @@ export default async function CategoriesPage() {
   const restaurant = await getRestaurant(user.id);
   const categories = await getCategories(user.id);
   const items = await getItems(user.id);
-
   const exchangeRate = Number(restaurant?.exchangeRate) || 0;
   const itemsAvailable = items.filter((item) => item.isAvailable).length;
   const totalItems = items.length;
   const percentOfItems = totalItems
     ? Math.round((itemsAvailable / totalItems) * 100)
     : 0;
-
   return (
     <main className="min-h-screen bg-slate-50/60 px-4 py-8 text-slate-800 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1440px] space-y-8">

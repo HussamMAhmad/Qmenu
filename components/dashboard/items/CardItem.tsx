@@ -1,19 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Check,
-  Edit3,
-  Trash2,
-  Utensils,
-  X,
-} from "lucide-react";
+import { Check, Edit3, Trash2, Utensils, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-function CardItem({item , category}) {
+function CardItem({
+  item,
+  category,
+}: {
+  item: CreateItem;
+  category: Category;
+}) {
   return (
-    <Card
-      className="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
-    >
+    <Card className="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md">
       <CardContent className="p-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           {/* Dish Info */}
