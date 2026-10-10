@@ -12,7 +12,7 @@ function EmptyCard() {
           لا توجد وجبات مطابقة
         </h3>
         <p className="mt-1 max-w-xs text-xs leading-5 text-slate-400">
-          جرّب تغيير كلمة البحث أو اختيار قسم آخر من القائمة الجانبية.
+          جرّب اختيار قسم آخر من القائمة الجانبية.
         </p>
       </CardContent>
     </Card>

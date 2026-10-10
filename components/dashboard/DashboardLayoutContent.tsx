@@ -139,7 +139,7 @@ export default function DashboardLayoutContent({
             </Button>
           </div>
         </header>
-        <div className="mx-auto max-w-7xl">{children}</div>
+        <div className="mx-auto w-full">{children}</div>
       </div>
 
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>

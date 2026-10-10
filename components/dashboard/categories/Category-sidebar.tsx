@@ -1,14 +1,31 @@
 "use client";
-import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { GripVertical, MoreHorizontal, Plus, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { GripVertical, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
 import CreateCategories from "./CreateCategories";
 import EditCategories from "./EditCategories";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function CategorySidebar({ categories }: { categories: Category[] }) {
-  const [selectedCategory, setSelectedCategory] = useState("الوجبات الرئيسية");
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get("category") || "";
+  const [selectedCategory, setSelectedCategory] = useState(currentCategory);
+  const router = useRouter();
+
+  useEffect(() => {
+    setSelectedCategory(currentCategory);
+  }, [currentCategory]);
+
+  const handleSortChange = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    const params = new URLSearchParams(searchParams.toString());
+    if (categoryId) {
+      params.set("category", categoryId);
+    } else {
+      params.delete("category");
+    }
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
 
   return (
     <Card className="h-fit rounded-[28px] border-slate-200/70 bg-white shadow-sm">
@@ -22,16 +39,14 @@ function CategorySidebar({ categories }: { categories: Category[] }) {
               اسحب لترتيب ظهور الأقسام
             </p>
           </div>
-
           <CreateCategories />
         </div>
       </CardHeader>
-
       <CardContent className="space-y-1.5 p-3">
         <button
-          onClick={() => setSelectedCategory("الكل")}
+          onClick={() => handleSortChange("")}
           className={`cursor-pointer flex w-full items-center justify-between rounded-2xl px-3.5 py-3 text-right transition ${
-            selectedCategory === "الكل"
+            selectedCategory === ""
               ? "bg-brand-500 text-white shadow-sm"
               : "text-slate-600 hover:bg-slate-50"
           }`}
@@ -39,14 +54,14 @@ function CategorySidebar({ categories }: { categories: Category[] }) {
           <div className="flex items-center gap-2.5">
             <span
               className={`h-2 w-2 rounded-full ${
-                selectedCategory === "الكل" ? "bg-white" : "bg-brand-400"
+                selectedCategory === "" ? "bg-white" : "bg-brand-400"
               }`}
             />
-            <span className="text-sm font-bold">كل الوجبات</span>
+            <span className="text-sm font-bold">كل الاقسام</span>
           </div>
           <span
             className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-              selectedCategory === "الكل"
+              selectedCategory === ""
                 ? "bg-white/15 text-white"
                 : "bg-slate-100 text-slate-500"
             }`}
@@ -54,9 +69,8 @@ function CategorySidebar({ categories }: { categories: Category[] }) {
             {categories.length}
           </span>
         </button>
-
         {categories.map((category) => {
-          const active = selectedCategory === category.name;
+          const active = selectedCategory === category.id;
           return (
             <div
               key={category.id}
@@ -66,7 +80,7 @@ function CategorySidebar({ categories }: { categories: Category[] }) {
             >
               <GripVertical className="h-4 w-4 shrink-0 text-slate-300 opacity-0 transition group-hover:opacity-100" />
               <button
-                onClick={() => setSelectedCategory(category.name)}
+                onClick={() => handleSortChange(category.id)}
                 className="cursor-pointer flex min-w-0 flex-1 items-center justify-between gap-2 rounded-xl px-1 py-2 text-right"
               >
                 <div className="flex min-w-0 items-center gap-2.5">
@@ -87,7 +101,6 @@ function CategorySidebar({ categories }: { categories: Category[] }) {
                   {category.items.length}
                 </span>
               </button>
-
               <button
                 className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-300 opacity-0 transition hover:bg-white hover:text-slate-500 group-hover:opacity-100"
                 aria-label={`خيارات ${category.name}`}
@@ -97,7 +110,6 @@ function CategorySidebar({ categories }: { categories: Category[] }) {
             </div>
           );
         })}
-
         <div className="mt-3 border-t border-slate-100 pt-3">
           <div className="rounded-2xl bg-slate-50 p-3.5">
             <div className="flex items-center gap-2">

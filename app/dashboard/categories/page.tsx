@@ -1,13 +1,10 @@
 import {
-  ArrowDownUp,
   Check,
-  ChevronDown,
   SlidersHorizontal,
   Utensils,
   DollarSign,
 } from "lucide-react";
 import { OverviewCard } from "@/components/dashboard/OverviewCard";
-import { Button } from "@/components/ui/button";
 import Header from "@/components/dashboard/categories/Header";
 import CategorySidebar from "@/components/dashboard/categories/Category-sidebar";
 import { getCurrentUser } from "@/lib/auth-helper";
@@ -16,14 +13,30 @@ import {
   getRestaurant,
   getItems,
 } from "@/lib/queries/dashboard";
-import CardItem from "@/components/dashboard/items/CardItem";
-import EmptyCard from "@/components/dashboard/items/EmptyCard";
+import SortItems from "@/components/dashboard/items/SortItems";
 
-export default async function CategoriesPage() {
+interface PageProps {
+  searchParams: Promise<{
+    sort?: string;
+    category?: string;
+    available?: string;
+  }>;
+}
+
+export default async function CategoriesPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const sortOption = params.sort || "default";
+  const categoryId = params.category;
+  const isAvailable =
+    params.available === "true"
+      ? true
+      : params.available === "false"
+        ? false
+        : undefined;
   const user = await getCurrentUser();
   const restaurant = await getRestaurant(user.id);
   const categories = await getCategories(user.id);
-  const items = await getItems(user.id);
+  const items = await getItems(user.id , sortOption , categoryId , isAvailable);
   const exchangeRate = Number(restaurant?.exchangeRate) || 0;
   const itemsAvailable = items.filter((item) => item.isAvailable).length;
   const totalItems = items.length;
@@ -31,8 +44,8 @@ export default async function CategoriesPage() {
     ? Math.round((itemsAvailable / totalItems) * 100)
     : 0;
   return (
-    <main className="min-h-screen bg-slate-50/60 px-4 py-8 text-slate-800 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1440px] space-y-8">
+    <main className="min-h-screen bg-slate-50/60 px-2 py-4 text-slate-800 sm:px-6 lg:px-8">
+      <div className="w-full space-y-8">
         {/* Header Section */}
         <Header categories={categories} exchangeRate={exchangeRate} />
         {/* Overview KPI Cards */}
@@ -75,41 +88,7 @@ export default async function CategoriesPage() {
             <CategorySidebar categories={categories} />
           </aside>
           {/* Dishes List Section */}
-          <div className="space-y-4">
-            {/* Control Bar */}
-            <div className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-sm border border-slate-100">
-              <div className="text-xs text-slate-500">
-                عرض{" "}
-                <span className="font-bold text-slate-800">{items.length}</span>{" "}
-                من الوجبات
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="gap-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50"
-              >
-                <ArrowDownUp className="h-3.5 w-3.5" />
-                ترتيب
-                <ChevronDown className="h-3 w-3" />
-              </Button>
-            </div>
-            {/* List or Empty State */}
-            <div className="grid gap-3">
-              {items.length === 0 ? (
-                <EmptyCard />
-              ) : (
-                items.map((item) => {
-                  const category = categories.find(
-                    (cat) => item.categoryId === cat.id,
-                  );
-                  if (!category) return null;
-                  return (
-                    <CardItem item={item} category={category} key={item.id} />
-                  );
-                })
-              )}
-            </div>
-          </div>
+          <SortItems items={items} exchangeRate={exchangeRate} categories={categories}/>
         </section>
       </div>
     </main>

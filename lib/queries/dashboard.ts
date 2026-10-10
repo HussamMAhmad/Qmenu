@@ -80,10 +80,21 @@ export const getCategories = (userId: string) =>
     },
   )();
 
-export const getItems = (userId: string) =>
+export const getItems = (
+  userId: string,
+  sortOption: string = "default",
+  categoryId?: string,
+  isAvailable?: boolean,
+) =>
   unstable_cache(
     async () => {
       try {
+        let orderBy: any = { id: "desc" };
+        if (sortOption === "name-asc") {
+          orderBy = { nameAr: "asc" };
+        } else if (sortOption === "name-desc") {
+          orderBy = { nameAr: "desc" };
+        }
         const count = await prisma.item.findMany({
           where: {
             category: {
@@ -91,7 +102,10 @@ export const getItems = (userId: string) =>
                 userId,
               },
             },
+            ...(categoryId ? { categoryId } : {}),
+            ...(isAvailable !== undefined ? { isAvailable } : {}),
           },
+          orderBy,
         });
         return count;
       } catch (e) {
@@ -99,7 +113,7 @@ export const getItems = (userId: string) =>
         return [];
       }
     },
-    [`items-${userId}`],
+    [`items-${userId}`, sortOption, categoryId || "all", String(isAvailable ?? "all")],
     {
       tags: [`items-${userId}`],
       revalidate: 3600,

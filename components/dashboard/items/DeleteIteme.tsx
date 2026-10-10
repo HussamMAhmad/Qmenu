@@ -8,26 +8,30 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import CustomButton from "@/components/CustomButton";
-import { deleteCategory } from "@/actions/dashboard.actions";
+import { deleteItem } from "@/actions/dashboard.actions";
+import { Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+
 interface DeleteCategoryProps {
-  id: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  id?: string;
+  catId: string;
 }
 
-function DeleteCategory({ id, open, onOpenChange }: DeleteCategoryProps) {
+function DeleteItem({ id, catId }: DeleteCategoryProps) {
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleDelete() {
     setLoading(true);
     try {
-      const result = await deleteCategory(id);
+      const result = await deleteItem(id || "", catId);
       if (result?.success) {
         toast.success(result.message);
-        onOpenChange(false);
+        setOpen(false);
       } else {
         toast.error(
           typeof result?.message === "string"
@@ -44,7 +48,16 @@ function DeleteCategory({ id, open, onOpenChange }: DeleteCategoryProps) {
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={onOpenChange}>
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>
+        <Button
+          size="icon"
+          variant="outline"
+          className="cursor-pointer h-9 w-9 rounded-xl border-slate-200 text-slate-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </AlertDialogTrigger>
       <AlertDialogContent className="max-w-md rounded-2xl border-slate-100 bg-white p-6 shadow-xl">
         <AlertDialogHeader className="text-right space-y-1.5">
           <AlertDialogTitle className="text-xl font-bold text-slate-900">
@@ -64,7 +77,7 @@ function DeleteCategory({ id, open, onOpenChange }: DeleteCategoryProps) {
             حذف
           </CustomButton>
           <AlertDialogCancel
-            onClick={() => onOpenChange(false)}
+            onClick={() => setOpen(false)}
             className="cursor-pointer m-0 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 h-10 px-5"
           >
             إلغاء
@@ -74,5 +87,4 @@ function DeleteCategory({ id, open, onOpenChange }: DeleteCategoryProps) {
     </AlertDialog>
   );
 }
-
-export default DeleteCategory;
+export default DeleteItem;

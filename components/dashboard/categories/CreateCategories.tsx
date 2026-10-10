@@ -21,11 +21,11 @@ import { Category } from "@/lib/validation";
 import { FormFieldType } from "@/lib/types";
 import { TbCategoryPlus } from "react-icons/tb";
 import { createCategory } from "@/actions/dashboard.actions";
+import { toast } from "sonner";
 
 function CreateCategories() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const form = useForm<z.infer<typeof Category>>({
     resolver: zodResolver(Category),
     defaultValues: { name: "" },
@@ -33,14 +33,14 @@ function CreateCategories() {
 
   async function onSubmit(data: z.infer<typeof Category>) {
     setLoading(true);
-    setErrorMessage(null);
     try {
       const result = await createCategory(data.name);
       if (result?.success) {
         form.reset();
+        toast.success(result.message);
         setOpen(false);
       } else {
-        setErrorMessage(
+        toast.error(
           typeof result?.message === "string"
             ? result.message
             : "حدث خطأ أثناء إضافة القسم",
@@ -48,7 +48,7 @@ function CreateCategories() {
       }
     } catch (e) {
       console.log("failed to create category ", e);
-      setErrorMessage("حدث خطأ غير متوقع، يرجى المحاولة لاحقاً");
+      toast.error("حدث خطأ غير متوقع، يرجى المحاولة لاحقاً");
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,6 @@ function CreateCategories() {
     setOpen(isOpen);
     if (!isOpen) {
       form.reset();
-      setErrorMessage(null);
     }
   };
   return (
@@ -90,13 +89,7 @@ function CreateCategories() {
               placeholder="مثال: المشويات، المشروبات..."
               Icon={TbCategoryPlus}
             />
-            {errorMessage && (
-              <p className="text-sm text-red-500 font-medium text-right pt-1">
-                {errorMessage}
-              </p>
-            )}
           </div>
-
           <AlertDialogFooter className="flex-row-reverse justify-start gap-3 pt-2">
             <CustomButton
               type="submit"
@@ -105,7 +98,6 @@ function CreateCategories() {
             >
               إضافة القسم
             </CustomButton>
-
             <AlertDialogCancel className="cursor-pointer m-0 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 h-10 px-5">
               إلغاء
             </AlertDialogCancel>

@@ -18,6 +18,7 @@ import { Category } from "@/lib/validation";
 import { FormFieldType } from "@/lib/types";
 import { updateCategory } from "@/actions/dashboard.actions";
 import { BiCategory } from "react-icons/bi";
+import { toast } from "sonner";
 
 interface UpdateCategoriesProps {
   name: string;
@@ -33,7 +34,6 @@ function UpdateCategories({
   onOpenChange,
 }: UpdateCategoriesProps) {
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const form = useForm<z.infer<typeof Category>>({
     resolver: zodResolver(Category),
     defaultValues: { name },
@@ -41,14 +41,14 @@ function UpdateCategories({
 
   async function onSubmit(data: z.infer<typeof Category>) {
     setLoading(true);
-    setErrorMessage(null);
     try {
       const result = await updateCategory(data.name, id);
       if (result?.success) {
         form.reset();
+        toast.success(result.message);
         onOpenChange(false);
       } else {
-        setErrorMessage(
+        toast.error(
           typeof result?.message === "string"
             ? result.message
             : "حدث خطأ أثناء تعديل القسم",
@@ -56,7 +56,7 @@ function UpdateCategories({
       }
     } catch (e) {
       console.log("failed to create category ", e);
-      setErrorMessage("حدث خطأ غير متوقع، يرجى المحاولة لاحقاً");
+      toast.error("حدث خطأ غير متوقع، يرجى المحاولة لاحقاً");
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,6 @@ function UpdateCategories({
   useEffect(() => {
     if (open) {
       form.reset({ name });
-      setErrorMessage(null);
     }
   }, [open, name, form]);
 
@@ -90,13 +89,7 @@ function UpdateCategories({
               placeholder="مثال: المشويات، المشروبات..."
               Icon={BiCategory }
             />
-            {errorMessage && (
-              <p className="text-sm text-red-500 font-medium text-right pt-1">
-                {errorMessage}
-              </p>
-            )}
           </div>
-
           <AlertDialogFooter className="flex-row-reverse justify-start gap-3 pt-2">
             <CustomButton
               type="submit"
@@ -105,7 +98,6 @@ function UpdateCategories({
             >
               حفظ التعديلات
             </CustomButton>
-
             <AlertDialogCancel
               onClick={() => onOpenChange(false)}
               className="cursor-pointer m-0 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 h-10 px-5"

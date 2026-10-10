@@ -23,7 +23,7 @@ export default async function DashboardLayout({
     >
       {children}
       <Toaster
-        position="top-center"
+        position="bottom-center"
         dir="rtl"
         toastOptions={{
           className:

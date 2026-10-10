@@ -9,7 +9,7 @@ import { exchangeRateOverview } from "@/lib/validation";
 import { FormFieldType } from "@/lib/types";
 import { ArrowLeft } from "lucide-react";
 import { updateExchangeRate } from "@/actions/dashboard.actions";
-import { useOptimistic, useTransition, useState } from "react";
+import { useOptimistic, useTransition } from "react";
 
 function ExchangeRateForm({ exchangeRate }: { exchangeRate: number }) {
   const [isPending, startTransition] = useTransition();
