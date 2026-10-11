@@ -35,6 +35,7 @@ interface CustomProps<TFieldValues extends FieldValues> {
   dateFormat?: string;
   showTimeSelect?: boolean;
   forgetPassword?: boolean;
+  className?: string;
   children?: React.ReactNode;
   renderSkeleton?: (field: any) => React.ReactNode;
 }
@@ -48,7 +49,15 @@ function RenderField<TFieldValues extends FieldValues>({
   fieldState: ControllerFieldState;
   props: CustomProps<TFieldValues>;
 }) {
-  const { fieldtype, name, placeholder, Icon, forgetPassword, label } = props;
+  const {
+    fieldtype,
+    name,
+    placeholder,
+    Icon,
+    forgetPassword,
+    label,
+    className,
+  } = props;
   const [showPassword, setShowPassword] = useState(false);
   switch (fieldtype) {
     case FormFieldType.INPUT:
@@ -61,11 +70,43 @@ function RenderField<TFieldValues extends FieldValues>({
             aria-invalid={fieldState.invalid}
             placeholder={placeholder}
             autoComplete="off"
-            className="w-full pr-10 pl-4 py-5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-brand-500! focus:bg-white! focus:ring-2 focus:ring-brand-500/10! transition-all text-right font-medium"
+            className={
+              className ??
+              `w-full pr-10 pl-4 py-5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-brand-500! focus:bg-white! focus:ring-2 focus:ring-brand-500/10! transition-all text-right font-medium`
+            }
           />
           {Icon ? (
             <Icon className="w-5 h-5 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2" />
           ) : null}
+        </div>
+      );
+    case FormFieldType.INPUTSLUG:
+      return (
+        <div className="space-y-1.5">
+          <div
+            dir="ltr"
+            className="flex items-center rounded-xl border border-slate-200 bg-white shadow-sm transition-all focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20"
+          >
+            <span className="shrink-0 bg-slate-50 px-3 py-2.5 text-xs font-mono font-medium text-slate-400 border-r border-slate-200 select-none rounded-xl">
+              qmenu.site/menu/
+            </span>
+            <Input
+              {...field}
+              id={name}
+              type="text"
+              aria-invalid={fieldState.invalid}
+              placeholder={placeholder}
+              autoComplete="off"
+              className={
+                className ??
+                `border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-mono text-left h-10 w-full rounded-none bg-transparent shadow-none px-3`
+              }
+            />
+          </div>
+
+          <p className="text-[11px] text-slate-400 leading-relaxed dir-rtl">
+            هذا الرابط هو المعرّف الفريد لمطعمك لمسح الـ QR والتصفح المباشر.
+          </p>
         </div>
       );
     case FormFieldType.PASSWORD:

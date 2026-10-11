@@ -36,7 +36,7 @@ export default function QrCodePage() {
   const qrCodeInstance = useRef<QRCodeStyling | null>(null);
 
   // رابط المنيو العام للمطعم
-  const menuUrl = `localhost:3000/dashboard/qrcode`;
+  const menuUrl = `https://qmenu-six.vercel.app/dashboard/qrcode`;
 
   // تهيئة مثيل الـ QR Code لمرة واحدة
   useEffect(() => {
@@ -230,19 +230,42 @@ const handleDownload = async () => {
                   <Palette className="h-3.5 w-3.5 text-slate-500" />
                   <span>لون الرمز</span>
                 </Label>
-                <div className="flex items-center gap-3">
-                  <Input
-                    type="color"
-                    value={qrColor}
-                    onChange={(e) => setQrColor(e.target.value)}
-                    className="h-10 w-14 cursor-pointer rounded-xl border border-slate-200 bg-white p-1"
-                  />
+                
+                {/* 1. أزرار ألوان جاهزة سريعة اللمس للموبايل واللابتوب */}
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  {[
+                    { name: "أسود فخم", value: "#0f172a" },
+                    { name: "برتقالي", value: "#f97316" },
+                    { name: "أحمر داكن", value: "#dc2626" },
+                    { name: "أخضر زمردي", value: "#059669" },
+                    { name: "أزرق ملكي", value: "#2563eb" },
+                    { name: "بني دافئ", value: "#78350f" },
+                  ].map((color) => (
+                    <button
+                      key={color.value}
+                      type="button"
+                      onClick={() => setQrColor(color.value)}
+                      className={`h-8 w-8 rounded-full border-2 transition-all cursor-pointer ${
+                        qrColor === color.value
+                          ? "border-brand-600 scale-110 shadow-sm ring-2 ring-brand-200"
+                          : "border-slate-200 hover:scale-105"
+                      }`}
+                      style={{ backgroundColor: color.value }}
+                      title={color.name}
+                    />
+                  ))}
+                </div>
+
+                {/* 2. حقل كتابة كود اللون Hex المخصص */}
+                <div className="flex items-center gap-2 pt-1">
                   <Input
                     type="text"
                     value={qrColor}
                     onChange={(e) => setQrColor(e.target.value)}
+                    placeholder="#0f172a"
                     className="h-10 rounded-xl text-xs border-slate-200 dir-ltr text-left font-mono"
                   />
+                  <span className="text-[11px] text-slate-400">أدخل الكود أو اختر لوناً جاهزاً</span>
                 </div>
               </div>
               {/* رفع الأيقونة / الشعار */}

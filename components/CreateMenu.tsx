@@ -1,17 +1,14 @@
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "./ui/button";
 import { redirect } from "next/navigation";
-import { PartyPopper, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { check } from "@/public/assets/index";
 import Image from "next/image";
 
@@ -26,11 +23,11 @@ function CreateMenu({ resturantName }: { resturantName: string }) {
         dir="rtl"
       >
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10">
-          <Image src={check} alt="check" width={300} height={300} unoptimized/>
+          <Image src={check} alt="check" width={300} height={300} unoptimized />
         </div>
 
         <AlertDialogHeader className="mt-4 space-y-2 text-center sm:text-center">
-          <AlertDialogTitle className="text-2xl font-bold tracking-tight text-foreground text-center">
+          <AlertDialogTitle className="text-2xl font-bold tracking-tight text-foreground text-center flex items-center justify-center">
             مُبارك! تم إنشاء مطعمك بنجاح
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base leading-relaxed text-muted-foreground text-center">

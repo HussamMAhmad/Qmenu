@@ -5,6 +5,7 @@ interface USER {
 }
 
 interface RestaurantOnboarding {
+  slug: string;
   name: string;
   description?: string;
   exchangeRate: number;

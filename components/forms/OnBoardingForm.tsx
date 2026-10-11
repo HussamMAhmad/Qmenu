@@ -18,6 +18,7 @@ import { restaurantOnboardingSchema } from "@/lib/validation";
 import { FormFieldType } from "@/lib/types";
 import { CompleteOnboarding } from "@/actions/onboarding.actions";
 import CreateMenu from "../CreateMenu";
+import { Label } from "../ui/label";
 
 export default function OnboardingForm() {
   const [isComplete, setIsComplete] = useState(false);
@@ -28,6 +29,7 @@ export default function OnboardingForm() {
     resolver: zodResolver(restaurantOnboardingSchema),
     defaultValues: {
       name: "",
+      slug: "",
       description: "",
       exchangeRate: 15000,
       whatsappNumber: "",
@@ -78,6 +80,15 @@ export default function OnboardingForm() {
             label="اسم المطعم"
             placeholder="مثال: مطعم الياسمين الدمشقي"
             Icon={Store}
+          />
+
+          <CustomField
+            control={form.control}
+            name="slug"
+            fieldtype={FormFieldType.INPUTSLUG}
+            placeholder="al-sultan"
+            label="رابط المنيو المخصص (اسم المعرف)"
+            className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-xs font-mono text-left h-10 w-full rounded-none bg-transparent shadow-none"
           />
 
           <CustomField

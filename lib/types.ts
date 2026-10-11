@@ -1,4 +1,5 @@
 export enum FormFieldType {
+  INPUTSLUG = "InputSlug",
   INPUT = "Input",
   PASSWORD = "PassWord",
   CHECKBOX = "Checkbox",

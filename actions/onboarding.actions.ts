@@ -35,6 +35,7 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
           upsert: {
             create: {
               name: data.name,
+              slug: data.slug,
               description: data.description,
               exchangeRate: data.exchangeRate,
               whatsappNumber: data.whatsappNumber,
@@ -42,6 +43,7 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
             },
             update: {
               name: data.name,
+              slug: data.slug,
               description: data.description,
               exchangeRate: data.exchangeRate,
               whatsappNumber: data.whatsappNumber,
@@ -65,4 +67,4 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     console.log("failed to create restaurant onboarding", e);
     return { success: false, error: "failed to update restaurant data" };
   }
-}
+};
