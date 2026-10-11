@@ -21,7 +21,7 @@ function CardItem({
   exchangeRate: number;
 }) {
   const [isPending, startTransition] = useTransition();
-  const [isExpanded, setIsExpanded] = useState(false); // حالة إظهار وإخفاء الوصف
+  const [isExpanded, setIsExpanded] = useState(false);
   const [optimisticIsAvailable, setOptimisticIsAvailable] = useOptimistic(
     item.isAvailable,
     (current, newValue: boolean) => newValue,
@@ -58,14 +58,21 @@ function CardItem({
             <div className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-slate-50 border border-slate-100 text-brand-600 transition-colors group-hover:bg-brand-50/50">
               <Utensils className="h-8 w-8" strokeWidth={1.5} />
             </div>
-            <div className="min-w-0 space-y-1 flex-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="truncate text-base font-bold text-slate-900">
-                  {item.nameAr}
-                </h3>
+            <div className="min-w-0 space-y-1.5 flex-1">
+              <div className="flex items-start justify-between gap-2 flex-wrap">
+                <div className="space-y-0.5 min-w-0">
+                  <h3 className="truncate text-base font-bold text-slate-900 leading-snug">
+                    {item.nameAr}
+                  </h3>
+                  {item.nameEn && (
+                    <p className="truncate text-xs font-medium text-slate-400 dir-ltr text-right">
+                      {item.nameEn}
+                    </p>
+                  )}
+                </div>
                 <Badge
                   variant="ghost"
-                  className={`rounded-md px-2 py-0.5 text-[10px] font-bold border-none ${
+                  className={`rounded-md px-2 py-0.5 text-[10px] font-bold border-none shrink-0 ${
                     optimisticIsAvailable
                       ? "bg-emerald-50 text-emerald-700"
                       : "bg-slate-100 text-slate-500"
@@ -74,9 +81,7 @@ function CardItem({
                   {optimisticIsAvailable ? "متاح" : "غير متاح"}
                 </Badge>
               </div>
-
-              {/* Category & Prep Time */}
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-3 flex-wrap pt-0.5">
                 {category && (
                   <p className="text-[11px] font-semibold text-brand-600">
                     {category.name}
@@ -86,7 +91,7 @@ function CardItem({
                 {item.prepTime && (
                   <div className="flex items-center gap-1 text-[11px] text-slate-400 font-medium">
                     <Clock className="h-3 w-3 text-slate-400" />
-                    <span>{item.prepTime} دقيقة</span>
+                    <span>{item.prepTime}</span>
                   </div>
                 )}
               </div>

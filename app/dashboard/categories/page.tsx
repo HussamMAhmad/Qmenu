@@ -36,10 +36,11 @@ export default async function CategoriesPage({ searchParams }: PageProps) {
   const user = await getCurrentUser();
   const restaurant = await getRestaurant(user.id);
   const categories = await getCategories(user.id);
+  const allItems = await getItems(user.id);
   const items = await getItems(user.id , sortOption , categoryId , isAvailable);
   const exchangeRate = Number(restaurant?.exchangeRate) || 0;
-  const itemsAvailable = items.filter((item) => item.isAvailable).length;
-  const totalItems = items.length;
+  const itemsAvailable = allItems.filter((item) => item.isAvailable).length;
+  const totalItems = allItems.length;
   const percentOfItems = totalItems
     ? Math.round((itemsAvailable / totalItems) * 100)
     : 0;
@@ -58,7 +59,7 @@ export default async function CategoriesPage({ searchParams }: PageProps) {
           />
           <OverviewCard
             title="إجمالي الوجبات"
-            value={items.length}
+            value={allItems.length}
             subtext={<p className="text-slate-500">وجبة مضافة حالياً</p>}
             icon={Utensils}
           />
