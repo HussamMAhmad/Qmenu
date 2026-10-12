@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Plus, DollarSign, Clock, FileText, Tag, Edit3 } from "lucide-react";
+import { DollarSign, Clock, FileText, Tag, Edit3 } from "lucide-react";
 import CustomField from "@/components/forms/CustomField";
 import CustomButton from "@/components/CustomButton";
 import { useForm } from "react-hook-form";

@@ -57,6 +57,7 @@ function RenderField<TFieldValues extends FieldValues>({
     forgetPassword,
     label,
     className,
+    renderSkeleton
   } = props;
   const [showPassword, setShowPassword] = useState(false);
   switch (fieldtype) {
@@ -240,6 +241,8 @@ function RenderField<TFieldValues extends FieldValues>({
           </SelectContent>
         </Select>
       );
+    case FormFieldType.SKELETON:
+      return <div>{renderSkeleton ? renderSkeleton(field) : null}</div>;
     default:
       break;
   }

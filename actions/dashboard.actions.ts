@@ -400,3 +400,51 @@ export const changeIsAvailable = async (
     return { success: false, message: "فشل تعديل حالة الظهور" };
   }
 };
+
+export const updateSetting = async (data: QrSetting) => {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return { success: false, message: "غير مصرح لك بالقيام بهذا الإجراء" };
+    }
+
+    const restaurant = await prisma.restaurant.findFirst({
+      where: {
+        userId: user.id,
+      },
+      select: { id: true },
+    });
+
+    if (!restaurant) {
+      return {
+        success: false,
+        message: "المطعم غير موجود أو لا تملك صلاحية الإضافة عليه",
+      };
+    }
+
+    const result = await prisma.qrSetting.upsert({
+      where: {
+        restaurantId: restaurant.id,
+      },
+      update: {
+        qrColor: data.qrColor,
+        qrSubtitle: data.qrSubtitle,
+        qrLogo: data.qrLogo,
+      },
+      create: {
+        restaurantId: restaurant.id,
+        qrColor: data.qrColor,
+        qrSubtitle: data.qrSubtitle,
+        qrLogo: data.qrLogo,
+      },
+    });
+
+    revalidateTag(`qrSetting-${user.id}`, { expire: 0 });
+
+    return { success: true, message: "تم حفظ الاعدادات بنجاح", data: result };
+  } catch (e) {
+    console.log("failed to save setting", e);
+    return { success: false, message: "حدث خطا اثناء حفظ الاعدادات" };
+  }
+};

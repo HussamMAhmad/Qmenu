@@ -6,7 +6,7 @@ export const getRestaurant = async (userId: string) =>
     async () => {
       return await prisma.restaurant.findUnique({
         where: { userId },
-        select: { name: true, exchangeRate: true },
+        select: { name: true, exchangeRate: true, slug: true },
       });
     },
     [`restaurant-data-${userId}`],
@@ -113,9 +113,43 @@ export const getItems = (
         return [];
       }
     },
-    [`items-${userId}`, sortOption, categoryId || "all", String(isAvailable ?? "all")],
+    [
+      `items-${userId}`,
+      sortOption,
+      categoryId || "all",
+      String(isAvailable ?? "all"),
+    ],
     {
       tags: [`items-${userId}`],
+      revalidate: 3600,
+    },
+  )();
+
+export const getSetting = (userId: string) =>
+  unstable_cache(
+    async () => {
+      try {
+        const result = await prisma.qrSetting.findFirst({
+          where: {
+            restaurant: {
+              userId,
+            },
+          },
+          select: { qrColor: true, qrLogo: true, qrSubtitle: true },
+        });
+        return {
+          success: true,
+          message: "تم جلب البيانات بنجاح",
+          data: result,
+        };
+      } catch (e) {
+        console.log("failed to fetch QrSetting", e);
+        return { success: false, message: "حدث خطا اثناء جلب البيانات" };
+      }
+    },
+    [`qrSetting-${userId}`],
+    {
+      tags: [`qrSetting-${userId}`],
       revalidate: 3600,
     },
   )();

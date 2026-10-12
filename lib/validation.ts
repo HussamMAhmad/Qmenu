@@ -98,3 +98,9 @@ export const CreateItemsSchema = z.object({
   prepTime: z.string().optional().or(z.literal("")),
   isAvailable: z.boolean(),
 });
+
+export const QrSetting = z.object({
+  qrColor: z.string(),
+  qrSubtitle: z.string(),
+  qrLogo: z.string().nullable().optional(),
+});

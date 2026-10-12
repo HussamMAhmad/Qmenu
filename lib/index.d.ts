@@ -48,3 +48,9 @@ type CreateItem = {
   isAvailable: boolean;
   imageUrl?: string | null;
 };
+
+interface QrSetting {
+  qrColor: string;
+  qrLogo?: string | null;
+  qrSubtitle: string;
+}
