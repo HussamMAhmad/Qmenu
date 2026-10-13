@@ -39,7 +39,6 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
               description: data.description,
               exchangeRate: data.exchangeRate,
               whatsappNumber: data.whatsappNumber,
-              showUSD: data.showUSD ?? true,
             },
             update: {
               name: data.name,
@@ -47,7 +46,6 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
               description: data.description,
               exchangeRate: data.exchangeRate,
               whatsappNumber: data.whatsappNumber,
-              showUSD: data.showUSD ?? true,
             },
           },
         },

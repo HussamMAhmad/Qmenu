@@ -11,7 +11,6 @@ interface RestaurantOnboarding {
   exchangeRate: number;
   whatsappNumber?: string;
   subscriptionEnd?: Date;
-  showUSD: boolean;
 }
 
 interface VerifyEmailPageProps {
