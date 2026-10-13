@@ -10,6 +10,7 @@ import { FormFieldType } from "@/lib/types";
 import { ArrowLeft } from "lucide-react";
 import { updateExchangeRate } from "@/actions/dashboard.actions";
 import { useOptimistic, useTransition } from "react";
+import { toast } from "sonner";
 
 function ExchangeRateForm({ exchangeRate }: { exchangeRate: number }) {
   const [isPending, startTransition] = useTransition();
@@ -29,11 +30,14 @@ function ExchangeRateForm({ exchangeRate }: { exchangeRate: number }) {
       setOptimisticExchangeRate(values.exchangeRate);
       try {
         const update = await updateExchangeRate(values.exchangeRate);
-        if (!update) {
-          console.log("failed to update the exchangeRate");
+        if (update?.data) {
+          toast.success(update.message);
+        }else{
+          toast.error(update.message);
         }
       } catch (e) {
         console.log("failed to update the exchangeRate", e);
+          toast.error("فشل تعديل سعر الصرف");
       }
     });
   };

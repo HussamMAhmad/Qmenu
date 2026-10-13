@@ -189,7 +189,6 @@ function QrSetting({
             setSubtitle={setSubtitle}
             setLogo={setLogoImage}
           />
-          {/* رابط المنيو المباشر */}
           <div className="space-y-2 pt-2 border-t border-slate-100">
             <Label className="text-xs font-bold text-slate-700">
               رابط المنيو المباشر
@@ -227,7 +226,6 @@ function QrSetting({
         </CardContent>
       </Card>
 
-      {/* قسم المعاينة الحية للـ QR */}
       <Card className="rounded-2xl border border-slate-200/80 shadow-sm bg-white flex flex-col items-center justify-center p-6">
         <div className="text-center mb-4">
           <span className="text-xs font-extrabold uppercase tracking-wider text-brand-600 bg-brand-50 px-3 py-1 rounded-full">

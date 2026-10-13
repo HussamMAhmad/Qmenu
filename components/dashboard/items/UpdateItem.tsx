@@ -24,7 +24,6 @@ import { TbCategoryPlus } from "react-icons/tb";
 import { SelectItem } from "@/components/ui/select";
 import { PiBowlFood } from "react-icons/pi";
 import { updateItem } from "@/actions/dashboard.actions";
-import { defaultFormItemValues } from "@/constants/index";
 
 function UpdateItem({
   item,

@@ -104,3 +104,21 @@ export const QrSetting = z.object({
   qrSubtitle: z.string(),
   qrLogo: z.string().nullable().optional(),
 });
+
+export const SettingInfoSchema = z.object({
+  name: z
+    .string()
+    .min(2, { message: "اسم المطعم يجب أن يكون مكوناً من حرفين على الأقل" })
+    .max(50, { message: "اسم المطعم طويل جداً" }),
+  description: z
+    .string()
+    .min(10, { message: "يرجى كتابة وصف قصير لا يقل عن 10 أحرف" })
+    .max(160, { message: "الوصف يجب ألا يتجاوز 160 حرفاً" }),
+  exchangeRate: z
+    .number({ message: "يرجى إدخال رقم صحيح لسعر الصرف" })
+    .positive({ message: "سعر الصرف يجب أن يكون أكبر من 0" }),
+  whatsappNumber: z
+    .e164("يرجى إدخال رقم واتساب صحيح مصحوباً بالرمز الدولي")
+    .optional(),
+  showUSD: z.boolean(),
+});

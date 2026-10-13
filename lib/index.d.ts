@@ -11,7 +11,7 @@ interface RestaurantOnboarding {
   exchangeRate: number;
   whatsappNumber?: string;
   subscriptionEnd?: Date;
-  showUSD?: boolean;
+  showUSD: boolean;
 }
 
 interface VerifyEmailPageProps {
@@ -54,3 +54,11 @@ interface QrSetting {
   qrLogo?: string | null;
   qrSubtitle: string;
 }
+
+type RestaurantInfo = {
+  name: string ;
+  description?: string | null;
+  exchangeRate: number ;
+  whatsappNumber?: string | null;
+  showUSD: boolean ;
+};

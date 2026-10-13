@@ -56,7 +56,6 @@ export default async function QrCodePage() {
             </Link>
           </div>
         </header>
-        {/* Workspace Grid */}
         <QrSetting menuUrl={menuUrl} setting={dataSetting} />
       </div>
     </main>

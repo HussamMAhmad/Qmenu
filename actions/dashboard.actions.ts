@@ -11,16 +11,40 @@ export const updateExchangeRate = async (exchangeRate: number) => {
       return { success: false, message: "غير مصرح لك بالقيام بهذا الإجراء" };
     }
 
+
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { userId: user.id },
+      select: { id: true },
+    });
+
+    if (!restaurant) {
+      return { success: false, message: "المطعم غير موجود" };
+    }
+
     const updateRate = await prisma.restaurant.update({
       where: {
-        userId: user.id,
+        id: restaurant.id,
       },
       data: {
         exchangeRate,
       },
     });
+await prisma.$executeRaw`
+  UPDATE "item"
+  SET "priceUsd" = "priceSyp" / ${exchangeRate}
+  FROM "category"
+  WHERE "item"."categoryId" = "category"."id"
+    AND "category"."resturantId" = ${restaurant.id}
+`
     revalidateTag(`restaurant-data-${user.id}`, { expire: 0 });
-    return { success: true, message: updateRate };
+    revalidateTag(`items-${user.id}`, { expire: 0 });
+    revalidatePath("/dashboard/categories", "layout");
+
+    return {
+      success: true,
+      message: "تم تحديث سعر الصرف بنجاح",
+      data: updateRate,
+    };
   } catch (e) {
     console.log("failed to update the exchangeRate");
     return { success: false, message: "حدث خطا اثناء تعديل سعر الصرف" };
@@ -446,5 +470,54 @@ export const updateSetting = async (data: QrSetting) => {
   } catch (e) {
     console.log("failed to save setting", e);
     return { success: false, message: "حدث خطا اثناء حفظ الاعدادات" };
+  }
+};
+
+export const updateResSetting = async (data: RestaurantInfo) => {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return { success: false, message: "غير مصرح لك بالقيام بهذا الإجراء" };
+    }
+
+    const restaurant = await prisma.restaurant.findFirst({
+      where: {
+        userId: user.id,
+      },
+      select: { id: true },
+    });
+
+    if (!restaurant) {
+      return {
+        success: false,
+        message: "المطعم غير موجود أو لا تملك صلاحية الإضافة عليه",
+      };
+    }
+
+    const updatedSetting = await prisma.restaurant.update({
+      where: {
+        id: restaurant.id,
+      },
+      data: {
+        name: data.name,
+        description: data.description,
+        exchangeRate: data.exchangeRate,
+        whatsappNumber: data.whatsappNumber,
+        showUSD: data.showUSD ?? true,
+      },
+    });
+
+    revalidateTag(`restaurant-setting-${user.id}`, { expire: 0 });
+    revalidatePath("/dashboard", "layout");
+
+    return {
+      success: true,
+      message: "تم تحديث الاعدادات بنجاح",
+      data: updatedSetting,
+    };
+  } catch (e) {
+    console.log("failed to create restaurant onboarding", e);
+    return { success: false, message: "فضل تحديث الاعدادات" };
   }
 };

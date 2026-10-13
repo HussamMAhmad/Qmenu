@@ -13,6 +13,24 @@ export const getRestaurant = async (userId: string) =>
     { tags: [`restaurant-data-${userId}`], revalidate: 3600 },
   )();
 
+export const getSettingInfo = async (userId: string) =>
+  unstable_cache(
+    async () => {
+      return await prisma.restaurant.findUnique({
+        where: { userId },
+        select: {
+          name: true,
+          exchangeRate: true,
+          description: true,
+          showUSD: true,
+          whatsappNumber: true,
+        },
+      });
+    },
+    [`restaurant-setting-${userId}`],
+    { tags: [`restaurant-setting-${userId}`], revalidate: 3600 },
+  )();
+
 export const countItems = (userId: string) =>
   unstable_cache(
     async () => {

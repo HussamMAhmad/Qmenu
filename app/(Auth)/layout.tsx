@@ -8,9 +8,6 @@ import { headers } from "next/headers";
 
 async function layout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({ headers: await headers() });
-
-  console.log(session);
-
   if (session?.user) redirect("/dashboard");
   return (
     <div className=" bg-slate-50">
