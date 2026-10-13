@@ -326,47 +326,80 @@ export default function PublicMenu({ restaurant }: { restaurant: Restaurant }) {
         </div>
       </div>
 
-      {/* 3. شريط الأقسام السريع بتصميم طافٍ (Floating Navigation) */}
-      <div className="sticky top-0 z-30 bg-[var(--color-brand-50)]/90 backdrop-blur-xl py-3.5 px-4 sm:px-8 border-b border-brand-100/60 shadow-xs mt-6">
+      {/* 3. شريط الأقسام السريع (تطبيق ألوان النيومورفيزم المناسبة لمجموعة البراند) */}
+      <div className="sticky top-0 z-30 bg-[var(--color-brand-50)]/90 backdrop-blur-xl py-4 px-4 sm:px-8 border-b border-brand-100/60 shadow-xs mt-6">
         <ScrollArea className="w-full whitespace-nowrap">
-          <div className="flex items-center gap-3 max-w-5xl mx-auto py-1 px-1">
+          <div className="flex items-center gap-3.5 max-w-5xl mx-auto py-2 px-1">
+            {/* زر جميع الأصناف */}
             <button
               onClick={() => setActiveCategory("all")}
-              className={`rounded-full text-xs font-black px-5 py-2.5 transition-all duration-300 flex items-center gap-2 shrink-0 ${
-                activeCategory === "all" 
-                  ? "bg-slate-900 text-white shadow-lg shadow-slate-900/25 scale-[1.02]" 
-                  : "bg-[var(--color-brand-100)]/60 hover:bg-brand-100 text-slate-800 border border-brand-200/50 shadow-xs hover:scale-[1.01]"
-              }`}
+              style={{
+                borderRadius: "0.5em",
+                backgroundColor: activeCategory === "all" ? "var(--color-brand-500)" : "var(--color-brand-100)",
+                color: activeCategory === "all" ? "#ffffff" : "var(--color-brand-900)",
+                border: activeCategory === "all" ? "1px solid var(--color-brand-500)" : "1px solid var(--color-brand-100)",
+                boxShadow: activeCategory === "all" 
+                  ? "4px 4px 12px rgba(230, 57, 32, 0.35)" 
+                  : "6px 6px 12px rgba(230, 180, 165, 0.45), -6px -6px 12px #ffffff",
+                padding: "0.7em 1.7em",
+                fontSize: "15px",
+                fontWeight: "800",
+                cursor: "pointer",
+                transition: "all 0.3s ease"
+              }}
+              className="flex items-center gap-2 shrink-0 active:scale-95"
             >
-              <LayoutGrid className={`w-3.5 h-3.5 ${activeCategory === "all" ? "text-brand-400" : "text-slate-600"}`} />
+              <LayoutGrid className={`w-4 h-4 ${activeCategory === "all" ? "text-white" : "text-brand-900"}`} />
               <span>{lang === "ar" ? "جميع الأصناف" : "All Items"}</span>
             </button>
 
+            {/* زر العروض الحصرية */}
             <button
               onClick={() => setActiveCategory("offers")}
-              className={`rounded-full text-xs font-black px-5 py-2.5 transition-all duration-300 flex items-center gap-2 shrink-0 ${
-                activeCategory === "offers" 
-                  ? "bg-brand-500 text-white shadow-lg shadow-brand-500/30 scale-[1.02]" 
-                  : "bg-brand-100/80 text-brand-900 border border-brand-200/80 hover:bg-brand-200/60 shadow-xs hover:scale-[1.01]"
-              }`}
+              style={{
+                borderRadius: "0.5em",
+                backgroundColor: activeCategory === "offers" ? "var(--color-brand-600)" : "var(--color-brand-100)",
+                color: activeCategory === "offers" ? "#ffffff" : "var(--color-brand-900)",
+                border: activeCategory === "offers" ? "1px solid var(--color-brand-600)" : "1px solid var(--color-brand-100)",
+                boxShadow: activeCategory === "offers" 
+                  ? "4px 4px 12px rgba(244, 67, 54, 0.4)" 
+                  : "6px 6px 12px rgba(230, 180, 165, 0.45), -6px -6px 12px #ffffff",
+                padding: "0.7em 1.7em",
+                fontSize: "15px",
+                fontWeight: "800",
+                cursor: "pointer",
+                transition: "all 0.3s ease"
+              }}
+              className="flex items-center gap-2 shrink-0 active:scale-95"
             >
-              <Sparkles className={`w-3.5 h-3.5 ${activeCategory === "offers" ? "text-amber-300 animate-pulse" : "text-brand-600"}`} />
+              <Sparkles className={`w-4 h-4 ${activeCategory === "offers" ? "text-amber-300 animate-pulse" : "text-brand-500"}`} />
               <span>{lang === "ar" ? "عروض حصرية 🔥" : "Exclusive Offers 🔥"}</span>
             </button>
 
+            {/* أزرار الأقسام الديناميكية */}
             {restaurant.categories.map((cat) => {
               const isActive = activeCategory === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`rounded-full text-xs font-black px-5 py-2.5 transition-all duration-300 flex items-center gap-2 shrink-0 ${
-                    isActive 
-                      ? "bg-slate-900 text-white shadow-lg shadow-slate-900/25 scale-[1.02]" 
-                      : "bg-[var(--color-brand-100)]/60 hover:bg-brand-100 text-slate-800 border border-brand-200/50 shadow-xs hover:scale-[1.01]"
-                  }`}
+                  style={{
+                    borderRadius: "0.5em",
+                    backgroundColor: isActive ? "var(--color-brand-500)" : "var(--color-brand-100)",
+                    color: isActive ? "#ffffff" : "var(--color-brand-900)",
+                    border: isActive ? "1px solid var(--color-brand-500)" : "1px solid var(--color-brand-100)",
+                    boxShadow: isActive 
+                      ? "4px 4px 12px rgba(230, 57, 32, 0.35)" 
+                      : "6px 6px 12px rgba(230, 180, 165, 0.45), -6px -6px 12px #ffffff",
+                    padding: "0.7em 1.7em",
+                    fontSize: "15px",
+                    fontWeight: "800",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease"
+                  }}
+                  className="flex items-center gap-2 shrink-0 active:scale-95"
                 >
-                  <Utensils className={`w-3.5 h-3.5 ${isActive ? "text-brand-400" : "text-slate-500"}`} />
+                  <Utensils className={`w-4 h-4 ${isActive ? "text-white" : "text-brand-900"}`} />
                   <span>{cat.name}</span>
                 </button>
               );
@@ -390,14 +423,14 @@ export default function PublicMenu({ restaurant }: { restaurant: Restaurant }) {
         </p>
       </div>
 
-      {/* 5. شبكة الوجبات بتصميم الكروت الطافية الذكية (Floating Cards Grid) */}
+      {/* 5. شبكة الوجبات */}
       <div className="px-4 sm:px-8 max-w-5xl mx-auto">
         {currentItems.length === 0 ? (
-          <div className="text-center py-20 text-slate-400 text-xs sm:text-sm bg-[var(--color-brand-100)]/50 rounded-3xl border border-dashed border-brand-100 p-8 shadow-xs">
+          <div className="text-center py-20 text-slate-400 text-xs sm:text-sm bg-[var(--color-brand-100)]/50 rounded-[30px] border border-dashed border-brand-100 p-8 shadow-xs">
             {lang === "ar" ? "لا توجد وجبات متاحة في هذا القسم حالياً." : "No items available in this category."}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
             {currentItems.map((item, idx) => {
               const isFav = favorites.includes(item.id);
               const itemImg = getItemImage(item, idx);
@@ -411,19 +444,17 @@ export default function PublicMenu({ restaurant }: { restaurant: Restaurant }) {
                     setDetailQty(1);
                     setItemNote("");
                   }}
-                  /* تصميم الكارت الطافي المحسّن بالظل الداكن والارتفاع الديناميكي عند اللمس */
-                  className={`bg-[var(--color-brand-100)]/80 backdrop-blur-md rounded-[2.25rem] p-3.5 sm:p-4 
-                    shadow-lg shadow-brand-500/10 
-                    hover:shadow-2xl hover:shadow-brand-500/20 hover:-translate-y-1.5 
-                    active:translate-y-0 active:scale-[0.98] 
-                    transition-all duration-300 ease-out 
-                    flex flex-col justify-between relative group cursor-pointer 
-                    border border-brand-200/60 ${
-                    !item.isAvailable ? "opacity-60 bg-gray-50/80" : ""
+                  style={{
+                    borderRadius: "30px",
+                    backgroundColor: "var(--color-brand-100)",
+                    boxShadow: "15px 15px 30px rgba(215, 150, 135, 0.4), -15px -15px 30px #ffffff",
+                  }}
+                  className={`p-3.5 sm:p-4 hover:-translate-y-1.5 active:translate-y-0 transition-all duration-300 ease-out flex flex-col justify-between relative group cursor-pointer border border-white/50 ${
+                    !item.isAvailable ? "opacity-60 bg-gray-100" : ""
                   }`}
                 >
                   {/* صورة الصنف */}
-                  <div className="relative w-full h-36 sm:h-44 rounded-2xl overflow-hidden bg-slate-100/80 mb-3 shadow-inner">
+                  <div className="relative w-full h-36 sm:h-44 rounded-[22px] overflow-hidden bg-white/60 mb-3 shadow-inner">
                     <Image 
                       src={itemImg} 
                       alt={item.nameAr} 
@@ -464,7 +495,7 @@ export default function PublicMenu({ restaurant }: { restaurant: Restaurant }) {
                   </div>
 
                   {/* التفاصيل والأسعار */}
-                  <div className="flex-1 flex flex-col justify-between space-y-2">
+                  <div className="flex-1 flex flex-col justify-between space-y-2 px-1">
                     <div>
                       <h3 className="font-black text-xs sm:text-sm text-slate-900 truncate">
                         {lang === "ar" ? item.nameAr : (item.nameEn || item.nameAr)}
@@ -474,12 +505,12 @@ export default function PublicMenu({ restaurant }: { restaurant: Restaurant }) {
                         <span>4.8</span>
                         <span className="text-slate-500 font-normal">(22+)</span>
                       </div>
-                      <p className="text-[10px] text-brand-600 font-semibold mt-1">
+                      <p className="text-[10px] text-brand-700 font-semibold mt-1">
                         {lang === "ar" ? "توصيل مجاني فوق 26$" : "$0 Delivery fee over $26"}
                       </p>
                     </div>
 
-                    <div className="pt-2.5 border-t border-brand-200/50 flex items-center justify-between">
+                    <div className="pt-2.5 border-t border-brand-200/60 flex items-center justify-between">
                       <div className="font-black text-sm sm:text-base text-slate-900">
                         {currentCurrency === "syp" ? (
                           <>{item.priceSyp.toLocaleString()} <span className="text-[10px] font-normal text-slate-600">ل.س</span></>
@@ -534,7 +565,7 @@ export default function PublicMenu({ restaurant }: { restaurant: Restaurant }) {
 
       {/* 7. نافذة تفاصيل الوجبة */}
       <Dialog open={!!selectedItemDetail} onOpenChange={(open) => !open && setSelectedItemDetail(null)}>
-        <DialogContent className="sm:max-w-lg rounded-t-[2.5rem] sm:rounded-3xl p-6 gap-4 bg-[var(--color-brand-50)] border border-brand-100">
+        <DialogContent className="sm:max-w-lg rounded-t-[2.5rem] sm:rounded-[30px] p-6 gap-4 bg-[var(--color-brand-50)] border border-brand-100">
           {selectedItemDetail && (
             <>
               <DialogHeader className="p-0">
@@ -543,7 +574,7 @@ export default function PublicMenu({ restaurant }: { restaurant: Restaurant }) {
                 </DialogTitle>
               </DialogHeader>
 
-              <div className="relative w-full h-56 rounded-2xl overflow-hidden bg-slate-100">
+              <div className="relative w-full h-56 rounded-[22px] overflow-hidden bg-slate-100">
                 <Image 
                   src={getItemImage(selectedItemDetail, selectedItemIndex)} 
                   alt={selectedItemDetail.nameAr} 
