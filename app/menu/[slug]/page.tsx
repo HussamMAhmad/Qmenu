@@ -1,7 +1,7 @@
-import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
 import PublicMenu from "@/components/menu/PublicMenu";
 import { Toaster } from "sonner";
+import { getMenu } from "@/lib/queries/menu";
+import { notFound } from "next/navigation";
 
 export default async function MenuPage({
   params,
@@ -9,29 +9,21 @@ export default async function MenuPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-
-  const restaurant = await prisma.restaurant.findUnique({
-    where: { slug },
-    include: {
-      categories: {
-        include: {
-          items: {
-            where: { isAvailable: true },
-            orderBy: { createdAt: "desc" },
-          },
-        },
-      },
-      qrSetting: true,
-    },
-  });
-
-  if (!restaurant) {
+let restaurant;
+  try{
+    const data = await getMenu(slug);
+ if (!data.success || !data.result) {
+      notFound();
+    }
+    restaurant = data.result;
+  }catch(e){
+    console.log("failed to get data for menu" , e);
     notFound();
   }
 
   return (
     <>
-      <div className="min-h-screen bg-brand-50 shadow-2xl border-x border-brand-100 max-w-md sm:max-w-xl md:max-w-4xl lg:max-w-6xl mx-auto">
+      <div className="min-h-screen bg-brand-50 shadow-2xl border-x border-brand-100 max-sm:max-w-md sm:w-full mx-auto">
         <PublicMenu restaurant={restaurant} />
       </div>
       <Toaster
