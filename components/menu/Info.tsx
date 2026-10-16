@@ -3,7 +3,7 @@ import { Utensils } from "lucide-react";
 
 function Info({ restaurant }: { restaurant: RestaurantMenu }) {
   return (
-    <div className="px-4 sm:px-8 -mt-12 relative z-20 flex flex-col sm:flex-row sm:items-end justify-between gap-4 max-w-5xl mx-auto">
+    <div className="px-4 sm:px-8 -mt-12 relative z-20 flex sm:items-end justify-between gap-4 max-w-5xl mx-auto">
       <div className="flex items-end gap-4">
         <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-brand-100 p-2 shadow-xl border-4 border-brand-50 shrink-0 overflow-hidden">
           {/* `            <Image
