@@ -29,17 +29,17 @@ function FloatingCart({ lang, cart, setCart, restaurant }: FloatingCart) {
     <>
       <div
         onClick={() => setIsCartOpen(true)}
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-lg bg-brand-500 text-white py-3.5 px-6 rounded-full shadow-2xl shadow-brand-500/40 flex items-center justify-between cursor-pointer z-40 hover:scale-[1.02] active:scale-98 transition-all duration-300 border border-brand-400/30 backdrop-blur-md animate-in fade-in slide-in-from-bottom-8 duration-500 ease-out`}
+        className={`fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-lg bg-brand-500 text-white py-3 px-4 sm:py-3.5 sm:px-6 rounded-full shadow-2xl shadow-brand-500/40 flex items-center justify-between gap-2 cursor-pointer z-40 hover:scale-[1.02] active:scale-98 transition-all duration-300 border border-brand-400/30 backdrop-blur-md animate-in fade-in slide-in-from-bottom-8 duration-500 ease-out`}
       >
-        <div className="flex items-center gap-3">
-          <span className="text-sm sm:text-base font-black tracking-tight">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <span className="text-xs sm:text-base font-black tracking-tight whitespace-nowrap">
             {lang === "ar" ? "عرض السلة" : "View your cart"}
           </span>
           <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-black px-2.5 py-0.5 rounded-full shadow-xs">
             {totalQty}x
           </span>
         </div>
-        <div className="flex items-center gap-1.5 font-black text-sm sm:text-base">
+        <div className="flex shrink-0 items-center gap-1 font-black text-xs sm:gap-1.5 sm:text-base whitespace-nowrap">
           <span>
             {totalPriceSyp.toLocaleString()}{" "}
             <span className="text-[10px] sm:text-xs font-medium opacity-90">

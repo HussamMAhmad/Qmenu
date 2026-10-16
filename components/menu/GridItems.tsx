@@ -38,7 +38,7 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
             : "No items available in this category."}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {currentItems.map((item, idx) => {
             const itemImg = getItemImage(item, idx);
             return (
@@ -48,9 +48,9 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
                   setOpen(true);
                   setSelectedItemDetail(item);
                 }}
-                className={`bg-brand-100 p-3.5 sm:p-4 rounded-[30px] shadow-md hover:shadow-lg hover:-translate-y-1 active:translate-y-0 transition-all duration-300 ease-out flex flex-col justify-between relative group cursor-pointer border border-white/50`}
+                className={`min-w-0 bg-brand-100 p-3 sm:p-4 rounded-[30px] shadow-md hover:shadow-lg hover:-translate-y-1 active:translate-y-0 transition-all duration-300 ease-out flex flex-col justify-between relative group cursor-pointer border border-white/50`}
               >
-                <div className="relative w-full h-36 sm:h-44 rounded-[18px] overflow-hidden bg-white/60 mb-3">
+                <div className="relative w-full h-40 sm:h-44 rounded-[18px] overflow-hidden bg-white/60 mb-3">
                   <Image
                     src={itemImg}
                     alt={item.nameAr}
@@ -67,18 +67,18 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
                     </div>
                   )}
                 </div>
-                <div className="flex-1 flex flex-col justify-between space-y-2 px-0.5">
+                <div className="min-w-0 flex-1 flex flex-col justify-between space-y-2 px-0.5">
                   <div>
-                    <h3 className="font-black text-xs sm:text-sm text-slate-900 truncate">
+                    <h3 className="font-black text-xs sm:text-sm text-slate-900 line-clamp-2 break-words">
                       {lang === "ar" ? item.nameAr : item.nameEn || item.nameAr}
                     </h3>
-                    {(item.description || item.description) && (
-                      <p className="text-[11px] text-slate-500 mt-1 line-clamp-1 font-normal">
-                        item.description
+                    {item.description && (
+                      <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 font-normal">
+                        {item.description}
                       </p>
                     )}
                   </div>
-                  <div className="pt-2.5 border-t border-brand-200/60 flex items-center justify-between gap-1">
+                  <div className="pt-2.5 border-t border-brand-200/60 flex items-center justify-between gap-2">
                     <div className="flex flex-col">
                       <span className="font-black text-xs sm:text-sm text-slate-900">
                         {item.priceSyp.toLocaleString()}{" "}
@@ -97,7 +97,7 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
                         e.stopPropagation();
                         addToCart(item, 1);
                       }}
-                      className={`w-8.5 h-8.5 rounded-full flex items-center justify-center transition-all ${
+                      className={`size-8 shrink-0 rounded-full flex items-center justify-center transition-all ${
                         item.isAvailable
                           ? "bg-brand-500 text-white hover:bg-brand-600 shadow-sm shadow-brand-500/30 active:scale-90"
                           : "bg-slate-200 text-slate-400 cursor-not-allowed"

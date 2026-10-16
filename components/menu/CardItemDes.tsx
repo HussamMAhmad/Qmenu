@@ -40,15 +40,15 @@ function CardItemDes({ open, setOpen, item, lang, addToCart }: CarditemDes) {
   }, [open, item]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-lg rounded-t-[2.5rem] sm:rounded-[30px] p-6 pt-9 gap-4 bg-brand-100 border border-brand-100">
+      <DialogContent className="w-[calc(100%-1rem)] sm:max-w-lg max-h-[calc(100dvh-1rem)] overflow-y-auto rounded-2xl sm:rounded-[30px] p-4 sm:p-6 pt-8 sm:pt-9 gap-4 bg-brand-100 border border-brand-100 mx-auto">
         {item && (
           <>
-            <DialogHeader className="p-0">
-              <DialogTitle className="text-lg font-black text-start text-slate-900">
+            <DialogHeader className="pt-2">
+              <DialogTitle className="text-base sm:text-lg font-black text-start text-slate-900 break-words">
                 {lang === "ar" ? item.nameAr : item.nameEn || item.nameAr}
               </DialogTitle>
             </DialogHeader>
-            <div className="relative w-full h-56 rounded-[22px] overflow-hidden bg-slate-100">
+            <div className="relative w-full h-40 sm:h-56 rounded-[22px] overflow-hidden bg-slate-100">
               <Image
                 src={getItemImage()}
                 alt={item.nameAr}
@@ -60,12 +60,12 @@ function CardItemDes({ open, setOpen, item, lang, addToCart }: CarditemDes) {
               />
             </div>
             {item.description && (
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed break-words">
                 {item.description}
               </p>
             )}
-            <div className="flex items-center justify-between pt-3 gap-4 border-t border-brand-100">
-              <div className="flex items-center gap-2 bg-brand-100/70 rounded-2xl p-1.5">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between pt-3 gap-3 sm:gap-4 border-t border-brand-100">
+              <div className="flex items-center gap-2 bg-brand-100/70 rounded-2xl p-1.5 self-start sm:self-auto">
                 <Button
                   size="icon"
                   variant="ghost"
@@ -92,10 +92,10 @@ function CardItemDes({ open, setOpen, item, lang, addToCart }: CarditemDes) {
                   addToCart(item, detailQty);
                   setOpen(false);
                 }}
-                className="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-bold h-12 rounded-2xl text-xs sm:text-sm flex justify-between items-center px-5 shadow-lg shadow-brand-500/30"
+                className="w-full sm:flex-1 min-w-0 bg-brand-500 hover:bg-brand-600 text-white font-bold h-12 rounded-2xl text-xs sm:text-sm flex justify-between items-center px-3 sm:px-5 shadow-lg shadow-brand-500/30"
               >
                 <span>{lang === "ar" ? "إضافة للسلة" : "Add to Cart"}</span>
-                <div className="flex items-center gap-1.5 font-black text-xs sm:text-sm">
+                <div className="flex items-center gap-1.5 font-black text-xs sm:text-sm whitespace-nowrap">
                   <span>
                     {(item.priceSyp * detailQty).toLocaleString()} ل.س
                   </span>

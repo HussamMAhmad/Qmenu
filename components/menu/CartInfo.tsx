@@ -91,7 +91,7 @@ function CartInfo({
   return (
       <SheetContent
         side="bottom"
-        className="rounded-t-[2.5rem] sm:max-w-lg sm:mx-auto p-6 max-h-[85vh] flex flex-col bg-brand-100 border-t border-brand-200 shadow-2xl overflow-hidden"
+        className="w-full rounded-t-[2rem] sm:max-w-lg sm:mx-auto p-4 sm:p-6 max-h-[calc(100dvh-1rem)] flex flex-col bg-brand-100 border-t border-brand-200 shadow-2xl overflow-hidden"
       >
         <SheetHeader className="text-start pb-3 border-b border-brand-200/60 shrink-0">
           <SheetTitle className="text-lg font-black text-brand-900">
@@ -108,9 +108,9 @@ function CartInfo({
               {cart.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="flex items-center gap-3 bg-white/70 backdrop-blur-sm p-3 rounded-2xl border border-brand-200/60 shadow-xs"
+                  className="flex min-w-0 items-center gap-2 sm:gap-3 bg-white/70 backdrop-blur-sm p-2 sm:p-3 rounded-2xl border border-brand-200/60 shadow-xs"
                 >
-                  <div className="w-14 h-14 rounded-xl overflow-hidden relative bg-brand-200/60 shrink-0">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden relative bg-brand-200/60 shrink-0">
                     <Image
                       src={getItemImage(item, idx)}
                       alt={item.nameAr}
@@ -121,11 +121,11 @@ function CartInfo({
                       }}
                     />
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <h4 className="font-bold text-xs sm:text-sm text-brand-900 truncate">
                       {lang === "ar" ? item.nameAr : item.nameEn || item.nameAr}
                     </h4>
-                    <div className="flex items-center gap-1.5 text-xs font-black text-brand-700 mt-0.5">
+                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs font-black text-brand-700 mt-0.5">
                       <span>
                         {(item.priceSyp * item.qty).toLocaleString()}{" "}
                         <span className="text-[10px] font-medium opacity-80">
@@ -142,12 +142,12 @@ function CartInfo({
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-brand-50 rounded-xl p-1 border border-brand-200">
+                  <div className="flex shrink-0 items-center gap-1 bg-brand-50 rounded-xl p-1 border border-brand-200">
                     <Button
                       size="icon"
                       variant="ghost"
                       onClick={() => decreaseQty(item.id)}
-                      className="w-6 h-6 rounded-lg text-brand-700 hover:bg-brand-200/50"
+                      className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg text-brand-700 hover:bg-brand-200/50"
                     >
                       <Minus className="w-3 h-3" />
                     </Button>
@@ -158,7 +158,7 @@ function CartInfo({
                       size="icon"
                       variant="ghost"
                       onClick={() => increaseQty(item.id)}
-                      className="w-6 h-6 rounded-lg text-brand-700 hover:bg-brand-200/50"
+                      className="w-7 h-7 sm:w-6 sm:h-6 rounded-lg text-brand-700 hover:bg-brand-200/50"
                     >
                       <Plus className="w-3 h-3" />
                     </Button>
@@ -170,9 +170,9 @@ function CartInfo({
         </div>
         {cart.length > 0 && (
           <div className="space-y-3 pt-3 border-t border-brand-200/60 shrink-0">
-            <div className="flex justify-between items-center text-sm sm:text-base font-black text-brand-900">
+            <div className="flex flex-wrap justify-between items-center gap-2 text-sm sm:text-base font-black text-brand-900">
               <span>{lang === "ar" ? "المجموع الكلي:" : "Total Amount:"}</span>
-              <div className="flex items-center gap-1.5 text-sm sm:text-base font-black">
+              <div className="flex items-center gap-1.5 text-sm sm:text-base font-black whitespace-nowrap">
                 <span className="text-brand-900">
                   {totalPriceSyp.toLocaleString()}{" "}
                   <span className="text-xs font-medium text-brand-700">

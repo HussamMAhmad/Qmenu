@@ -60,8 +60,8 @@ function Header({
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-brand-50 via-slate-950/20 to-black/50"></div>
-      <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-center max-w-5xl mx-auto">
-        <div className="flex-1 max-w-xs mx-3">
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] sm:w-[90%] max-w-5xl z-20 flex justify-between items-center gap-2">
+        <div className="min-w-0 flex-1 max-w-xs">
           <div className="relative flex items-center">
             <Search className="w-4 h-4 text-slate-500 absolute start-3 pointer-events-none" />
             <Input
@@ -77,7 +77,7 @@ function Header({
             />
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <Button
             size="icon"
             variant="secondary"

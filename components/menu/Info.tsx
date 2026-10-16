@@ -3,9 +3,9 @@ import { Utensils } from "lucide-react";
 
 function Info({ restaurant }: { restaurant: RestaurantMenu }) {
   return (
-    <div className="px-4 sm:px-8 -mt-12 relative z-20 flex sm:items-end justify-between gap-4 max-w-5xl mx-auto">
-      <div className="flex items-end gap-4">
-        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-brand-100 p-2 shadow-xl border-4 border-brand-50 shrink-0 overflow-hidden">
+    <div className="px-4 sm:px-8 -mt-12 relative z-20 flex items-end justify-between gap-3 sm:gap-4 max-w-5xl mx-auto">
+      <div className="flex min-w-0 flex-1 items-end gap-3 sm:gap-4">
+        <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-brand-100 p-2 shadow-xl border-4 border-brand-50 shrink-0 overflow-hidden">
           {/* `            <Image
               src={restaurant.qrSetting.qrLogo}
               alt={restaurant.name}
@@ -21,14 +21,14 @@ function Info({ restaurant }: { restaurant: RestaurantMenu }) {
           </div>
         </div>
 
-        <div className="pb-1 max-w-[240px] sm:max-w-md">
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight truncate">
+        <div className="min-w-0 flex-1 pb-1">
+          <h1 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight break-words">
             {restaurant.name}
           </h1>
 
           {restaurant.description && (
-            <div className="mt-1.5 text-xs sm:text-sm text-slate-600 font-medium overflow-hidden relative max-w-full">
-              <div className="whitespace-nowrap inline-block">
+            <div className="mt-1.5 text-xs sm:text-sm text-slate-600 font-medium overflow-hidden relative max-w-full line-clamp-2 break-words">
+              <div className="inline-block max-w-full">
                 <span className="inline-block px-2">
                   {restaurant.description}
                 </span>
