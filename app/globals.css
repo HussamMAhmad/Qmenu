@@ -12,7 +12,7 @@
   --color-brand-600: #f44336;
   --color-brand-700: #e63920;
   --color-brand-900: #bf360c;
-  --font-cairo : var(--font-cairo) , system-ui , sans-serif;
+  --font-cairo: var(--font-cairo), system-ui, sans-serif;
 }
 
 @theme inline {
@@ -177,12 +177,12 @@
     );
     background-size: 30px 30px;
   }
-  .verfiy-otp{
+  .verfiy-otp {
     display: flex !important;
     justify-content: space-between !important;
-    gap:8;
+    gap: 8;
   }
-  .verfiy-otp-slot{
+  .verfiy-otp-slot {
     display: flex !important;
     width: 40px !important;
     height: 40px !important;
@@ -192,9 +192,20 @@
     font-size: 28px !important;
     font-weight: 600 !important;
   }
-  .verfiy-otp-slot:focus{
+  .verfiy-otp-slot:focus {
     border-color: var(--color-brand-500);
   }
-    @media (width >= 768px ) {
-    }
+  .custom-sheet-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-sheet-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-sheet-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--color-brand-300);
+    border-radius: 9999px;
+  }
+  .custom-sheet-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--color-brand-400);
+  }
 }

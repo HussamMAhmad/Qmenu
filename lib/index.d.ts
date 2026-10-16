@@ -36,7 +36,7 @@ interface Category {
 }
 
 type CreateItem = {
-  id?: string;
+  id: string;
   categoryId: string;
   nameAr: string;
   nameEn?: string | null;
@@ -55,9 +55,31 @@ interface QrSetting {
 }
 
 type RestaurantInfo = {
-  name: string ;
+  name: string;
   description?: string | null;
-  exchangeRate: number ;
+  exchangeRate: number;
   whatsappNumber?: string | null;
-  showUSD: boolean ;
+  showUSD: boolean;
 };
+
+interface CategoryMenu {
+  id: string;
+  name: string;
+  items: CreateItem[];
+}
+
+interface RestaurantMenu {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  whatsappNumber?: string | null;
+  showUSD: boolean;
+  categories: CategoryMenu[];
+}
+
+type Lang = "ar" | "en";
+
+interface CartItem extends CreateItem {
+  qty: number;
+}

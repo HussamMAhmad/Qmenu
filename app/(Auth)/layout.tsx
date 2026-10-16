@@ -5,6 +5,7 @@ import { Sparkles, CheckCircle2, ShieldCheck } from "lucide-react";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { Toaster } from "sonner";
 
 async function layout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -88,6 +89,30 @@ async function layout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           {children}
+          <Toaster
+            position="bottom-center"
+            dir="rtl"
+            toastOptions={{
+              className:
+                "rounded-xl! border! border-slate-200! shadow-lg! dir-rtl",
+              style: {
+                backgroundColor: "#ffffff",
+                color: "#0f172a",
+              },
+              classNames: {
+                toast: "bg-white border-slate-200",
+                title: "text-slate-900! font-semibold! text-sm!",
+                description: "text-slate-500! text-xs!",
+                actionButton:
+                  "bg-brand-600! text-white! rounded-lg! px-3! py-1! text-xs!",
+                cancelButton:
+                  "bg-slate-100! text-slate-600! rounded-lg! px-3! py-1! text-xs!",
+                success:
+                  "border-emerald-500/20! bg-emerald-50! text-emerald-900!",
+                error: "border-rose-500/20! bg-rose-50! text-rose-900!",
+              },
+            }}
+          />
           <div className="mt-8 text-center text-xs text-slate-400 font-medium">
             © 2026 جميع الحقوق محفوظة لمنصة منيوك (Q-Menu)
           </div>
