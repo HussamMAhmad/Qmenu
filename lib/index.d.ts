@@ -36,6 +36,7 @@ interface Category {
 }
 
 type CreateItem = {
+  id?: string;
   categoryId: string;
   nameAr: string;
   nameEn?: string | null;
