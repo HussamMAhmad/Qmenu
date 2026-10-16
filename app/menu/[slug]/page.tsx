@@ -23,7 +23,7 @@ let restaurant;
 
   return (
     <>
-      <div className="min-h-screen bg-brand-50 shadow-2xl border-x border-brand-100 md:w-full max-sm:max-w-md mx-auto">
+      <div className="min-h-screen bg-brand-50 border-x w-full border-brand-100 mx-auto">
         <PublicMenu restaurant={restaurant} />
       </div>
       <Toaster

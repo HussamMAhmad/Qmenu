@@ -78,7 +78,7 @@ export default function PublicMenu({
 
   return (
     <div
-      className=" text-slate-900 pb-32 relative transition-all"
+      className=" text-slate-900 pb-32 md:w-full max-sm:max-w-md relative transition-all"
       dir={lang === "ar" ? "rtl" : "ltr"}
     >
       <Header
