@@ -35,7 +35,7 @@ export default function PublicMenu({
     localStorage.setItem(`qmenu_cart_${restaurant.id}`, JSON.stringify(cart));
   }, [cart, restaurant.id]);
 
-  const addToCart = (item: CreateItem, qtyToAdd: number = 1) => {
+  const addToCart = (item: Item, qtyToAdd: number = 1) => {
     setCart((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {

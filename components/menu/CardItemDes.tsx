@@ -13,9 +13,9 @@ import { useState, useEffect } from "react";
 interface CarditemDes {
   open: boolean;
   setOpen: (open: boolean) => void;
-  item: CreateItem | null;
+  item: Item | null;
   lang: Lang;
-  addToCart: (item: CreateItem, qtyToAdd?: number) => void;
+  addToCart: (item: Item, qtyToAdd?: number) => void;
 }
 
 function CardItemDes({ open, setOpen, item, lang, addToCart }: CarditemDes) {

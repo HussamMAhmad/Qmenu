@@ -6,14 +6,14 @@ import { useState } from "react";
 
 interface GridItemsProps {
   lang: Lang;
-  currentItems: CreateItem[];
-  addToCart: (item: CreateItem, qtyToAdd?: number) => void;
+  currentItems: Item[];
+  addToCart: (item: Item, qtyToAdd?: number) => void;
 }
 
 function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
   const [open, setOpen] = useState(false);
   const [selectedItemDetail, setSelectedItemDetail] =
-    useState<CreateItem | null>(null);
+    useState<Item | null>(null);
 
   const DISH_IMAGES_POOL = [
     "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80",
@@ -22,7 +22,7 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
     "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
     "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop&q=80",
   ];
-  const getItemImage = (item: CreateItem, index: number) => {
+  const getItemImage = (item: Item, index: number) => {
     if (item.imageUrl && item.imageUrl.trim() !== "") {
       return item.imageUrl;
     }

@@ -36,7 +36,6 @@ interface Category {
 }
 
 type CreateItem = {
-  id: string;
   categoryId: string;
   nameAr: string;
   nameEn?: string | null;
@@ -62,10 +61,23 @@ type RestaurantInfo = {
   showUSD: boolean;
 };
 
+type Item = {
+  id: string;
+  categoryId: string;
+  nameAr: string;
+  nameEn?: string | null;
+  description?: string | null;
+  priceSyp: number;
+  priceUsd: number;
+  prepTime?: string | null;
+  isAvailable: boolean;
+  imageUrl?: string | null;
+};
+
 interface CategoryMenu {
   id: string;
   name: string;
-  items: CreateItem[];
+  items: Item[];
 }
 
 interface RestaurantMenu {
@@ -80,6 +92,6 @@ interface RestaurantMenu {
 
 type Lang = "ar" | "en";
 
-interface CartItem extends CreateItem {
+interface CartItem extends Item {
   qty: number;
 }
