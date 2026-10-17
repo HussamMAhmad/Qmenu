@@ -36,6 +36,8 @@ export default async function DashboardOverviewPage() {
   const restaurantName = restaurant?.name ?? "مطعم غير معروف";
   const exchangeRate = Number(restaurant?.exchangeRate) ?? "0";
   const dishesCount = await countItems(user.id);
+  const slug = restaurant?.slug;
+  const menuUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/menu/${slug}`;
   return (
     <main className="min-h-screen bg-[#f7f8fa] px-2 py-4 text-slate-800 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1440px] space-y-6">
@@ -60,7 +62,7 @@ export default async function DashboardOverviewPage() {
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
             <Link
-              href={`/m/${restaurantName}`}
+              href={menuUrl}
               target="_blank"
               rel="noreferrer"
             >

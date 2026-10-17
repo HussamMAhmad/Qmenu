@@ -18,7 +18,6 @@ import {
   Check,
   ExternalLink,
   Palette,
-  Image as ImageIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -34,7 +33,7 @@ function QrSetting({
 }) {
   const qrColor =
     setting?.qrColor ?? DEFAULT_QR_SETTING_COLOR[0]?.value ?? "#0f172a";
-  const qrSubtitle = setting?.qrSubtitle ?? "امسح الكود لتصفح القائمة";
+  const qrSubtitle = setting?.qrSubtitle;
   const qrLogo = setting?.qrLogo ?? "";
 
   const [copied, setCopied] = useState(false);
@@ -94,18 +93,6 @@ function QrSetting({
     }
   }, [menuUrl, color, logoImage]);
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoImage(reader.result as string);
-        toast.success("تم رفع الشعار بنجاح");
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleDownload = async () => {
     if (!qrCodeInstance.current) return;
 
@@ -137,7 +124,7 @@ function QrSetting({
           ctx.fillStyle = "#0f172a";
           ctx.font = "bold 16px sans-serif";
           ctx.fillText(
-            subtitle || "امسح الكود لتصفح القائمة",
+            subtitle ,
             canvas.width / 2,
             300,
           );
@@ -237,7 +224,7 @@ function QrSetting({
           <div ref={qrRef} className="flex items-center justify-center" />
           <div className="space-y-0.5 max-w-[200px]">
             <p className="text-xs font-bold text-slate-800 break-words">
-              {subtitle || "امسح الكود لتصفح القائمة"}
+              {subtitle}
             </p>
             <p className="text-[10px] text-slate-400">Scan to view menu</p>
           </div>

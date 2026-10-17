@@ -23,7 +23,9 @@ export const getSettingInfo = async (userId: string) =>
           exchangeRate: true,
           description: true,
           showUSD: true,
+          slug: true,
           whatsappNumber: true,
+          imageCoverUrl: true,
         },
       });
     },

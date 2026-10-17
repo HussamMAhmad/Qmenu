@@ -16,6 +16,9 @@ import { getCurrentUser } from "@/lib/auth-helper";
 export default async function SettingsPage() {
   const user = await getCurrentUser();
   const restaurant = await getSettingInfo(user.id);
+  const slug = restaurant?.slug;
+  const menuUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/menu/${slug}`;
+
   return (
     <main
       dir="rtl"
@@ -41,7 +44,7 @@ export default async function SettingsPage() {
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Link href="/m/al-sultan" target="_blank" rel="noreferrer">
+            <Link href={menuUrl} target="_blank" rel="noreferrer">
               <Button
                 variant="outline"
                 className="h-11 w-full gap-2 rounded-xl border-slate-200 bg-white font-bold hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 sm:w-auto"

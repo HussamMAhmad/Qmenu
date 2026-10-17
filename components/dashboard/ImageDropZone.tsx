@@ -8,9 +8,15 @@ type fileUploaderProps = {
   files: File[] | undefined;
   onChange: (files: File[]) => void;
   name: string;
+  aspectClass?: string;
 };
 
-function ImageDropZone({ files, onChange, name }: fileUploaderProps) {
+function ImageDropZone({
+  files,
+  onChange,
+  name,
+  aspectClass = "w-32 h-32 rounded-full",
+}: fileUploaderProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
       onChange(acceptedFiles);
@@ -33,14 +39,22 @@ function ImageDropZone({ files, onChange, name }: fileUploaderProps) {
           : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-300"
       }`}
     >
-      <input {...getInputProps()} id={name}/>
+      <input {...getInputProps()} id={name} />
       {files && files?.length > 0 ? (
         <div className="relative w-full flex flex-col items-center">
-          <div className="relative w-full h-48 rounded-xl overflow-hidden shadow-inner border border-slate-200 bg-white">
+          <div className={`${aspectClass} relative w-full h-48 rounded-xl overflow-hidden shadow-inner border border-slate-200 bg-white`}>
             <Image
-              src={convertFileToUrl(files[0])}
-              fill
+              src={
+                typeof files === "string"
+                  ? files
+                  : files && files.length > 0
+                    ? convertFileToUrl(files[0])
+                    : ""
+              }
               alt="uploaded preview"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 300px"
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </div>

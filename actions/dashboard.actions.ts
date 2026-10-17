@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-helper";
 import { revalidateTag, revalidatePath } from "next/cache";
+import cloudinary from "@/lib/cloudinary/cloudinary";
 
 export const updateExchangeRate = async (exchangeRate: number) => {
   try {
@@ -11,10 +12,9 @@ export const updateExchangeRate = async (exchangeRate: number) => {
       return { success: false, message: "غير مصرح لك بالقيام بهذا الإجراء" };
     }
 
-
     const restaurant = await prisma.restaurant.findUnique({
       where: { userId: user.id },
-      select: { id: true },
+      select: { id: true, slug: true },
     });
 
     if (!restaurant) {
@@ -29,15 +29,16 @@ export const updateExchangeRate = async (exchangeRate: number) => {
         exchangeRate,
       },
     });
-await prisma.$executeRaw`
+    await prisma.$executeRaw`
   UPDATE "item"
   SET "priceUsd" = "priceSyp" / ${exchangeRate}
   FROM "category"
   WHERE "item"."categoryId" = "category"."id"
     AND "category"."resturantId" = ${restaurant.id}
-`
+`;
     revalidateTag(`restaurant-data-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
+    revalidateTag(`menu-${restaurant.slug}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
 
     return {
@@ -65,6 +66,7 @@ export const createCategory = async (cat: string) => {
       },
       select: {
         id: true,
+        slug: true,
       },
     });
 
@@ -93,6 +95,7 @@ export const createCategory = async (cat: string) => {
       return { success: false, message: "حدث خطا اثناء انشاء قسم جديد" };
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
+    revalidateTag(`menu-${restaurant.slug}`, { expire: 0 });
 
     return { success: true, message: "تم انشاء قسم جديد بنجاح", data: result };
   } catch (e) {
@@ -115,6 +118,7 @@ export const updateCategory = async (cat: string, id: string) => {
       },
       select: {
         id: true,
+        slug: true,
       },
     });
 
@@ -159,6 +163,7 @@ export const updateCategory = async (cat: string, id: string) => {
     });
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
+    revalidateTag(`menu-${restaurant.slug}`, { expire: 0 });
 
     return { success: true, message: "تم التعديل بنجاح", data: result };
   } catch (e) {
@@ -181,6 +186,7 @@ export const deleteCategory = async (id: string) => {
       },
       select: {
         id: true,
+        slug: true,
       },
     });
 
@@ -202,6 +208,8 @@ export const deleteCategory = async (id: string) => {
       };
     }
 
+    revalidateTag(`menu-${restaurant.slug}`, { expire: 0 });
+
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
     return { success: true, message: "تم الحذف بنجاح", data: result };
@@ -211,7 +219,7 @@ export const deleteCategory = async (id: string) => {
   }
 };
 
-export const createItem = async (data: CreateItem) => {
+export const createItem = async (data: CreateItem, formData: FormData) => {
   try {
     const user = await getCurrentUser();
 
@@ -244,6 +252,7 @@ export const createItem = async (data: CreateItem) => {
         categoryId: data.categoryId,
         nameAr: { equals: cleanNameAr, mode: "insensitive" },
       },
+      select: { imageUrl: true, imagePublicUrl: true },
     });
 
     if (existingItem) {
@@ -251,6 +260,60 @@ export const createItem = async (data: CreateItem) => {
         success: false,
         message: "هذه الوجبة موجودة بالفعل في هذا القسم",
       };
+    }
+
+    const removeLogo = formData.get("removeLogo") || "";
+    const file = formData.get("file") as File;
+
+    let imgUrl = null;
+    let imgPublicId = null;
+
+    if (
+      removeLogo === "true" ||
+      (file &&
+        typeof file === "object" &&
+        "size" in file &&
+        (file as File).size > 0)
+    ) {
+      imgUrl = null;
+      imgPublicId = null;
+    }
+
+    if (
+      file &&
+      typeof file === "object" &&
+      "size" in file &&
+      (file as File).size > 0
+    ) {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = new Uint8Array(arrayBuffer);
+      const uploadResult: any = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: "qmenu/items",
+              resource_type: "image",
+              transformation: [
+                { width: 800, height: 800, crop: "limit" },
+                {
+                  quality: "auto:good",
+                  fetch_format: "auto",
+                },
+              ],
+            },
+            function (error, result) {
+              if (error) {
+                reject(error);
+                return;
+              } else {
+                resolve(result);
+              }
+            },
+          )
+          .end(buffer);
+      });
+      imgUrl = uploadResult.secure_url;
+      imgPublicId = uploadResult.public_id;
     }
 
     const result = await prisma.item.create({
@@ -263,6 +326,8 @@ export const createItem = async (data: CreateItem) => {
         prepTime: data.prepTime,
         isAvailable: data.isAvailable,
         categoryId: data.categoryId,
+        imageUrl: imgUrl,
+        imagePublicUrl: imgPublicId,
       },
     });
 
@@ -277,7 +342,11 @@ export const createItem = async (data: CreateItem) => {
   }
 };
 
-export const updateItem = async (data: CreateItem, id: string) => {
+export const updateItem = async (
+  data: CreateItem,
+  id: string,
+  formData: FormData,
+) => {
   try {
     const user = await getCurrentUser();
 
@@ -302,6 +371,71 @@ export const updateItem = async (data: CreateItem, id: string) => {
       };
     }
 
+    const existingItem = await prisma.item.findFirst({
+      where: {
+        categoryId: data.categoryId,
+        nameAr: { equals: data.nameAr, mode: "insensitive" },
+      },
+      select: { imageUrl: true, imagePublicUrl: true },
+    });
+
+    const removeLogo = formData.get("removeLogo");
+    const file = formData.get("file") as File;
+
+    let imgUrl = existingItem?.imageUrl || null;
+    let imgPublicId = existingItem?.imagePublicUrl || null;
+
+    if (
+      removeLogo === "true" ||
+      (file &&
+        typeof file === "object" &&
+        "size" in file &&
+        (file as File).size > 0)
+    ) {
+      if (existingItem?.imagePublicUrl) {
+        await cloudinary.uploader.destroy(existingItem.imagePublicUrl);
+      }
+      imgUrl = null;
+      imgPublicId = null;
+    }
+
+    if (
+      file &&
+      typeof file === "object" &&
+      "size" in file &&
+      (file as File).size > 0
+    ) {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = new Uint8Array(arrayBuffer);
+      const uploadResult: any = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: "qmenu/logo",
+              resource_type: "auto",
+              transformation: [
+                { width: 300, height: 300, crop: "limit" },
+                {
+                  quality: "auto",
+                  fetch_format: "auto",
+                },
+              ],
+            },
+            function (error, result) {
+              if (error) {
+                reject(error);
+                return;
+              } else {
+                resolve(result);
+              }
+            },
+          )
+          .end(buffer);
+      });
+      imgUrl = uploadResult.secure_url;
+      imgPublicId = uploadResult.public_id;
+    }
+
     const cleanNameAr = data.nameAr.trim();
     const cleanNameEn = data.nameEn?.trim() || "";
 
@@ -318,6 +452,8 @@ export const updateItem = async (data: CreateItem, id: string) => {
         prepTime: data.prepTime,
         isAvailable: data.isAvailable,
         categoryId: data.categoryId,
+        imageUrl: imgUrl,
+        imagePublicUrl: imgPublicId,
       },
     });
 
@@ -425,7 +561,7 @@ export const changeIsAvailable = async (
   }
 };
 
-export const updateSetting = async (data: QrSetting) => {
+export const updateSetting = async (data: QrSetting, formData: FormData) => {
   try {
     const user = await getCurrentUser();
 
@@ -445,6 +581,68 @@ export const updateSetting = async (data: QrSetting) => {
         success: false,
         message: "المطعم غير موجود أو لا تملك صلاحية الإضافة عليه",
       };
+    }
+
+    const existingSetting = await prisma.qrSetting.findUnique({
+      where: { restaurantId: restaurant.id },
+      select: { qrLogo: true, qrLogoPublicId: true },
+    });
+
+    const removeLogo = formData.get("removeLogo");
+    const file = formData.get("file") as File;
+
+    let logoUrl = existingSetting?.qrLogo || null;
+    let logoPublicId = existingSetting?.qrLogoPublicId || null;
+
+    if (
+      removeLogo === "true" ||
+      (file &&
+        typeof file === "object" &&
+        "size" in file &&
+        (file as File).size > 0)
+    ) {
+      if (existingSetting?.qrLogoPublicId) {
+        await cloudinary.uploader.destroy(existingSetting.qrLogoPublicId);
+      }
+      logoUrl = null;
+      logoPublicId = null;
+    }
+
+    if (
+      file &&
+      typeof file === "object" &&
+      "size" in file &&
+      (file as File).size > 0
+    ) {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = new Uint8Array(arrayBuffer);
+      const uploadResult: any = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: "qmenu/logo",
+              resource_type: "auto",
+              transformation: [
+                { width: 300, height: 300, crop: "limit" },
+                {
+                  quality: "auto",
+                  fetch_format: "auto",
+                },
+              ],
+            },
+            function (error, result) {
+              if (error) {
+                reject(error);
+                return;
+              } else {
+                resolve(result);
+              }
+            },
+          )
+          .end(buffer);
+      });
+      logoUrl = uploadResult.secure_url;
+      logoPublicId = uploadResult.public_id;
     }
 
     const result = await prisma.qrSetting.upsert({
@@ -454,16 +652,19 @@ export const updateSetting = async (data: QrSetting) => {
       update: {
         qrColor: data.qrColor,
         qrSubtitle: data.qrSubtitle,
-        qrLogo: data.qrLogo,
+        qrLogo: logoUrl,
+        qrLogoPublicId: logoPublicId,
       },
       create: {
         restaurantId: restaurant.id,
         qrColor: data.qrColor,
         qrSubtitle: data.qrSubtitle,
-        qrLogo: data.qrLogo,
+        qrLogo: logoUrl,
+        qrLogoPublicId: logoPublicId,
       },
     });
 
+    revalidatePath("/dashboard/qrcode", "layout");
     revalidateTag(`qrSetting-${user.id}`, { expire: 0 });
 
     return { success: true, message: "تم حفظ الاعدادات بنجاح", data: result };
@@ -473,7 +674,10 @@ export const updateSetting = async (data: QrSetting) => {
   }
 };
 
-export const updateResSetting = async (data: RestaurantInfo) => {
+export const updateResSetting = async (
+  data: RestaurantInfo,
+  formData: FormData,
+) => {
   try {
     const user = await getCurrentUser();
 
@@ -485,7 +689,7 @@ export const updateResSetting = async (data: RestaurantInfo) => {
       where: {
         userId: user.id,
       },
-      select: { id: true },
+      select: { id: true, imageCoverUrl: true, imageCoverPublicUrl: true },
     });
 
     if (!restaurant) {
@@ -493,6 +697,63 @@ export const updateResSetting = async (data: RestaurantInfo) => {
         success: false,
         message: "المطعم غير موجود أو لا تملك صلاحية الإضافة عليه",
       };
+    }
+
+    const removeLogo = formData.get("removeLogo");
+    const file = formData.get("file") as File;
+
+    let imgUrl = restaurant?.imageCoverUrl || null;
+    let imgPublicId = restaurant?.imageCoverPublicUrl || null;
+
+    if (
+      removeLogo === "true" ||
+      (file &&
+        typeof file === "object" &&
+        "size" in file &&
+        (file as File).size > 0)
+    ) {
+      if (restaurant?.imageCoverPublicUrl) {
+        await cloudinary.uploader.destroy(restaurant.imageCoverPublicUrl);
+      }
+      imgUrl = null;
+      imgPublicId = null;
+    }
+
+    if (
+      file &&
+      typeof file === "object" &&
+      "size" in file &&
+      (file as File).size > 0
+    ) {
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = new Uint8Array(arrayBuffer);
+      const uploadResult: any = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: "qmenu/cover",
+              resource_type: "auto",
+              transformation: [
+                { width: 800, height: 800, crop: "limit" },
+                {
+                  quality: "auto:good",
+                  fetch_format: "auto",
+                },
+              ],
+            },
+            function (error, result) {
+              if (error) {
+                reject(error);
+                return;
+              } else {
+                resolve(result);
+              }
+            },
+          )
+          .end(buffer);
+      });
+      imgUrl = uploadResult.secure_url;
+      imgPublicId = uploadResult.public_id;
     }
 
     const updatedSetting = await prisma.restaurant.update({
@@ -505,6 +766,8 @@ export const updateResSetting = async (data: RestaurantInfo) => {
         exchangeRate: data.exchangeRate,
         whatsappNumber: data.whatsappNumber,
         showUSD: data.showUSD ?? true,
+        imageCoverUrl: imgUrl,
+        imageCoverPublicUrl: imgPublicId,
       },
     });
 

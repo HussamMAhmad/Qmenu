@@ -97,12 +97,13 @@ export const CreateItemsSchema = z.object({
     .min(0, { message: "السعر يجب أن يكون 0 أو أكثر" }),
   prepTime: z.string().optional().or(z.literal("")),
   isAvailable: z.boolean(),
+  imageUrl: z.union([z.string(), z.any()]).nullable().optional(),
 });
 
 export const QrSetting = z.object({
   qrColor: z.string(),
   qrSubtitle: z.string(),
-  qrLogo: z.string().nullable().optional(),
+  qrLogo: z.union([z.string(), z.any()]).nullable().optional(),
 });
 
 export const SettingInfoSchema = z.object({
@@ -121,4 +122,5 @@ export const SettingInfoSchema = z.object({
     .e164("يرجى إدخال رقم واتساب صحيح مصحوباً بالرمز الدولي")
     .optional(),
   showUSD: z.boolean(),
+  imageCoverUrl: z.union([z.string(), z.any()]).nullable().optional(),
 });

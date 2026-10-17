@@ -1,4 +1,3 @@
-// components/onboarding/restaurant-onboarding-form.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -69,13 +68,14 @@ export default function SettingQrForm({
   const onSubmit = async (values: z.infer<typeof QrSetting>) => {
     setLoading(true);
     let formData = new FormData();
-
     if (values.qrLogo && values.qrLogo.length > 0) {
       const imageFile = values.qrLogo[0];
       formData.append("file", imageFile);
+    } else {
+      formData.append("removeLogo", "true");
     }
     try {
-      const res = await updateSetting(values);
+      const res = await updateSetting(values, formData);
       if (res.success) {
         toast.success(res.message);
       } else {
@@ -141,6 +141,7 @@ export default function SettingQrForm({
                 files={field.value}
                 onChange={field.onChange}
                 name={field.name}
+                aspectClass="w-full h-56 rounded-2xl"
               />
             </div>
           )}

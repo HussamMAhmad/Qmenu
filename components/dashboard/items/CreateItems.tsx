@@ -25,6 +25,7 @@ import { SelectItem } from "@/components/ui/select";
 import { PiBowlFood } from "react-icons/pi";
 import { createItem } from "@/actions/dashboard.actions";
 import { defaultFormItemValues } from "@/constants/index";
+import ImageDropZone from "../ImageDropZone";
 
 function CreateItems({
   categories,
@@ -55,8 +56,15 @@ function CreateItems({
 
   async function onSubmit(data: z.infer<typeof CreateItemsSchema>) {
     setLoading(true);
+    let formData = new FormData();
+    if (data.imageUrl && data.imageUrl.length > 0) {
+      const imageFile = data.imageUrl[0];
+      formData.append("file", imageFile);
+    } else {
+      formData.append("removeLogo", "true");
+    }
     try {
-      const result = await createItem(data);
+      const result = await createItem(data, formData);
       if (result?.success) {
         form.reset();
         setOpen(false);
@@ -186,6 +194,22 @@ function CreateItems({
               label="متاح للطلب والعرض في القائمة"
             />
           </div>
+          <CustomField
+            control={form.control}
+            name="imageUrl"
+            fieldtype={FormFieldType.SKELETON}
+            label="صورة الوجبة (اختياري)"
+            renderSkeleton={(field) => (
+              <div>
+                <ImageDropZone
+                  files={field.value}
+                  onChange={field.onChange}
+                  name={field.name}
+                  aspectClass="w-full h-40 rounded-xl"
+                />
+              </div>
+            )}
+          />
           <AlertDialogFooter className="flex flex-col-reverse sm:flex-row-reverse sm:justify-start gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
             <CustomButton
               type="submit"

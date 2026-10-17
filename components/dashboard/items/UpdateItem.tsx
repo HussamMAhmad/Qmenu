@@ -24,6 +24,7 @@ import { TbCategoryPlus } from "react-icons/tb";
 import { SelectItem } from "@/components/ui/select";
 import { PiBowlFood } from "react-icons/pi";
 import { updateItem } from "@/actions/dashboard.actions";
+import ImageDropZone from "../ImageDropZone";
 
 function UpdateItem({
   item,
@@ -47,6 +48,7 @@ function UpdateItem({
       prepTime: item.prepTime ?? undefined,
       isAvailable: item.isAvailable,
       categoryId: item.categoryId,
+      imageUrl: item.imageUrl,
     },
   });
   useEffect(() => {
@@ -60,6 +62,7 @@ function UpdateItem({
         prepTime: item.prepTime ?? undefined,
         isAvailable: item.isAvailable,
         categoryId: item.categoryId,
+        imageUrl: item.imageUrl,
       });
     }
   }, [item, open, form]);
@@ -79,8 +82,15 @@ function UpdateItem({
 
   async function onSubmit(data: z.infer<typeof CreateItemsSchema>) {
     setLoading(true);
+    let formData = new FormData();
+    if (data.imageUrl && data.imageUrl.length > 0) {
+      const imageFile = data.imageUrl[0];
+      formData.append("file", imageFile);
+    } else {
+      formData.append("removeLogo", "true");
+    }
     try {
-      const result = await updateItem(data, item.id || "");
+      const result = await updateItem(data, item.id || "" , formData);
       if (result?.success) {
         form.reset();
         setOpen(false);
@@ -121,10 +131,10 @@ function UpdateItem({
       <AlertDialogContent className="w-[95vw] sm:max-w-2xl max-h-[90vh] rounded-2xl border-slate-100 bg-white p-4 sm:p-6 shadow-xl flex flex-col my-auto overflow-hidden">
         <AlertDialogHeader className="text-right space-y-1 pb-3 border-b border-slate-100 shrink-0">
           <AlertDialogTitle className="text-lg sm:text-xl font-bold text-slate-900">
-           تعديل الوجبة
+            تعديل الوجبة
           </AlertDialogTitle>
           <AlertDialogDescription className="text-xs sm:text-sm text-slate-500">
-           قم بتعديل تفاصيل الوجبة والحفظ لتحديث القائمة.
+            قم بتعديل تفاصيل الوجبة والحفظ لتحديث القائمة.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <form
@@ -210,6 +220,22 @@ function UpdateItem({
               label="متاح للطلب والعرض في القائمة"
             />
           </div>
+          <CustomField
+            control={form.control}
+            name="imageUrl"
+            fieldtype={FormFieldType.SKELETON}
+            label="صورة الوجبة (اختياري)"
+            renderSkeleton={(field) => (
+              <div>
+                <ImageDropZone
+                  files={field.value}
+                  onChange={field.onChange}
+                  name={field.name}
+                  aspectClass="w-full h-40 rounded-xl"
+                />
+              </div>
+            )}
+          />
           <AlertDialogFooter className="flex flex-col-reverse sm:flex-row-reverse sm:justify-start gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
             <CustomButton
               type="submit"

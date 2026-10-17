@@ -29,34 +29,37 @@ model User {
 }
 
 model Restaurant {
-  id              String     @id @default(cuid())
-  slug            String     @unique
-  name            String
-  description     String?
-  exchangeRate    Float      @default(12000)
-  whatsappNumber  String?
-  subscriptionEnd DateTime?
-  showUSD         Boolean    @default(true)
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  categories      Category[]
-  userId          String     @unique
-  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  qrSetting       QrSetting?
+  id                  String     @id @default(cuid())
+  slug                String     @unique
+  name                String
+  description         String?
+  exchangeRate        Float      @default(12000)
+  whatsappNumber      String?
+  subscriptionEnd     DateTime?
+  showUSD             Boolean    @default(true)
+  imageCoverUrl       String?
+  imageCoverPublicUrl String?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  categories          Category[]
+  userId              String     @unique
+  user                User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  qrSetting           QrSetting?
 
   @@index([userId])
   @@map("restaurant")
 }
 
 model QrSetting {
-  id           String     @id @default(cuid())
-  qrColor      String     @default("#0f172a")
-  qrLogo       String?
-  qrSubtitle   String     @default("امسح الكود لتصفح القائمة")
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  restaurantId String     @unique
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  id             String     @id @default(cuid())
+  qrColor        String     @default("#0f172a")
+  qrLogo         String?
+  qrLogoPublicId String?
+  qrSubtitle     String     @default("امسح الكود لتصفح القائمة")
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  restaurantId   String     @unique
+  restaurant     Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -73,19 +76,20 @@ model Category {
 }
 
 model Item {
-  id          String   @id @default(cuid())
-  nameAr      String
-  nameEn      String?
-  description String?
-  priceSyp    Float
-  priceUsd    Float
-  prepTime    String?
-  imageUrl    String?
-  isAvailable Boolean  @default(true)
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default(cuid())
+  nameAr         String
+  nameEn         String?
+  description    String?
+  priceSyp       Float
+  priceUsd       Float
+  prepTime       String?
+  imageUrl       String?
+  imagePublicUrl String?
+  isAvailable    Boolean  @default(true)
+  categoryId     String
+  category       Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([categoryId])
   @@index([isAvailable])

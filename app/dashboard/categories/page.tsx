@@ -1,9 +1,4 @@
-import {
-  Check,
-  SlidersHorizontal,
-  Utensils,
-  DollarSign,
-} from "lucide-react";
+import { Check, SlidersHorizontal, Utensils, DollarSign } from "lucide-react";
 import { OverviewCard } from "@/components/dashboard/OverviewCard";
 import Header from "@/components/dashboard/categories/Header";
 import CategorySidebar from "@/components/dashboard/categories/Category-sidebar";
@@ -37,18 +32,20 @@ export default async function CategoriesPage({ searchParams }: PageProps) {
   const restaurant = await getRestaurant(user.id);
   const categories = await getCategories(user.id);
   const allItems = await getItems(user.id);
-  const items = await getItems(user.id , sortOption , categoryId , isAvailable);
+  const items = await getItems(user.id, sortOption, categoryId, isAvailable);
   const exchangeRate = Number(restaurant?.exchangeRate) || 0;
   const itemsAvailable = allItems.filter((item) => item.isAvailable).length;
   const totalItems = allItems.length;
   const percentOfItems = totalItems
     ? Math.round((itemsAvailable / totalItems) * 100)
     : 0;
+  const slug = restaurant?.slug;
+  const menuUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/menu/${slug}`;
   return (
     <main className="min-h-screen bg-slate-50/60 px-2 py-4 text-slate-800 sm:px-6 lg:px-8">
       <div className="w-full space-y-8">
         {/* Header Section */}
-        <Header categories={categories} exchangeRate={exchangeRate} />
+        <Header categories={categories} exchangeRate={exchangeRate} menuUrl={menuUrl}/>
         {/* Overview KPI Cards */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <OverviewCard
@@ -89,7 +86,11 @@ export default async function CategoriesPage({ searchParams }: PageProps) {
             <CategorySidebar categories={categories} />
           </aside>
           {/* Dishes List Section */}
-          <SortItems items={items} exchangeRate={exchangeRate} categories={categories}/>
+          <SortItems
+            items={items}
+            exchangeRate={exchangeRate}
+            categories={categories}
+          />
         </section>
       </div>
     </main>

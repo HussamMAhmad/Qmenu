@@ -60,6 +60,7 @@ type RestaurantInfo = {
   exchangeRate: number;
   whatsappNumber?: string | null;
   showUSD: boolean;
+  imageCoverUrl?: string | null;
 };
 
 type Item = {

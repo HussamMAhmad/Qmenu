@@ -1,10 +1,17 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Eye, Plus, Utensils } from "lucide-react";
 import CreateItems from "../items/CreateItems";
 
-function Header({ categories , exchangeRate}: { categories: Category[] , exchangeRate : number}) {
+function Header({
+  categories,
+  exchangeRate,
+  menuUrl,
+}: {
+  categories: Category[];
+  exchangeRate: number;
+  menuUrl: string;
+}) {
   return (
     <header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
       <div>
@@ -25,7 +32,7 @@ function Header({ categories , exchangeRate}: { categories: Category[] , exchang
         </p>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row">
-        <Link href="/m/al-sultan" target="_blank" rel="noreferrer">
+        <Link href={menuUrl} target="_blank" rel="noreferrer">
           <Button
             variant="outline"
             className="h-11 w-full gap-2 rounded-xl border-slate-200 bg-white font-bold hover:border-brand-200 hover:bg-brand-50 hover:text-brand-700 sm:w-auto"
@@ -34,7 +41,7 @@ function Header({ categories , exchangeRate}: { categories: Category[] , exchang
             معاينة المنيو
           </Button>
         </Link>
-        <CreateItems categories={categories} exchangeRate={exchangeRate}/>
+        <CreateItems categories={categories} exchangeRate={exchangeRate} />
       </div>
     </header>
   );

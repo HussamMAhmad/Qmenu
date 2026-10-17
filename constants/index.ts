@@ -13,4 +13,5 @@ export const defaultFormItemValues = {
   priceUsd: "" as unknown as number,
   prepTime: "",
   isAvailable: true,
+  imageUrl: "",
 };

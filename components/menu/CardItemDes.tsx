@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
 
 interface CarditemDes {
@@ -58,6 +58,12 @@ function CardItemDes({ open, setOpen, item, lang, addToCart }: CarditemDes) {
                   e.currentTarget.src = DISH_IMAGES_POOL[0];
                 }}
               />
+              {item.prepTime && item.isAvailable && (
+                <div className="absolute bottom-2.5 start-2.5 flex max-w-[calc(100%-1.25rem)] items-center gap-1.5 rounded-xl bg-slate-900/85 px-2.5 py-1.5 text-xs font-bold text-white shadow-sm backdrop-blur-md">
+                  <Clock className="h-3.5 w-3.5 shrink-0 text-brand-400" />
+                  <span className="truncate">{item.prepTime}</span>
+                </div>
+              )}
             </div>
             {item.description && (
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed break-words">

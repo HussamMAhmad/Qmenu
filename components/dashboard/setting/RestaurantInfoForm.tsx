@@ -19,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SettingInfoSchema } from "@/lib/validation";
 import { FormFieldType } from "@/lib/types";
 import { updateResSetting } from "@/actions/dashboard.actions";
+import ImageDropZone from "../ImageDropZone";
 
 function RestaurantInfoForm({
   initialData,
@@ -34,6 +35,7 @@ function RestaurantInfoForm({
       exchangeRate: initialData?.exchangeRate ?? 1,
       whatsappNumber: initialData?.whatsappNumber ?? "",
       showUSD: initialData?.showUSD ?? true,
+      imageCoverUrl: initialData?.imageCoverUrl,
     },
   });
 
@@ -41,8 +43,15 @@ function RestaurantInfoForm({
 
   async function onSubmit(data: z.infer<typeof SettingInfoSchema>) {
     setLoading(true);
+    let formData = new FormData();
+    if (data.imageCoverUrl && data.imageCoverUrl.length > 0) {
+      const imageFile = data.imageCoverUrl[0];
+      formData.append("file", imageFile);
+    } else {
+      formData.append("removeLogo", "true");
+    }
     try {
-      const result = await updateResSetting(data);
+      const result = await updateResSetting(data, formData);
       if (result?.success) {
         toast.success(result.message);
       } else {
@@ -139,6 +148,22 @@ function RestaurantInfoForm({
             </div>
           )}
         </div>
+        <CustomField
+          control={form.control}
+          name="imageCoverUrl"
+          fieldtype={FormFieldType.SKELETON}
+          label="صورة الخلفية (اختياري)"
+          renderSkeleton={(field) => (
+            <div>
+              <ImageDropZone
+                files={field.value}
+                onChange={field.onChange}
+                name={field.name}
+                aspectClass="w-full h-40 rounded-xl"
+              />
+            </div>
+          )}
+        />
       </div>
       <div className="pt-4 flex items-center justify-end border-t border-slate-100">
         <CustomButton

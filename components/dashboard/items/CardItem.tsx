@@ -8,6 +8,7 @@ import { useOptimistic, useTransition, useState } from "react";
 import { toast } from "sonner";
 import UpdateItem from "./UpdateItem";
 import DeleteItem from "./DeleteIteme";
+import Image from "next/image";
 
 function CardItem({
   item,
@@ -55,9 +56,21 @@ function CardItem({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           {/* Dish Info */}
           <div className="flex items-start gap-4 min-w-0 flex-1">
-            <div className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-slate-50 border border-slate-100 text-brand-600 transition-colors group-hover:bg-brand-50/50">
-              <Utensils className="h-8 w-8" strokeWidth={1.5} />
-            </div>
+            {item.imageUrl ? (
+              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-slate-100">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.nameAr}
+                  fill
+                  sizes="80px"
+                  className="object-cover transition-transform duration-300 hover:scale-105"
+                />
+              </div>
+            ) : (
+              <div className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-slate-50 border border-slate-100 text-brand-600 transition-colors group-hover:bg-brand-50/50">
+                <Utensils className="h-8 w-8" strokeWidth={1.5} />
+              </div>
+            )}
             <div className="min-w-0 space-y-1.5 flex-1">
               <div className="flex items-start justify-between gap-2 flex-wrap">
                 <div className="space-y-0.5 min-w-0">
@@ -87,7 +100,7 @@ function CardItem({
                     {category.name}
                   </p>
                 )}
-                
+
                 {item.prepTime && (
                   <div className="flex items-center gap-1 text-[11px] text-slate-400 font-medium">
                     <Clock className="h-3 w-3 text-slate-400" />
