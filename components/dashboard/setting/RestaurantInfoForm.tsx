@@ -20,6 +20,7 @@ import { SettingInfoSchema } from "@/lib/validation";
 import { FormFieldType } from "@/lib/types";
 import { updateResSetting } from "@/actions/dashboard.actions";
 import ImageDropZone from "../ImageDropZone";
+import { MAX_SIZE } from "@/constants";
 
 function RestaurantInfoForm({
   initialData,
@@ -36,6 +37,7 @@ function RestaurantInfoForm({
       whatsappNumber: initialData?.whatsappNumber ?? "",
       showUSD: initialData?.showUSD ?? true,
       imageCoverUrl: initialData?.imageCoverUrl,
+      logo: initialData?.logo,
     },
   });
 
@@ -46,7 +48,23 @@ function RestaurantInfoForm({
     let formData = new FormData();
     if (data.imageCoverUrl && data.imageCoverUrl.length > 0) {
       const imageFile = data.imageCoverUrl[0];
-      formData.append("file", imageFile);
+      if (imageFile.size >= MAX_SIZE) {
+        toast.error("حجم الصورة كبير جدا, الحد الاقصى المسموح به هو 4 ميغا");
+        setLoading(false);
+        return;
+      }
+      formData.append("img", imageFile);
+    } else {
+      formData.append("removeImg", "true");
+    }
+    if (data.logo && data.logo.length > 0) {
+      const logo = data.logo[0];
+      if (logo.size >= MAX_SIZE) {
+        toast.error("حجم الصورة كبير جدا, الحد الاقصى المسموح به هو 4 ميغا");
+        setLoading(false);
+        return;
+      }
+      formData.append("logo", logo);
     } else {
       formData.append("removeLogo", "true");
     }
@@ -115,6 +133,7 @@ function RestaurantInfoForm({
           </div>
         </div>
       </div>
+
       <div className="space-y-4 pt-2">
         <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
           <DollarSign className="h-4 w-4 text-brand-600" />
@@ -148,23 +167,44 @@ function RestaurantInfoForm({
             </div>
           )}
         </div>
-        <CustomField
-          control={form.control}
-          name="imageCoverUrl"
-          fieldtype={FormFieldType.SKELETON}
-          label="صورة الخلفية (اختياري)"
-          renderSkeleton={(field) => (
-            <div>
-              <ImageDropZone
-                files={field.value}
-                onChange={field.onChange}
-                name={field.name}
-                aspectClass="w-full h-40 rounded-xl"
-              />
-            </div>
-          )}
-        />
+
+        {/* شبكة متجاوبة لعرض صور الخلفية والأيقونة بجانب بعضهما على الشاشات المتوسطة والأكبر */}
+        <div className="grid gap-4 sm:grid-cols-2 pt-2">
+          <CustomField
+            control={form.control}
+            name="imageCoverUrl"
+            fieldtype={FormFieldType.SKELETON}
+            label="صورة الخلفية (الغلاف)"
+            renderSkeleton={(field) => (
+              <div>
+                <ImageDropZone
+                  files={field.value}
+                  onChange={field.onChange}
+                  name={field.name}
+                  aspectClass="w-full h-36 sm:h-40 rounded-xl"
+                />
+              </div>
+            )}
+          />
+          <CustomField
+            control={form.control}
+            name="logo"
+            fieldtype={FormFieldType.SKELETON}
+            label="صورة الأيقونة (الشعار)"
+            renderSkeleton={(field) => (
+              <div>
+                <ImageDropZone
+                  files={field.value}
+                  onChange={field.onChange}
+                  name={field.name}
+                  aspectClass="w-full h-36 sm:h-40 rounded-xl"
+                />
+              </div>
+            )}
+          />
+        </div>
       </div>
+
       <div className="pt-4 flex items-center justify-end border-t border-slate-100">
         <CustomButton
           type="submit"

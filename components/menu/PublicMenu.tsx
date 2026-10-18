@@ -13,10 +13,14 @@ export default function PublicMenu({
   restaurant: RestaurantMenu;
 }) {
   const [lang, setLang] = useState<Lang>("ar");
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [activeCategory, setActiveCategory] = useState<string>(
+    restaurant.categories[0].id,
+  );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = useState(false);
+
+  const ShowUsd = restaurant.showUSD;
 
   useEffect(() => {
     setIsMounted(true);
@@ -58,9 +62,9 @@ export default function PublicMenu({
   const getFilteredItems = () => {
     let items = allItems;
 
-    if (activeCategory !== "all") {
-      items = allItems.filter((i) => i.categoryId === activeCategory);
-    }
+    // if (activeCategory !== "all") {
+    items = allItems.filter((i) => i.categoryId === activeCategory);
+    // }
 
     if (searchQuery.trim() !== "") {
       items = items.filter(
@@ -102,6 +106,7 @@ export default function PublicMenu({
         lang={lang}
         currentItems={currentItems}
         addToCart={addToCart}
+        ShowUsd={ShowUsd}
       />
 
       <FloatingCart

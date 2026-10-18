@@ -42,7 +42,7 @@ function ImageDropZone({
       <input {...getInputProps()} id={name} />
       {files && files?.length > 0 ? (
         <div className="relative w-full flex flex-col items-center">
-          <div className={`${aspectClass} relative w-full h-48 rounded-xl overflow-hidden shadow-inner border border-slate-200 bg-white`}>
+          <div className={`${aspectClass} relative w-full rounded-xl overflow-hidden shadow-inner border border-slate-200 bg-white`}>
             <Image
               src={
                 typeof files === "string"
@@ -55,7 +55,7 @@ function ImageDropZone({
               fill
               priority
               sizes="(max-width: 768px) 100vw, 300px"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-contain transition-transform duration-300 group-hover:scale-105"
             />
           </div>
           <button

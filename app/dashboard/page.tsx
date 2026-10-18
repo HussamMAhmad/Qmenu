@@ -1,13 +1,12 @@
 import Link from "next/link";
 import {
-  ArrowUpRight,
   CheckCircle2,
   Clock3,
   DollarSign,
   ExternalLink,
   Eye,
   Menu,
-  QrCode,
+  FolderKanban,
   Utensils,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,7 @@ import QrCardOverview from "@/components/dashboard/QrCardOverview";
 import SubscriptionIsFree from "@/components/dashboard/SubscriptionIsFree";
 import RecentDishes from "@/components/dashboard/RecentDishes";
 import ExchangeRateForm from "@/components/dashboard/ExchangeRateForm";
-import { getRestaurant } from "@/lib/queries/dashboard";
+import { getRestaurant, getSetting } from "@/lib/queries/dashboard";
 import { getCurrentUser } from "@/lib/auth-helper";
 import { countItems } from "@/lib/queries/dashboard";
 
@@ -35,7 +34,9 @@ export default async function DashboardOverviewPage() {
   const restaurant = await getRestaurant(user.id);
   const restaurantName = restaurant?.name ?? "مطعم غير معروف";
   const exchangeRate = Number(restaurant?.exchangeRate) ?? "0";
+  const setting = await getSetting(user.id);
   const dishesCount = await countItems(user.id);
+  const categoriesCount = restaurant?.categories.length;
   const slug = restaurant?.slug;
   const menuUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/menu/${slug}`;
   return (
@@ -61,11 +62,7 @@ export default async function DashboardOverviewPage() {
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Link
-              href={menuUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <Link href={menuUrl} target="_blank" rel="noreferrer">
               <Button className="h-[50px] w-full gap-2 rounded-2xl bg-brand-500 px-5 font-bold text-white shadow-sm hover:bg-brand-600 sm:w-auto">
                 <Eye className="h-4 w-4" />
                 معاينة المنيو
@@ -75,7 +72,6 @@ export default async function DashboardOverviewPage() {
           </div>
         </header>
 
-        {/* Primary dashboard block */}
         <Card className="overflow-hidden rounded-[28px] border-0 bg-slate-950 text-white shadow-xl shadow-slate-200/60">
           <CardContent className="relative p-0">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.10),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.05),transparent_28%)]" />
@@ -95,7 +91,6 @@ export default async function DashboardOverviewPage() {
           </CardContent>
         </Card>
 
-        {/* Secondary metrics */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <OverviewCard
             title="الوجبات المعروضة"
@@ -113,15 +108,17 @@ export default async function DashboardOverviewPage() {
             icon={Utensils}
           />
           <OverviewCard
-            title="زيارات المنيو هذا الشهر"
-            value="1,420"
+            title="الأقسام النشطة"
+            value={categoriesCount}
             subtext={
-              <p className="flex items-center gap-1.5 font-bold text-emerald-700">
-                <ArrowUpRight className="h-3.5 w-3.5" />
-                +18% مسحات QR جديدة
+              <p className="text-slate-500">
+                متاحة في{" "}
+                <span className="font-extrabold text-brand-700">
+                  القائمة الرئيسية
+                </span>
               </p>
             }
-            icon={QrCode}
+            icon={FolderKanban}
           />
           <OverviewCard
             title="حالة المنيو"
@@ -143,7 +140,7 @@ export default async function DashboardOverviewPage() {
 
         {/* Bottom workspace */}
         <section className="grid items-start gap-5 lg:grid-cols-[0.8fr_1.45fr]">
-          <QrCardOverview />
+          <QrCardOverview menuUrl={menuUrl} setting={setting.data} />
           <div className="space-y-5">
             {subscription.isFree && (
               <SubscriptionIsFree daysLeft={subscription.daysLeft} />

@@ -63,6 +63,7 @@ function CardItem({
                   alt={item.nameAr}
                   fill
                   sizes="80px"
+                  unoptimized
                   className="object-cover transition-transform duration-300 hover:scale-105"
                 />
               </div>

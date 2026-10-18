@@ -61,6 +61,7 @@ type RestaurantInfo = {
   whatsappNumber?: string | null;
   showUSD: boolean;
   imageCoverUrl?: string | null;
+  logo?: string | null;
 };
 
 type Item = {
@@ -90,6 +91,8 @@ interface RestaurantMenu {
   whatsappNumber?: string | null;
   showUSD: boolean;
   categories: CategoryMenu[];
+  imageCoverUrl?: string | null;
+  logo?: string | null;
 }
 
 type Lang = "ar" | "en";

@@ -14,7 +14,7 @@ import ImageDropZone from "../ImageDropZone";
 import { DEFAULT_QR_SETTING_COLOR } from "@/data/dashboard.constants";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-
+import { MAX_SIZE } from "@/constants";
 interface SettingProps {
   setting: QrSetting;
   setColor: (color: string) => void;
@@ -70,6 +70,11 @@ export default function SettingQrForm({
     let formData = new FormData();
     if (values.qrLogo && values.qrLogo.length > 0) {
       const imageFile = values.qrLogo[0];
+      if (imageFile.size >= MAX_SIZE) {
+        toast.error("حجم الصورة كبير جدا, الحد الاقصى المسموح به هو 4 ميغا");
+        setLoading(false);
+        return;
+      }
       formData.append("file", imageFile);
     } else {
       formData.append("removeLogo", "true");

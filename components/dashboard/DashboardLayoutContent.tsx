@@ -41,7 +41,7 @@ export default function DashboardLayoutContent({
     try {
       await SignOut();
     } catch (e) {
-      console.log("failed to sign out somthing wrong",e);
+      console.log("failed to sign out somthing wrong", e);
     } finally {
       setIsLoading(false);
     }
@@ -100,13 +100,13 @@ export default function DashboardLayoutContent({
             <p className="truncate text-slate-500 mt-0.5">{userName}</p>
           </div>
           <CustomButton
-              onClick={handleSignOut}
-              isLoading={isLoading}
-              className="w-full bg-slate-50/50 justify-start gap-3 rounded-xl text-xs font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              تسجيل الخروج
-            </CustomButton>
+            onClick={handleSignOut}
+            isLoading={isLoading}
+            className="w-full bg-slate-50/50 justify-start gap-3 rounded-xl text-xs font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+            تسجيل الخروج
+          </CustomButton>
         </div>
       </aside>
 
@@ -121,22 +121,7 @@ export default function DashboardLayoutContent({
             >
               <Menu className="h-6 w-6" />
             </Button>
-
             <h1 className="text-lg font-bold text-slate-800">لوحة التحكم</h1>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="gap-2 rounded-xl border-brand-100 bg-brand-50/50 text-brand-700 hover:bg-brand-100/60 hover:text-brand-900"
-            >
-              <Link href={`/m/${restaurantName}`} target="_blank">
-                <span className="hidden sm:inline">معاينة المنيو</span>
-                <ExternalLink className="h-4 w-4" />
-              </Link>
-            </Button>
           </div>
         </header>
         <div className="mx-auto w-full">{children}</div>

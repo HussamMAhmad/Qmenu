@@ -25,6 +25,7 @@ import { SelectItem } from "@/components/ui/select";
 import { PiBowlFood } from "react-icons/pi";
 import { updateItem } from "@/actions/dashboard.actions";
 import ImageDropZone from "../ImageDropZone";
+import { MAX_SIZE } from "@/constants";
 
 function UpdateItem({
   item,
@@ -85,12 +86,17 @@ function UpdateItem({
     let formData = new FormData();
     if (data.imageUrl && data.imageUrl.length > 0) {
       const imageFile = data.imageUrl[0];
+      if (imageFile.size >= MAX_SIZE) {
+        toast.error("حجم الصورة كبير جدا, الحد الاقصى المسموح به هو 4 ميغا");
+        setLoading(false);
+        return;
+      }
       formData.append("file", imageFile);
     } else {
       formData.append("removeLogo", "true");
     }
     try {
-      const result = await updateItem(data, item.id || "" , formData);
+      const result = await updateItem(data, item.id || "", formData);
       if (result?.success) {
         form.reset();
         setOpen(false);
@@ -231,7 +237,7 @@ function UpdateItem({
                   files={field.value}
                   onChange={field.onChange}
                   name={field.name}
-                  aspectClass="w-full h-40 rounded-xl"
+                  aspectClass="w-full h-48 rounded-xl"
                 />
               </div>
             )}

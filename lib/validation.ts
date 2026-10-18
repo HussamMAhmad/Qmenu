@@ -123,4 +123,5 @@ export const SettingInfoSchema = z.object({
     .optional(),
   showUSD: z.boolean(),
   imageCoverUrl: z.union([z.string(), z.any()]).nullable().optional(),
+  logo: z.union([z.string(), z.any()]).nullable().optional(),
 });

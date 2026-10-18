@@ -39,6 +39,8 @@ model Restaurant {
   showUSD             Boolean    @default(true)
   imageCoverUrl       String?
   imageCoverPublicUrl String?
+  logo                String?
+  logoPublicUrl       String?
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
   categories          Category[]

@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-helper";
 import { revalidateTag, revalidatePath } from "next/cache";
 import cloudinary from "@/lib/cloudinary/cloudinary";
+import { MAX_SIZE } from "@/constants";
+import { success } from "zod";
 
 export const updateExchangeRate = async (exchangeRate: number) => {
   try {
@@ -31,15 +33,15 @@ export const updateExchangeRate = async (exchangeRate: number) => {
     });
     await prisma.$executeRaw`
   UPDATE "item"
-  SET "priceUsd" = "priceSyp" / ${exchangeRate}
+  SET "priceUsd" = ROUND(("priceSyp" / ${exchangeRate})::numeric, 2)
   FROM "category"
   WHERE "item"."categoryId" = "category"."id"
     AND "category"."resturantId" = ${restaurant.id}
 `;
     revalidateTag(`restaurant-data-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
-    revalidateTag(`menu-${restaurant.slug}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
+    revalidatePath(`/menu/${restaurant.slug}`);
 
     return {
       success: true,
@@ -95,7 +97,7 @@ export const createCategory = async (cat: string) => {
       return { success: false, message: "حدث خطا اثناء انشاء قسم جديد" };
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-    revalidateTag(`menu-${restaurant.slug}`, { expire: 0 });
+    revalidatePath(`/menu/${restaurant.slug}`);
 
     return { success: true, message: "تم انشاء قسم جديد بنجاح", data: result };
   } catch (e) {
@@ -163,7 +165,7 @@ export const updateCategory = async (cat: string, id: string) => {
     });
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-    revalidateTag(`menu-${restaurant.slug}`, { expire: 0 });
+    revalidatePath(`/menu/${restaurant.slug}`);
 
     return { success: true, message: "تم التعديل بنجاح", data: result };
   } catch (e) {
@@ -194,6 +196,19 @@ export const deleteCategory = async (id: string) => {
       return { success: false, message: "المطعم غير موجود" };
     }
 
+    const items = await prisma.item.findMany({
+      where: { categoryId: id },
+      select: { imagePublicUrl: true },
+    });
+
+    const publicIds = items
+      .map((item) => item.imagePublicUrl)
+      .filter((url): url is string => Boolean(url));
+
+    if (publicIds.length > 0) {
+      await cloudinary.api.delete_resources(publicIds);
+    }
+
     const result = await prisma.category.deleteMany({
       where: {
         id,
@@ -208,8 +223,7 @@ export const deleteCategory = async (id: string) => {
       };
     }
 
-    revalidateTag(`menu-${restaurant.slug}`, { expire: 0 });
-
+    revalidatePath(`/menu/${restaurant.slug}`);
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
     return { success: true, message: "تم الحذف بنجاح", data: result };
@@ -238,6 +252,22 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
     });
 
     if (!category) {
+      return {
+        success: false,
+        message: "القسم غير موجود أو لا تملك صلاحية الإضافة عليه",
+      };
+    }
+
+    const restaurant = await prisma.restaurant.findUnique({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        slug: true,
+      },
+    });
+
+    if (!restaurant) {
       return {
         success: false,
         message: "القسم غير موجود أو لا تملك صلاحية الإضافة عليه",
@@ -285,6 +315,12 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
       "size" in file &&
       (file as File).size > 0
     ) {
+      if (file.size >= MAX_SIZE) {
+        return {
+          success: false,
+          message: "حجم الصورة كبير جدا, الحد الاقصى المسموح به هو 4 ميغا",
+        };
+      }
       const arrayBuffer = await file.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer);
       const uploadResult: any = await new Promise((resolve, reject) => {
@@ -293,13 +329,6 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
             {
               folder: "qmenu/items",
               resource_type: "image",
-              transformation: [
-                { width: 800, height: 800, crop: "limit" },
-                {
-                  quality: "auto:good",
-                  fetch_format: "auto",
-                },
-              ],
             },
             function (error, result) {
               if (error) {
@@ -334,6 +363,7 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`items-count-${user.id}`, { expire: 0 });
+    revalidatePath(`/menu/${restaurant.slug}`);
 
     return { success: true, message: "تم اضافة الوجبة بنجاح", data: result };
   } catch (e) {
@@ -365,6 +395,22 @@ export const updateItem = async (
     });
 
     if (!category) {
+      return {
+        success: false,
+        message: "القسم غير موجود أو لا تملك صلاحية الإضافة عليه",
+      };
+    }
+
+    const restaurant = await prisma.restaurant.findUnique({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        slug: true,
+      },
+    });
+
+    if (!restaurant) {
       return {
         success: false,
         message: "القسم غير موجود أو لا تملك صلاحية الإضافة عليه",
@@ -405,21 +451,22 @@ export const updateItem = async (
       "size" in file &&
       (file as File).size > 0
     ) {
+      if (file.size >= MAX_SIZE) {
+        return {
+          success: false,
+          message: "حجم الصورة كبير جدا, الحد الاقصى المسموح به هو 4 ميغا",
+        };
+      }
       const arrayBuffer = await file.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer);
       const uploadResult: any = await new Promise((resolve, reject) => {
         cloudinary.uploader
           .upload_stream(
             {
-              folder: "qmenu/logo",
+              folder: "qmenu/items",
               resource_type: "auto",
-              transformation: [
-                { width: 300, height: 300, crop: "limit" },
-                {
-                  quality: "auto",
-                  fetch_format: "auto",
-                },
-              ],
+              quality: "auto",
+              fetch_format: "auto",
             },
             function (error, result) {
               if (error) {
@@ -459,6 +506,7 @@ export const updateItem = async (
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
+    revalidatePath(`/menu/${restaurant.slug}`);
 
     return { success: true, message: "تم تعديل الوجبة بنجاح", data: result };
   } catch (e) {
@@ -479,15 +527,48 @@ export const deleteItem = async (id: string, catId: string) => {
       return { success: false, message: "البيانات الممررة غير مكتملة" };
     }
 
-    const result = await prisma.item.deleteMany({
+    const restaurant = await prisma.restaurant.findUnique({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        id: true,
+        slug: true,
+      },
+    });
+
+    if (!restaurant) {
+      return {
+        success: false,
+        message: "القسم غير موجود أو لا تملك صلاحية الإضافة عليه",
+      };
+    }
+
+    const item = await prisma.item.findFirst({
       where: {
         id,
         categoryId: catId,
         category: {
-          resturant: {
-            userId: user.id,
-          },
+          resturantId: restaurant.id,
         },
+      },
+      select: { imagePublicUrl: true },
+    });
+
+    if (!item) {
+      return {
+        success: false,
+        message: "الوجبة غير موجودة او لا تملك صلاحية حذفها",
+      };
+    }
+
+    if (item?.imagePublicUrl) {
+      await cloudinary.uploader.destroy(item.imagePublicUrl);
+    }
+
+    const result = await prisma.item.deleteMany({
+      where: {
+        id,
       },
     });
 
@@ -501,11 +582,12 @@ export const deleteItem = async (id: string, catId: string) => {
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`items-count-${user.id}`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
+    revalidatePath(`/menu/${restaurant.slug}`);
     revalidatePath("/dashboard/categories", "layout");
 
     return { success: true, message: "تم الحذف بنجاح", data: result };
   } catch (e) {
-    console.log("failed to create category", e);
+    console.log("failed to delete category", e);
     return { success: false, message: "حدث خطا اثناء حذف الوجبة " };
   }
 };
@@ -520,6 +602,22 @@ export const changeIsAvailable = async (
 
     if (!user) {
       return { success: false, message: "غير مصرح لك بالقيام بهذا الإجراء" };
+    }
+
+    const restaurant = await prisma.restaurant.findUnique({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        slug: true,
+      },
+    });
+
+    if (!restaurant) {
+      return {
+        success: false,
+        message: "القسم غير موجود أو لا تملك صلاحية الإضافة عليه",
+      };
     }
 
     const itemToUpdate = await prisma.item.findFirst({
@@ -553,7 +651,7 @@ export const changeIsAvailable = async (
 
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-
+    revalidatePath(`/menu/${restaurant.slug}`);
     return { success: true, message: "نجاح تعديل حالة الظهور", data: result };
   } catch (e) {
     console.log("failed to change isAvailable", e);
@@ -573,7 +671,7 @@ export const updateSetting = async (data: QrSetting, formData: FormData) => {
       where: {
         userId: user.id,
       },
-      select: { id: true },
+      select: { id: true, slug: true },
     });
 
     if (!restaurant) {
@@ -614,6 +712,12 @@ export const updateSetting = async (data: QrSetting, formData: FormData) => {
       "size" in file &&
       (file as File).size > 0
     ) {
+      if (file.size >= MAX_SIZE) {
+        return {
+          success: false,
+          message: "حجم الصورة كبير جدا الحد الاقصى المسموح به 4 ميغا",
+        };
+      }
       const arrayBuffer = await file.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer);
       const uploadResult: any = await new Promise((resolve, reject) => {
@@ -689,7 +793,14 @@ export const updateResSetting = async (
       where: {
         userId: user.id,
       },
-      select: { id: true, imageCoverUrl: true, imageCoverPublicUrl: true },
+      select: {
+        id: true,
+        imageCoverUrl: true,
+        imageCoverPublicUrl: true,
+        logo: true,
+        logoPublicUrl: true,
+        slug: true,
+      },
     });
 
     if (!restaurant) {
@@ -699,19 +810,80 @@ export const updateResSetting = async (
       };
     }
 
+    const removeImg = formData.get("removeImg");
+    const img = formData.get("img") as File;
     const removeLogo = formData.get("removeLogo");
-    const file = formData.get("file") as File;
+    const logo = formData.get("logo") as File;
 
     let imgUrl = restaurant?.imageCoverUrl || null;
     let imgPublicId = restaurant?.imageCoverPublicUrl || null;
 
+    let logoUrl = restaurant?.logo || null;
+    let logoPublicUrl = restaurant?.logoPublicUrl || null;
+
     if (
       removeLogo === "true" ||
-      (file &&
-        typeof file === "object" &&
-        "size" in file &&
-        (file as File).size > 0)
+      (logo &&
+        typeof logo === "object" &&
+        "size" in logo &&
+        (logo as File).size > 0)
     ) {
+      if (restaurant?.logoPublicUrl) {
+        await cloudinary.uploader.destroy(restaurant.logoPublicUrl);
+      }
+      logoUrl = null;
+      logoPublicUrl = null;
+    }
+
+    if (
+      logo &&
+      typeof logo === "object" &&
+      "size" in logo &&
+      (logo as File).size > 0
+    ) {
+      if (logo.size >= MAX_SIZE) {
+        return {
+          success: false,
+          message: "حجم الصورة كبير جدا يتجاوز ال 4 ميغا",
+        };
+      }
+      const arrayBuffer = await logo.arrayBuffer();
+      const buffer = new Uint8Array(arrayBuffer);
+      const uploadResult: any = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream(
+            {
+              folder: "qmenu/logRes",
+              resource_type: "auto",
+            },
+            function (error, result) {
+              if (error) {
+                reject(error);
+                return;
+              } else {
+                resolve(result);
+              }
+            },
+          )
+          .end(buffer);
+      });
+      logoUrl = uploadResult.secure_url;
+      logoPublicUrl = uploadResult.public_id;
+    }
+
+    if (
+      removeImg === "true" ||
+      (img &&
+        typeof img === "object" &&
+        "size" in img &&
+        (img as File).size > 0)
+    ) {
+      if (img.size >= MAX_SIZE) {
+        return {
+          success: false,
+          message: "حجم الصورة كبير جدا يتجاوز ال 4 ميغا",
+        };
+      }
       if (restaurant?.imageCoverPublicUrl) {
         await cloudinary.uploader.destroy(restaurant.imageCoverPublicUrl);
       }
@@ -720,12 +892,12 @@ export const updateResSetting = async (
     }
 
     if (
-      file &&
-      typeof file === "object" &&
-      "size" in file &&
-      (file as File).size > 0
+      img &&
+      typeof img === "object" &&
+      "size" in img &&
+      (img as File).size > 0
     ) {
-      const arrayBuffer = await file.arrayBuffer();
+      const arrayBuffer = await img.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer);
       const uploadResult: any = await new Promise((resolve, reject) => {
         cloudinary.uploader
@@ -733,13 +905,6 @@ export const updateResSetting = async (
             {
               folder: "qmenu/cover",
               resource_type: "auto",
-              transformation: [
-                { width: 800, height: 800, crop: "limit" },
-                {
-                  quality: "auto:good",
-                  fetch_format: "auto",
-                },
-              ],
             },
             function (error, result) {
               if (error) {
@@ -768,11 +933,14 @@ export const updateResSetting = async (
         showUSD: data.showUSD ?? true,
         imageCoverUrl: imgUrl,
         imageCoverPublicUrl: imgPublicId,
+        logo: logoUrl,
+        logoPublicUrl: logoPublicUrl,
       },
     });
 
     revalidateTag(`restaurant-setting-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard", "layout");
+    revalidatePath(`/menu/${restaurant.slug}`);
 
     return {
       success: true,
@@ -780,7 +948,7 @@ export const updateResSetting = async (
       data: updatedSetting,
     };
   } catch (e) {
-    console.log("failed to create restaurant onboarding", e);
+    console.log("failed to update restaurant settings", e);
     return { success: false, message: "فضل تحديث الاعدادات" };
   }
 };

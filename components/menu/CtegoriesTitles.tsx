@@ -25,7 +25,7 @@ function CategoriesTitles({
       <div className="sticky top-0 z-30 bg-brand-50/90 backdrop-blur-xl py-3 sm:py-4 px-3 sm:px-8 border-b border-brand-100/60 shadow-xs mt-6">
         <ScrollArea className="w-full whitespace-nowrap">
           <div className="flex items-center gap-2.5 sm:gap-3.5 max-w-5xl mx-auto py-1 px-1">
-            <button
+            {/* <button
               onClick={() => setActiveCategory("all")}
               aria-pressed={activeCategory === "all"}
               className={`${baseButtonClasses} ${
@@ -40,7 +40,7 @@ function CategoriesTitles({
                 }`}
               />
               <span>{lang === "ar" ? "جميع الأصناف" : "All Items"}</span>
-            </button>
+            </button> */}
             {restaurant.categories.map((cat) => {
               const isActive = activeCategory === cat.id;
               return (

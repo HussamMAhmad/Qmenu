@@ -1,33 +1,26 @@
 "use client";
 import Image from "next/image";
-import { Plus, Clock } from "lucide-react";
+import { Plus, Clock, Utensils } from "lucide-react";
 import CardItemDes from "./CardItemDes";
 import { useState } from "react";
 
 interface GridItemsProps {
   lang: Lang;
   currentItems: Item[];
+  ShowUsd: boolean;
   addToCart: (item: Item, qtyToAdd?: number) => void;
 }
 
-function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
+function GridItems({
+  currentItems,
+  lang,
+  addToCart,
+  ShowUsd,
+}: GridItemsProps) {
   const [open, setOpen] = useState(false);
-  const [selectedItemDetail, setSelectedItemDetail] =
-    useState<Item | null>(null);
-
-  const DISH_IMAGES_POOL = [
-    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=80",
-    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&auto=format&fit=crop&q=80",
-  ];
-  const getItemImage = (item: Item, index: number) => {
-    if (item.imageUrl && item.imageUrl.trim() !== "") {
-      return item.imageUrl;
-    }
-    return DISH_IMAGES_POOL[index % DISH_IMAGES_POOL.length];
-  };
+  const [selectedItemDetail, setSelectedItemDetail] = useState<Item | null>(
+    null,
+  );
 
   return (
     <div className="px-4 sm:px-8 max-w-5xl mx-auto min-h-[300px]">
@@ -39,8 +32,7 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {currentItems.map((item, idx) => {
-            const itemImg = getItemImage(item, idx);
+          {currentItems.map((item) => {
             return (
               <div
                 key={item.id}
@@ -50,18 +42,27 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
                 }}
                 className={`min-w-0 bg-brand-100 p-3 sm:p-4 rounded-[30px] shadow-md hover:shadow-lg hover:-translate-y-1 active:translate-y-0 transition-all duration-300 ease-out flex flex-col justify-between relative group cursor-pointer border border-white/50`}
               >
-                <div className="relative w-full h-40 sm:h-44 rounded-[18px] overflow-hidden bg-white/60 mb-3">
-                  <Image
-                    src={itemImg}
-                    alt={item.nameAr}
-                    fill
-                    className="object-cover group-hover:scale-108 transition-transform duration-500 ease-out"
-                    onError={(e: any) => {
-                      e.currentTarget.src = DISH_IMAGES_POOL[0];
-                    }}
-                  />
+                <div className="relative w-full h-40 sm:h-44 rounded-[18px] overflow-hidden bg-slate-100 dark:bg-slate-800/60 mb-3 flex items-center justify-center border border-slate-100 dark:border-slate-800">
+                  {item.imageUrl ? (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.nameAr}
+                      fill
+                      loading="lazy"
+                      unoptimized
+                      sizes="(max-width: 768px) 100vw, 300px"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 gap-1.5 select-none">
+                      <Utensils className="w-8 h-8 opacity-60 stroke-[1.5]" />
+                      <span className="text-[11px] font-medium tracking-wide">
+                        بدون صورة
+                      </span>
+                    </div>
+                  )}
                   {item.prepTime && item.isAvailable && (
-                    <div className="absolute bottom-2.5 start-2.5 bg-slate-900/85 backdrop-blur-md text-white px-2.5 py-1 rounded-xl text-[10px] font-bold flex items-center gap-1 shadow-sm">
+                    <div className="absolute bottom-2.5 start-2.5 bg-slate-900/85 backdrop-blur-md text-white px-2.5 py-1 rounded-xl text-[10px] font-bold flex items-center gap-1 shadow-sm z-10">
                       <Clock className="w-3 h-3 text-brand-400" />
                       <span>{item.prepTime}</span>
                     </div>
@@ -86,7 +87,7 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
                           ل.س
                         </span>
                       </span>
-                      {item.priceUsd && (
+                      {ShowUsd && item.priceUsd && (
                         <span className="text-[11px] font-bold text-brand-600">
                           ${item.priceUsd.toFixed(2)}
                         </span>
@@ -118,6 +119,7 @@ function GridItems({ currentItems, lang, addToCart }: GridItemsProps) {
         item={selectedItemDetail}
         lang={lang}
         addToCart={addToCart}
+        ShowUsd={ShowUsd}
       />
     </div>
   );

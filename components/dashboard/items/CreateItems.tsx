@@ -26,6 +26,7 @@ import { PiBowlFood } from "react-icons/pi";
 import { createItem } from "@/actions/dashboard.actions";
 import { defaultFormItemValues } from "@/constants/index";
 import ImageDropZone from "../ImageDropZone";
+import { MAX_SIZE } from "@/constants/index";
 
 function CreateItems({
   categories,
@@ -59,6 +60,11 @@ function CreateItems({
     let formData = new FormData();
     if (data.imageUrl && data.imageUrl.length > 0) {
       const imageFile = data.imageUrl[0];
+      if (imageFile.size >= MAX_SIZE) {
+        toast.error("حجم الصورة كبير جدا, الحد الاقصى المسموح به هو 4 ميغا");
+        setLoading(false);
+        return;
+      }
       formData.append("file", imageFile);
     } else {
       formData.append("removeLogo", "true");

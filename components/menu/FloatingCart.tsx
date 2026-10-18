@@ -46,7 +46,7 @@ function FloatingCart({ lang, cart, setCart, restaurant }: FloatingCart) {
               {lang === "ar" ? "ل.س" : "SYP"}
             </span>
           </span>
-          {totalPriceUsd > 0 && (
+          {restaurant.showUSD && totalPriceUsd > 0 && (
             <>
               <span className="opacity-50 font-normal">/</span>
               <span className="text-brand-100 font-semibold text-xs sm:text-sm">

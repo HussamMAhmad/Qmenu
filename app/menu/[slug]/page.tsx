@@ -1,6 +1,6 @@
 import PublicMenu from "@/components/menu/PublicMenu";
 import { Toaster } from "sonner";
-import { getMenu } from "@/lib/queries/menu";
+import { getCachedMenu } from "@/lib/queries/menu";
 import { notFound } from "next/navigation";
 
 export default async function MenuPage({
@@ -9,15 +9,15 @@ export default async function MenuPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-let restaurant;
-  try{
-    const data = await getMenu(slug);
- if (!data.success || !data.result) {
+  let restaurant;
+  try {
+    const data = await getCachedMenu(slug);
+    if (!data.success || !data.result) {
       notFound();
     }
     restaurant = data.result;
-  }catch(e){
-    console.log("failed to get data for menu" , e);
+  } catch (e) {
+    console.log("failed to get data for menu", e);
     notFound();
   }
 

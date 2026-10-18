@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Search, Share2, Globe } from "lucide-react";
 import { toast } from "sonner";
+import { cover } from "@/public/assets";
 
 interface HeaderProps {
   restaurant: RestaurantMenu;
@@ -20,11 +21,6 @@ function Header({
   setLang,
   setSearchQuery,
 }: HeaderProps) {
-  const DEFAULT_HERO_COVER =
-    "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1600&auto=format&fit=crop&q=80";
-
-  const coverImg = DEFAULT_HERO_COVER;
-
   async function handleShare() {
     if (navigator.share) {
       try {
@@ -50,13 +46,13 @@ function Header({
   return (
     <header className="relative w-full h-56 sm:h-64 lg:h-72 bg-slate-950 overflow-hidden">
       <Image
-        src={coverImg}
+        src={restaurant.imageCoverUrl || cover}
         alt={restaurant.name}
         fill
         className="object-cover opacity-85"
         priority
         onError={(e: any) => {
-          e.currentTarget.src = DEFAULT_HERO_COVER;
+          e.currentTarget.src = cover;
         }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-brand-50 via-slate-950/20 to-black/50"></div>

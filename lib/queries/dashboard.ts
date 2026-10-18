@@ -6,7 +6,12 @@ export const getRestaurant = async (userId: string) =>
     async () => {
       return await prisma.restaurant.findUnique({
         where: { userId },
-        select: { name: true, exchangeRate: true, slug: true },
+        select: {
+          name: true,
+          exchangeRate: true,
+          slug: true,
+          categories: true,
+        },
       });
     },
     [`restaurant-data-${userId}`],
@@ -26,6 +31,7 @@ export const getSettingInfo = async (userId: string) =>
           slug: true,
           whatsappNumber: true,
           imageCoverUrl: true,
+          logo: true,
         },
       });
     },

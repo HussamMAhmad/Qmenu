@@ -102,7 +102,7 @@ function CategorySidebar({ categories }: { categories: Category[] }) {
                 </span>
               </button>
               <button
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-300 opacity-0 transition hover:bg-white hover:text-slate-500 group-hover:opacity-100"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-300  transition hover:bg-white hover:text-slate-500 group-hover:opacity-100"
                 aria-label={`خيارات ${category.name}`}
               >
                 <EditCategories name={category.name} id={category.id} />
