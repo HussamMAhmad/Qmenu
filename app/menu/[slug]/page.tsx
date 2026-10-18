@@ -12,8 +12,9 @@ export default async function MenuPage({
   let restaurant;
   try {
     const data = await getCachedMenu(slug);
+
     if (!data || !data.success || !data.result) {
-      notFound();
+      return;
     }
 
     restaurant = data.result;
