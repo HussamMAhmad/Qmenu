@@ -93,6 +93,7 @@ function CartInfo({ lang, cart, restaurant, setCart }: CartInfoProps) {
                     alt={item.nameAr}
                     fill
                     loading="eager"
+                    sizes="56px"
                     className="object-cover"
                     onError={(e: any) => {
                       e.currentTarget.src = imgError;

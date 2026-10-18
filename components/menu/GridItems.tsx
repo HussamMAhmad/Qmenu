@@ -32,7 +32,7 @@ function GridItems({
         </div>
       ) : (
         <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {currentItems.map((item) => {
+          {currentItems.map((item , index) => {
             return (
               <div
                 key={item.id}
@@ -48,7 +48,8 @@ function GridItems({
                       src={item.imageUrl}
                       alt={item.nameAr}
                       fill
-                      loading="lazy"
+                      loading={index < 4 ? "eager" : "lazy"}
+                      priority={index === 0}
                       unoptimized
                       sizes="(max-width: 768px) 100vw, 300px"
                       className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
