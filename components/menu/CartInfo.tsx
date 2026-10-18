@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Plus, Minus, PhoneCall } from "lucide-react";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { imgError } from "@/public/assets";
+
 interface CartInfoProps {
   lang: Lang;
   cart: CartItem[];
@@ -22,6 +23,7 @@ function CartInfo({ lang, cart, restaurant, setCart }: CartInfoProps) {
       { totalPriceSyp: 0, totalPriceUsd: 0 },
     );
   }, [cart]);
+
   const increaseQty = (id: string) => {
     setCart((prev) =>
       prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i)),
@@ -68,13 +70,14 @@ function CartInfo({ lang, cart, restaurant, setCart }: CartInfoProps) {
   return (
     <SheetContent
       side="bottom"
-      className="w-full rounded-t-[2rem] sm:max-w-lg sm:mx-auto p-4 sm:p-6 max-h-[calc(100dvh-1rem)] flex flex-col bg-brand-100 border-t border-brand-200 shadow-2xl overflow-hidden"
+      className="w-full rounded-t-[2rem] sm:max-w-lg sm:mx-auto p-4 sm:p-6 max-h-[calc(100dvh-1rem)] flex flex-col bg-brand-100 border-t border-brand-200 shadow-md overflow-hidden"
     >
       <SheetHeader className="text-start pb-3 border-b border-brand-200/60 shrink-0">
         <SheetTitle className="text-lg font-black text-brand-900">
           {lang === "ar" ? "سلة الطلبات" : "Your Cart"}
         </SheetTitle>
       </SheetHeader>
+      
       <div className="flex-1 min-h-0 overflow-y-auto my-3 pe-1 custom-sheet-scrollbar">
         {cart.length === 0 ? (
           <p className="text-center text-xs text-brand-600/70 py-12 font-bold">
@@ -85,7 +88,7 @@ function CartInfo({ lang, cart, restaurant, setCart }: CartInfoProps) {
             {cart.map((item) => (
               <div
                 key={item.id}
-                className="flex min-w-0 items-center gap-2 sm:gap-3 bg-white/70 backdrop-blur-sm p-2 sm:p-3 rounded-2xl border border-brand-200/60 shadow-xs"
+                className="flex min-w-0 items-center gap-2 sm:gap-3 bg-white p-2 sm:p-3 rounded-2xl border border-brand-200/60 shadow-xs"
               >
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden relative bg-brand-200/60 shrink-0">
                   <Image
@@ -147,6 +150,7 @@ function CartInfo({ lang, cart, restaurant, setCart }: CartInfoProps) {
           </div>
         )}
       </div>
+
       {cart.length > 0 && (
         <div className="space-y-3 pt-3 border-t border-brand-200/60 shrink-0">
           <div className="flex flex-wrap justify-between items-center gap-2 text-sm sm:text-base font-black text-brand-900">
@@ -169,7 +173,7 @@ function CartInfo({ lang, cart, restaurant, setCart }: CartInfoProps) {
           {restaurant.whatsappNumber && (
             <Button
               onClick={shareOrderViaWhatsApp}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-2xl text-xs sm:text-sm shadow-xl shadow-emerald-900/20 flex justify-center items-center gap-2 transition-all active:scale-98"
+              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 rounded-2xl text-xs sm:text-sm shadow-sm flex justify-center items-center gap-2 transition-all active:scale-98"
             >
               {lang === "ar"
                 ? "إرسال الطلب عبر الواتساب"
