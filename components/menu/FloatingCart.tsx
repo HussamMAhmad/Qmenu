@@ -1,6 +1,6 @@
 "use client";
 import { Dispatch, SetStateAction } from "react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import CartInfo from "./CartInfo";
 import { Sheet } from "@/components/ui/sheet";
 
@@ -13,18 +13,19 @@ interface FloatingCart {
 
 function FloatingCart({ lang, cart, setCart, restaurant }: FloatingCart) {
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
-  const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-  const totalPriceSyp = cart.reduce(
-    (sum, item) => sum + item.priceSyp * item.qty,
-    0,
-  );
-  const totalPriceUsd = cart.reduce(
-    (sum, item) => sum + item.priceUsd * item.qty,
-    0,
-  );
-  
+  const { totalQty, totalPriceSyp, totalPriceUsd } = useMemo(() => {
+    return cart.reduce(
+      (acc, item) => ({
+        totalQty: acc.totalQty + item.qty,
+        totalPriceSyp: acc.totalPriceSyp + item.priceSyp * item.qty,
+        totalPriceUsd: acc.totalPriceUsd + (item.priceUsd || 0) * item.qty,
+      }),
+      { totalQty: 0, totalPriceSyp: 0, totalPriceUsd: 0 },
+    );
+  }, [cart]);
+
   if (totalQty === 0) return null;
-  
+
   return (
     <>
       <div

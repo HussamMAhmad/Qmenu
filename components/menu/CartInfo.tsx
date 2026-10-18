@@ -3,7 +3,7 @@ import Image from "next/image";
 import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "../ui/button";
 import { Plus, Minus, PhoneCall } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { imgError } from "@/public/assets";
 interface CartInfoProps {
   lang: Lang;
@@ -13,15 +13,15 @@ interface CartInfoProps {
 }
 
 function CartInfo({ lang, cart, restaurant, setCart }: CartInfoProps) {
-  const totalPriceSyp = cart.reduce(
-    (sum, item) => sum + item.priceSyp * item.qty,
-    0,
-  );
-  const totalPriceUsd = cart.reduce(
-    (sum, item) => sum + item.priceUsd * item.qty,
-    0,
-  );
-
+  const { totalPriceSyp, totalPriceUsd } = useMemo(() => {
+    return cart.reduce(
+      (acc, item) => ({
+        totalPriceSyp: acc.totalPriceSyp + item.priceSyp * item.qty,
+        totalPriceUsd: acc.totalPriceUsd + (item.priceUsd || 0) * item.qty,
+      }),
+      { totalPriceSyp: 0, totalPriceUsd: 0 },
+    );
+  }, [cart]);
   const increaseQty = (id: string) => {
     setCart((prev) =>
       prev.map((i) => (i.id === id ? { ...i, qty: i.qty + 1 } : i)),
@@ -92,8 +92,7 @@ function CartInfo({ lang, cart, restaurant, setCart }: CartInfoProps) {
                     src={item.imageUrl || imgError}
                     alt={item.nameAr}
                     fill
-                    loading="lazy"
-                    unoptimized
+                    loading="eager"
                     className="object-cover"
                     onError={(e: any) => {
                       e.currentTarget.src = imgError;
