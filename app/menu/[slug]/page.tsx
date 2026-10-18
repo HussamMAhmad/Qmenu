@@ -10,22 +10,27 @@ export default async function MenuPage({
 }) {
   const { slug } = await params;
   let restaurant;
-try {
+  try {
     const data = await getCachedMenu(slug);
     if (!data || !data.success || !data.result) {
       notFound();
     }
-    
+
     restaurant = data.result;
   } catch (e: any) {
-    if (e.message?.includes("NEXT_HTTP_ERROR_FALLBACK;404")) {
+    if (
+      e?.message?.includes("NEXT_HTTP_ERROR_FALLBACK;404") ||
+      e?.digest?.includes("404")
+    ) {
       throw e;
     }
 
     console.error("خطأ حقيقي في جلب المنيو:", e);
     return (
       <div className="p-10 text-center">
-        <h1 className="text-xl font-bold text-red-600 mb-2">خطأ في الاتصال بقاعدة البيانات أو السيرفر</h1>
+        <h1 className="text-xl font-bold text-red-600 mb-2">
+          خطأ في الاتصال بقاعدة البيانات أو السيرفر
+        </h1>
         <p className="text-sm text-gray-600 bg-gray-100 p-4 rounded-lg dir-ltr text-left overflow-auto">
           {e.message || JSON.stringify(e)}
         </p>
