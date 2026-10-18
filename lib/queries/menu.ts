@@ -32,6 +32,6 @@ export const getCachedMenu = unstable_cache(
   ["menu-cache"],
   {
     tags: ["menu-data"],
-    revalidate: 600,
+    revalidate: 60,
   }
 );
