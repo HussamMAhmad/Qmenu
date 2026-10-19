@@ -80,6 +80,7 @@ enum Frequency {
 }
 
 enum Status {
+  TRIAL
   ACTIVE
   EXPIRED
   CANCELED

@@ -1,4 +1,5 @@
 "use server";
+
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
@@ -23,46 +24,78 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     });
 
     if (!user) {
-      return { success: false, error: "user not found" };
+      return { success: false, error: "المستخدم غير موجود" };
     }
 
-    const updatedUser = await prisma.user.update({
-      where: {
-        email,
-      },
-      data: {
-        restaurant: {
-          upsert: {
-            create: {
-              name: data.name,
-              slug: data.slug,
-              description: data.description,
-              exchangeRate: data.exchangeRate,
-              whatsappNumber: data.whatsappNumber,
-            },
-            update: {
-              name: data.name,
-              slug: data.slug,
-              description: data.description,
-              exchangeRate: data.exchangeRate,
-              whatsappNumber: data.whatsappNumber,
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 14);
+
+    const result = await prisma.$transaction(async (tx) => {
+      const updatedUser = await tx.user.update({
+        where: { email },
+        data: {
+          restaurant: {
+            upsert: {
+              create: {
+                name: data.name,
+                slug: data.slug,
+                description: data.description,
+                exchangeRate: data.exchangeRate,
+                whatsappNumber: data.whatsappNumber,
+              },
+              update: {
+                name: data.name,
+                slug: data.slug,
+                description: data.description,
+                exchangeRate: data.exchangeRate,
+                whatsappNumber: data.whatsappNumber,
+              },
             },
           },
         },
-      },
-      include: {
-        restaurant: true,
-      },
+        include: {
+          restaurant: true,
+        },
+      });
+
+      const restaurantId = updatedUser.restaurant?.id;
+
+      if (!restaurantId) {
+        throw new Error("فشل في إنشاء أو تحديث بيانات المطعم");
+      }
+
+      const subscription = await tx.subscription.upsert({
+        where: { restaurantId },
+        create: {
+          restaurantId,
+          name: "فترة تجريبية مجانية",
+          price: 0,
+          currency: "USD",
+          frequency: "MONTHLY",
+          status: "TRIAL",
+          startDate: new Date(),
+          renewalDate: trialEndDate,
+        },
+        update: {},
+      });
+
+      return {
+        restaurant: updatedUser.restaurant,
+        userId: updatedUser.id,
+        subscription,
+      };
     });
-    if (!updatedUser.restaurant)
-      return { success: false, error: "failed to update restaurant data" };
+
     return {
       success: true,
-      data: updatedUser.restaurant,
-      userId: updatedUser.id,
+      data: result.restaurant,
+      userId: result.userId,
     };
   } catch (e) {
-    console.log("failed to create restaurant onboarding", e);
-    return { success: false, error: "failed to update restaurant data" };
+    console.error("failed to complete restaurant onboarding:", e);
+    return {
+      success: false,
+      error: "حدث خطأ أثناء حفظ بيانات المطعم والاشتراك",
+    };
   }
 };

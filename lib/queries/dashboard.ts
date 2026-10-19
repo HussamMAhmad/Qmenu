@@ -7,6 +7,7 @@ export const getRestaurant = async (userId: string) =>
       return await prisma.restaurant.findUnique({
         where: { userId },
         select: {
+          id: true,
           name: true,
           exchangeRate: true,
           slug: true,

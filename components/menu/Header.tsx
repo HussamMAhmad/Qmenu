@@ -51,6 +51,9 @@ function Header({
         fill
         className="object-cover opacity-85"
         priority
+        unoptimized
+        quality={75}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
         onError={(e: any) => {
           e.currentTarget.src = cover;
         }}

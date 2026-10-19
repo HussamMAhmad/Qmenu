@@ -18,7 +18,6 @@ import { restaurantOnboardingSchema } from "@/lib/validation";
 import { FormFieldType } from "@/lib/types";
 import { CompleteOnboarding } from "@/actions/onboarding.actions";
 import CreateMenu from "../CreateMenu";
-import { Label } from "../ui/label";
 
 export default function OnboardingForm() {
   const [isComplete, setIsComplete] = useState(false);

@@ -54,6 +54,8 @@ function ImageDropZone({
               alt="uploaded preview"
               fill
               priority
+              quality={75}
+              unoptimized
               sizes="(max-width: 768px) 100vw, 300px"
               className="object-contain transition-transform duration-300 group-hover:scale-105"
             />

@@ -4,7 +4,6 @@ import { getCurrentUser } from "@/lib/auth-helper";
 import { revalidateTag, revalidatePath } from "next/cache";
 import cloudinary from "@/lib/cloudinary/cloudinary";
 import { MAX_SIZE } from "@/constants";
-import { success } from "zod";
 
 export const updateExchangeRate = async (exchangeRate: number) => {
   try {
@@ -41,7 +40,8 @@ export const updateExchangeRate = async (exchangeRate: number) => {
     revalidateTag(`restaurant-data-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
-    revalidatePath(`/menu/${restaurant.slug}`);
+        revalidatePath(`/menu/${restaurant.slug}`,"page");
+
 
     return {
       success: true,
@@ -97,7 +97,8 @@ export const createCategory = async (cat: string) => {
       return { success: false, message: "حدث خطا اثناء انشاء قسم جديد" };
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-    revalidatePath(`/menu/${restaurant.slug}`);
+        revalidatePath(`/menu/${restaurant.slug}`,"page");
+
 
     return { success: true, message: "تم انشاء قسم جديد بنجاح", data: result };
   } catch (e) {
@@ -165,7 +166,7 @@ export const updateCategory = async (cat: string, id: string) => {
     });
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-    revalidatePath(`/menu/${restaurant.slug}`);
+        revalidatePath(`/menu/${restaurant.slug}`,"page");
 
     return { success: true, message: "تم التعديل بنجاح", data: result };
   } catch (e) {
@@ -223,7 +224,8 @@ export const deleteCategory = async (id: string) => {
       };
     }
 
-    revalidatePath(`/menu/${restaurant.slug}`);
+        revalidatePath(`/menu/${restaurant.slug}`,"page");
+
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
     return { success: true, message: "تم الحذف بنجاح", data: result };
@@ -360,10 +362,11 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
       },
     });
 
+        revalidatePath(`/menu/${restaurant.slug}`,"page");
+
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`items-count-${user.id}`, { expire: 0 });
-    revalidatePath(`/menu/${restaurant.slug}`);
 
     return { success: true, message: "تم اضافة الوجبة بنجاح", data: result };
   } catch (e) {
@@ -504,9 +507,10 @@ export const updateItem = async (
       },
     });
 
+        revalidatePath(`/menu/${restaurant.slug}`,"page");
+
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
-    revalidatePath(`/menu/${restaurant.slug}`);
 
     return { success: true, message: "تم تعديل الوجبة بنجاح", data: result };
   } catch (e) {
@@ -579,10 +583,11 @@ export const deleteItem = async (id: string, catId: string) => {
       };
     }
 
+        revalidatePath(`/menu/${restaurant.slug}`,"page");
+
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`items-count-${user.id}`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-    revalidatePath(`/menu/${restaurant.slug}`);
     revalidatePath("/dashboard/categories", "layout");
 
     return { success: true, message: "تم الحذف بنجاح", data: result };
@@ -651,7 +656,7 @@ export const changeIsAvailable = async (
 
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-    revalidatePath(`/menu/${restaurant.slug}`);
+        revalidatePath(`/menu/${restaurant.slug}`,"page");
     return { success: true, message: "نجاح تعديل حالة الظهور", data: result };
   } catch (e) {
     console.log("failed to change isAvailable", e);
@@ -938,9 +943,9 @@ export const updateResSetting = async (
       },
     });
 
+    revalidatePath(`/menu/${restaurant.slug}`,"page");
     revalidateTag(`restaurant-setting-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard", "layout");
-    revalidatePath(`/menu/${restaurant.slug}`);
 
     return {
       success: true,

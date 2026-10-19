@@ -5,7 +5,7 @@ export const getCachedMenu = unstable_cache(
   async (slug: string) => {
     try {
       const restaurant = await prisma.restaurant.findUnique({
-        where: { slug },
+        where: { slug: slug.toLowerCase() },
         include: {
           categories: {
             include: {
@@ -33,5 +33,5 @@ export const getCachedMenu = unstable_cache(
   {
     tags: ["menu-data"],
     revalidate: 60,
-  }
+  },
 );
