@@ -31,6 +31,8 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
       return { success: false, error: "المستخدم غير موجود" };
     }
 
+    const slug = data.slug.trim().toLowerCase();
+
     const existingSlug = await prisma.restaurant.findUnique({
       where: { slug: data.slug },
     });
@@ -42,7 +44,6 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     const trialEndDate = new Date();
     trialEndDate.setDate(trialEndDate.getDate() + 14);
 
-    const slug = data.slug.trim().toLowerCase();
 
     const result = await prisma.$transaction(async (tx) => {
       const updatedUser = await tx.user.update({
@@ -109,7 +110,7 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
       retries: 3,
     });
 
-    revalidatePath(`/menu/${result.restaurant?.slug}`, "page");
+    revalidatePath(`/${result.restaurant?.slug}`, "page");
     revalidateTag(`menu-data`, { expire: 0 });
 
     return {

@@ -14,7 +14,7 @@ export default function PublicMenu({
 }) {
   const [lang, setLang] = useState<Lang>("ar");
   const [activeCategory, setActiveCategory] = useState<string>(
-    restaurant.categories[0].id,
+    restaurant?.categories[0]?.id,
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -57,7 +57,7 @@ export default function PublicMenu({
     );
   };
 
-  const allItems = restaurant.categories.flatMap((cat) => cat.items);
+  const allItems = restaurant?.categories?.flatMap((cat) => cat.items);
 
   const getFilteredItems = () => {
     let items = allItems;
