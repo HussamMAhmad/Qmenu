@@ -110,9 +110,6 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
       retries: 3,
     });
 
-    revalidatePath(`/${result.restaurant?.slug}`, "page");
-    revalidateTag(`menu-data`, { expire: 0 });
-
     return {
       success: true,
       data: result.subscription,
