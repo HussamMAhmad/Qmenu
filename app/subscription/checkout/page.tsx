@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Copy, Check, Wallet, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import ShamForm from "@/components/forms/ShamForm";
+import { Suspense } from 'react';
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
@@ -26,6 +27,7 @@ export default function CheckoutPage() {
   };
 
   return (
+    <Suspense fallback={<div>جاري التحميل...</div>}>
     <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6" dir="rtl">
       <div className="max-w-xl mx-auto space-y-6">
         <button
@@ -106,5 +108,6 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 }
