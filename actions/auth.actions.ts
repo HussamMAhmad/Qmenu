@@ -1,10 +1,19 @@
 "use server";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function SignUp({ name, email, password }: USER) {
   try {
+    const existingEmail = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if(existingEmail){
+      return {success : false , error : "هذا الايميل موجود بالفعل"}
+    }
+
     const response = await auth.api.signUpEmail({
       body: {
         name,

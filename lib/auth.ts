@@ -10,6 +10,7 @@ import {
   RESET_PASSWORD_TEMPLATE,
   SECURITY_ALERT_TEMPLATE,
 } from "@/components/EmailTemplate/email-templete-auth";
+import { sendEmail } from "./nodemailer/email-service";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -31,12 +32,17 @@ export const auth = betterAuth({
     // add on existing user sign up feature
     revokeSessionsOnPasswordReset: true,
     sendResetPassword: async ({ user, url, token }, request) => {
-      void resend.emails.send({
-        from: "Q-menu <onboarding@resend.dev>",
-        to: user.email,
-        subject: "إعادة تعيين كلمة المرور - Q-Menu",
-        html: RESET_PASSWORD_TEMPLATE.replaceAll("{{RESET_LINK}}", url),
-      });
+      // void resend.emails.send({
+      //   from: "Q-menu <onboarding@resend.dev>",
+      //   to: user.email,
+      //   html: RESET_PASSWORD_TEMPLATE.replaceAll("{{RESET_LINK}}", url),
+      // });
+      const subject = "إعادة تعيين كلمة المرور - Q-Menu";
+      const template = RESET_PASSWORD_TEMPLATE.replaceAll(
+        "{{RESET_LINK}}",
+        url,
+      );
+      void sendEmail(user.email, subject, template);
     },
     onPasswordReset: async ({ user }, request) => {
       console.log("");
@@ -55,14 +61,15 @@ export const auth = betterAuth({
         } else {
           subject = "إعادة تعيين كلمة المرور - Menuak";
         }
+        const template = EMAIL_VERIFICATION.replaceAll("{{OTP_CODE}}", otp);
         after(async () => {
           try {
-            await resend.emails.send({
-              from: "Q-menu <onboarding@resend.dev>",
-              to: [email],
+            await sendEmail(
+              email,
               subject,
-              html: EMAIL_VERIFICATION.replaceAll("{{OTP_CODE}}", otp),
-            });
+              template,
+              `رمز التحقق الخاص بحسابك في Q-Menu`,
+            );
           } catch (e) {
             console.log("error with send email", e);
           }

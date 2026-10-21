@@ -278,3 +278,205 @@ export const SECURITY_ALERT_TEMPLATE = `
 </body>
 </html>
 `;
+
+export const SUBSCRIPTION_ACTIVE_TEMPLATE = `
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفعيل الاشتراك</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl; text-align: right;">
+  
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 40px 0;">
+    <tr>
+      <td align="center">
+        
+        <!-- Main Container -->
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; max-width: 600px; border-radius: 24px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+          
+          <!-- Header Logo / Brand -->
+          <tr>
+            <td style="padding: 32px 32px 24px 32px; text-align: center; border-bottom: 1px solid #f1f5f9;">
+              <h2 style="margin: 0; color: #0f172a; font-size: 24px; font-weight: 900; letter-spacing: -0.5px;">
+                Q-<span style="color: #6366f1;">Menu</span>
+              </h2>
+            </td>
+          </tr>
+
+          <!-- Content Body -->
+          <tr>
+            <td style="padding: 40px 32px;">
+              
+              <!-- Success Badge -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom: 24px;">
+                    <div style="display: inline-block; background-color: #dcfce7; color: #16a34a; font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: 50px;">
+                      ✨ تم تفعيل الاشتراك بنجاح
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <h1 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center;">
+                مرحباً بك في باقة النمو الاحترافية!
+              </h1>
+              
+              <p style="margin: 0 0 24px 0; color: #475569; font-size: 15px; line-height: 1.6; text-align: center;">
+                شكراً لإتمام عملية الدفع عبر <strong>شام كاش</strong>. تم تحديث حسابك بنجاح وأصبح بإمكان زابائنك تصفح منيو مطعمك بكل سهولة واحترافية.
+              </p>
+
+              <!-- Invoice / Details Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; margin-bottom: 32px;">
+                <tr>
+                  <td style="padding: 24px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="color: #64748b; font-size: 13px; font-weight: 600; padding-bottom: 12px;">المبلغ المدفوع:</td>
+                        <td style="color: #0f172a; font-size: 15px; font-weight: 800; text-align: left; padding-bottom: 12px;"> {{requiredAmountUSD}} USD</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #64748b; font-size: 13px; font-weight: 600; padding-bottom: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">طريقة الدفع:</td>
+                        <td style="color: #0f172a; font-size: 14px; font-weight: 700; text-align: left; border-top: 1px solid #e2e8f0; padding-top: 12px;">شام كاش (Sham Cash)</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #64748b; font-size: 13px; font-weight: 600; border-top: 1px solid #e2e8f0; padding-top: 12px;">حالة الحساب:</td>
+                        <td style="color: #16a34a; font-size: 14px; font-weight: 700; text-align: left; border-top: 1px solid #e2e8f0; padding-top: 12px;">مفعل وجاهز 🟢</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <a href="https://yourdomain.com/dashboard" target="_blank" style="background-color: #0f172a; color: #ffffff; padding: 14px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; text-decoration: none; display: inline-block; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.2);">
+                      الانتقال إلى لوحة التحكم
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8fafc; padding: 24px 32px; text-align: center; border-top: 1px solid #f1f5f9;">
+              <p style="margin: 0; color: #94a3b8; font-size: 12px; line-height: 1.5;">
+                هذه الرسالة مرسلة تلقائياً من نظام منصة Q-Menu. يرجى عدم الرد على هذه الرسالة مباشرة.
+              </p>
+              <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 11px;">
+                &copy; ${new Date().getFullYear()} Q-Menu. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
+`;
+
+export const SUBSCRIPTION_ALERT_EXPIRED = `
+        <!DOCTYPE html>
+        <html lang="ar" dir="rtl">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>تنبيه انتهاء الاشتراك</title>
+        </head>
+        <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl; text-align: right;">
+          
+          <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8fafc; padding: 40px 0;">
+            <tr>
+              <td align="center">
+                
+                <!-- Main Container -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; max-width: 600px; border-radius: 24px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                  
+                  <!-- Header Logo -->
+                  <tr>
+                    <td style="padding: 32px 32px 24px 32px; text-align: center; border-bottom: 1px solid #f1f5f9;">
+                      <h2 style="margin: 0; color: #0f172a; font-size: 24px; font-weight: 900; letter-spacing: -0.5px;">
+                        Q-<span style="color: #6366f1;">Menu</span>
+                      </h2>
+                    </td>
+                  </tr>
+
+                  <!-- Content Body -->
+                  <tr>
+                    <td style="padding: 40px 32px;">
+                      
+                      <!-- Warning Badge -->
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center" style="padding-bottom: 24px;">
+                            <div style="display: inline-block; background-color: #fef3c7; color: #d97706; font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: 50px;">
+                              ⏳ تنبيه هام بقرب انتهاء الاشتراك
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <h1 style="margin: 0 0 16px 0; color: #0f172a; font-size: 22px; font-weight: 800; text-align: center;">
+                        اشتراك مطعمك على وشك الانتهاء
+                      </h1>
+                      
+                      <p style="margin: 0 0 24px 0; color: #475569; font-size: 15px; line-height: 1.6; text-align: center;">
+                        مرحباً، نود تذكيرك بأن اشتراك مطعمك على منصة Q-menu سينتهي خلال <strong style="color: #e11d48;"> {{daysBefore}} أيام</strong>. يرجى المبادرة للتجديد عبر <strong>شام كاش</strong> لاستمرار عمل المنيو الخاص بك دون أي انقطاع.
+                      </p>
+
+                      <!-- Warning Box -->
+                      <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fff1f2; border: 1px solid #fecdd3; border-radius: 16px; margin-bottom: 32px;">
+                        <tr>
+                          <td style="padding: 20px; text-align: center; color: #9f1239; font-size: 13px; font-weight: 600; line-height: 1.5;">
+                            ⚠️ في حال عدم التجديد قبل انتهاء المدة، سيتم إيقاف عرض المنيو مؤقتاً للزوار حتى يتم تفعيل الاشتراك الجديد.
+                          </td>
+                        </tr>
+                      </table>
+
+                      <!-- CTA Button -->
+                      <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td align="center">
+                            <a href="https://yourdomain.com/subscription" target="_blank" style="background-color: #0f172a; color: #ffffff; padding: 14px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; text-decoration: none; display: inline-block; box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.2);">
+                              تجديد الاشتراك الآن
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="background-color: #f8fafc; padding: 24px 32px; text-align: center; border-top: 1px solid #f1f5f9;">
+                      <p style="margin: 0; color: #94a3b8; font-size: 12px; line-height: 1.5;">
+                        هذه الرسالة مرسلة تلقائياً من نظام التنبيهات في منصة Q-Menu.
+                      </p>
+                      <p style="margin: 8px 0 0 0; color: #cbd5e1; font-size: 11px;">
+                        &copy; ${new Date().getFullYear()} Q-Menu. All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+                
+              </td>
+            </tr>
+          </thead>
+        </table>
+
+        </body>
+        </html>
+        `;
