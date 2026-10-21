@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import React from "react";
 import { Header , Footer} from "@/components/Layouts";
 import { Main, Features , HowItWorks , Pricing , Faq, FinalCall} from "@/components/Sections";
