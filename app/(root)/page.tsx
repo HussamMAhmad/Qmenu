@@ -9,7 +9,7 @@ function Home() {
       <Main />
       <Features />
       <HowItWorks />
-      {/* <Pricing /> */}
+      <Pricing />
       <Faq />
       <FinalCall />
       <Footer />
