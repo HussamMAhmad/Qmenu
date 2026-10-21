@@ -19,6 +19,10 @@ export const getCachedMenu = unstable_cache(
         },
       });
 
+      if (!restaurant) {
+        return { success: false, message: "المطعم غير موجود", result: null };
+      }
+
       return {
         success: true,
         message: "تم جلب البيانات",

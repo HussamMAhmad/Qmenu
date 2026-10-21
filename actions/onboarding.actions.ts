@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { Client } from "@upstash/workflow";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const client = new Client({ token: process.env.QSTASH_TOKEN! });
 
@@ -108,6 +108,7 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     });
 
     revalidatePath(`/menu/${result.restaurant?.slug}`, "page");
+    revalidateTag(`menu-data`, { expire: 0 });
 
     return {
       success: true,
