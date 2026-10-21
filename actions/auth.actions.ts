@@ -76,10 +76,10 @@ export async function SignOut() {
     await auth.api.signOut({
       headers: await headers(),
     });
-    redirect("/sign-in");
   } catch (e) {
     console.error("Failed to sign out:", e);
   }
+  redirect("/sign-in");
 }
 
 export async function resetPasswordRequest(email: string) {
