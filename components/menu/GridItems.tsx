@@ -40,7 +40,6 @@ function GridItems({
                   setOpen(true);
                   setSelectedItemDetail(item);
                 }}
-                /* تم إزالة hover:-translate-y-1 و hover:shadow-lg الثقيلة وحصر الانتقال باللون والحدود فقط */
                 className="min-w-0 bg-brand-100 p-3 sm:p-4 rounded-[30px] shadow-sm hover:border-brand-500/50 transition-colors duration-200 flex flex-col justify-between relative cursor-pointer border border-white/50 [contain:content]"
               >
                 <div className="relative w-full h-40 sm:h-44 rounded-[18px] overflow-hidden bg-slate-100 dark:bg-slate-800/60 mb-3 flex items-center justify-center border border-slate-100 dark:border-slate-800">
@@ -53,7 +52,6 @@ function GridItems({
                       priority={index === 0}
                       unoptimized
                       sizes="(max-width: 768px) 100vw, 300px"
-                      /* تم إزالة group-hover:scale-105 لمنع إعادة الرسم الثقيل للصورة */
                       className="object-cover"
                     />
                   ) : (
@@ -103,7 +101,6 @@ function GridItems({
                         e.stopPropagation();
                         addToCart(item, 1);
                       }}
-                      /* تم تبسيط تأثير الزر ليقتصر على active:scale فقط */
                       className={`size-8 shrink-0 rounded-full flex items-center justify-center transition-transform ${
                         item.isAvailable
                           ? "bg-brand-500 text-white hover:bg-brand-600 active:scale-95"

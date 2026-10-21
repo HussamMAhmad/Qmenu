@@ -100,3 +100,7 @@ type Lang = "ar" | "en";
 interface CartItem extends Item {
   qty: number;
 }
+
+type PaymentMethods = "syriatel" | "sham";
+
+type PLANS = "starter" | "pro";

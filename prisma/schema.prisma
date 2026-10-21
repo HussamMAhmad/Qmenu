@@ -23,6 +23,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   restaurant    Restaurant?
+  payments       SubscriptionPayment[]
 
   @@unique([email])
   @@map("user")
@@ -47,6 +48,7 @@ model Restaurant {
   user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   qrSetting           QrSetting?
   subscriptions       Subscription?
+  payments       SubscriptionPayment[]
 
   @@index([userId])
   @@map("restaurant")
@@ -69,6 +71,22 @@ model Subscription {
   @@map("subscription")
 }
 
+model SubscriptionPayment {
+  id            String     @id @default(cuid())
+  transactionId String     @unique
+  paymentMethod String     
+  amount        Float      
+  createdAt     DateTime   @default(now())
+
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscription_payment")
+}
+
 enum Currency {
   USD
   SYP
@@ -83,7 +101,6 @@ enum Status {
   TRIAL
   ACTIVE
   EXPIRED
-  CANCELED
 }
 
 model QrSetting {

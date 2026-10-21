@@ -1,6 +1,7 @@
 import { IoQrCode } from "react-icons/io5";
 import { FaDatabase, FaMobileAlt, FaChartPie, FaPalette } from "react-icons/fa";
 import { MdElectricBolt } from "react-icons/md";
+import { Zap, Crown, Sparkles, Wallet, Smartphone } from "lucide-react";
 
 export const LINKS = [
   { name: "المميزات", url: "#features" },
@@ -71,7 +72,7 @@ export const STEPS = [
 
 export const FAQ = [
   {
-    question:"كيف تعمل ميزة تغيير العملة (ل.س والدولار)؟",
+    question: "كيف تعمل ميزة تغيير العملة (ل.س والدولار)؟",
     ans: "لا أبداً! بمجرد أن يفتح الزبون كاميرا هاتف الجوال ويمسح كود QR الموجود على الطاولة، يفتح المنيو تفاعلياً وبشكل فوري داخل المتصفح.",
   },
   {
@@ -83,3 +84,62 @@ export const FAQ = [
     ans: " صفر عمولة! جميع مبيعات مطعمك وأرباحك ملك لك 100%. نحن نقدم الخدمة مقابل اشتراك ثابت واضح بدون أي رسوم خفية.",
   },
 ];
+
+export const PLANS = [
+  {
+    id: "starter",
+    name: "الباقة الأساسية",
+    price: "$6",
+    period: "شهرياً",
+    description:
+      "مثالية للمطاعم الصغيرة والكافيهات الناشئة لبدء حضورهم الرقمي.",
+    features: [
+      "إضافة حتى 40 وجبة في المنيو",
+      "رمز QR Code خاص ودائم للمطعم",
+      "تحديث الأسعار والأطباق فوراً",
+      "دعم فني عبر البريد الإلكتروني",
+    ],
+    popular: false,
+    icon: Zap,
+  },
+  {
+    id: "pro",
+    name: "الباقة الاحترافية",
+    price: "$12",
+    period: "شهرياً",
+    description:
+      "الأكثر طلباً! تمنحك إمكانيات كاملة وتضمن وصولك للميزات المتقدمة فور صدورها.",
+    features: [
+      "عدد غير محدود من الوجبات (Unlimited)",
+      "رمز QR Code خاص ودائم للمطعم",
+      "وصول مجاني لميزة الثيمات والألوان فور إطلاقها",
+      "وصول مجاني لنظام استقبال الطلبات فور إطلاقه",
+      "أولوية الدعم الفني المباشر",
+    ],
+    popular: true,
+    icon: Sparkles,
+  },
+  {
+    id: "enterprise",
+    name: "باقة الشركات والفروع",
+    price: "$20",
+    period: "شهرياً",
+    description: "مخصصة للمطاعم الكبرى التي تخطط لإدارة عدة فروع من مكان واحد.",
+    features: [
+      "كل ميزات الباقة الاحترافية",
+      "إدارة عدة فروع من لوحة تحكم واحدة",
+      "لوحة تحكم خاصة لكل مدير فرع",
+      "دعم فني مخصص على مدار الساعة",
+      "إمكانية طلب تخصيص برمجي حصري",
+    ],
+    popular: false,
+    comingSoon: true,
+    icon: Crown,
+  },
+];
+
+
+export const PLANS_PRICES: Record<PLANS, number> = {
+  starter: 6,
+  pro: 12,
+};

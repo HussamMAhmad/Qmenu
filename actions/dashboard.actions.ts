@@ -40,8 +40,7 @@ export const updateExchangeRate = async (exchangeRate: number) => {
     revalidateTag(`restaurant-data-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
-        revalidatePath(`/menu/${restaurant.slug}`,"page");
-
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
 
     return {
       success: true,
@@ -97,8 +96,7 @@ export const createCategory = async (cat: string) => {
       return { success: false, message: "حدث خطا اثناء انشاء قسم جديد" };
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-        revalidatePath(`/menu/${restaurant.slug}`,"page");
-
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
 
     return { success: true, message: "تم انشاء قسم جديد بنجاح", data: result };
   } catch (e) {
@@ -166,7 +164,7 @@ export const updateCategory = async (cat: string, id: string) => {
     });
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-        revalidatePath(`/menu/${restaurant.slug}`,"page");
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
 
     return { success: true, message: "تم التعديل بنجاح", data: result };
   } catch (e) {
@@ -224,7 +222,7 @@ export const deleteCategory = async (id: string) => {
       };
     }
 
-        revalidatePath(`/menu/${restaurant.slug}`,"page");
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
@@ -331,6 +329,8 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
             {
               folder: "qmenu/items",
               resource_type: "image",
+              quality: "auto",
+              fetch_format: "auto",
             },
             function (error, result) {
               if (error) {
@@ -362,7 +362,7 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
       },
     });
 
-        revalidatePath(`/menu/${restaurant.slug}`,"page");
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
@@ -507,7 +507,7 @@ export const updateItem = async (
       },
     });
 
-        revalidatePath(`/menu/${restaurant.slug}`,"page");
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
@@ -583,7 +583,7 @@ export const deleteItem = async (id: string, catId: string) => {
       };
     }
 
-        revalidatePath(`/menu/${restaurant.slug}`,"page");
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
 
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`items-count-${user.id}`, { expire: 0 });
@@ -656,7 +656,7 @@ export const changeIsAvailable = async (
 
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
-        revalidatePath(`/menu/${restaurant.slug}`,"page");
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
     return { success: true, message: "نجاح تعديل حالة الظهور", data: result };
   } catch (e) {
     console.log("failed to change isAvailable", e);
@@ -860,6 +860,8 @@ export const updateResSetting = async (
             {
               folder: "qmenu/logRes",
               resource_type: "auto",
+              quality: "auto",
+              fetch_format: "auto",
             },
             function (error, result) {
               if (error) {
@@ -883,12 +885,6 @@ export const updateResSetting = async (
         "size" in img &&
         (img as File).size > 0)
     ) {
-      if (img.size >= MAX_SIZE) {
-        return {
-          success: false,
-          message: "حجم الصورة كبير جدا يتجاوز ال 4 ميغا",
-        };
-      }
       if (restaurant?.imageCoverPublicUrl) {
         await cloudinary.uploader.destroy(restaurant.imageCoverPublicUrl);
       }
@@ -902,6 +898,12 @@ export const updateResSetting = async (
       "size" in img &&
       (img as File).size > 0
     ) {
+      if (img.size >= MAX_SIZE) {
+        return {
+          success: false,
+          message: "حجم الصورة كبير جدا يتجاوز ال 4 ميغا",
+        };
+      }
       const arrayBuffer = await img.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer);
       const uploadResult: any = await new Promise((resolve, reject) => {
@@ -910,6 +912,8 @@ export const updateResSetting = async (
             {
               folder: "qmenu/cover",
               resource_type: "auto",
+              quality: "auto",
+              fetch_format: "auto",
             },
             function (error, result) {
               if (error) {
@@ -943,7 +947,7 @@ export const updateResSetting = async (
       },
     });
 
-    revalidatePath(`/menu/${restaurant.slug}`,"page");
+    revalidatePath(`/menu/${restaurant.slug}`, "page");
     revalidateTag(`restaurant-setting-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard", "layout");
 
@@ -954,6 +958,6 @@ export const updateResSetting = async (
     };
   } catch (e) {
     console.log("failed to update restaurant settings", e);
-    return { success: false, message: "فضل تحديث الاعدادات" };
+    return { success: false, message: "فشل تحديث الاعدادات" };
   }
 };

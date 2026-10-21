@@ -125,3 +125,17 @@ export const SettingInfoSchema = z.object({
   imageCoverUrl: z.union([z.string(), z.any()]).nullable().optional(),
   logo: z.union([z.string(), z.any()]).nullable().optional(),
 });
+
+export const SyriatelSchema = z.object({
+  transaction: z
+    .string()
+    .min(1, "رقم العملية مطلوب")
+    .regex(/^[0-9]+$/, "رقم العملية يجب أن يحتوي على أرقام فقط"),
+});
+
+export const ShamSchema = z.object({
+  transaction: z
+    .string()
+    .min(1, "رقم العملية مطلوب")
+    .regex(/^[0-9a-zA-Z]+$/, "رقم العملية غير صحيح"),
+});

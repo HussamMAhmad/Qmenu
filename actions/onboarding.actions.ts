@@ -3,6 +3,9 @@
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
+import { Client } from "@upstash/workflow";
+
+const client = new Client({ token: process.env.QSTASH_TOKEN! });
 
 export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
   try {
@@ -86,9 +89,18 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
       };
     });
 
+    const { workflowRunId } = await client.trigger({
+      url: `${process.env.BETTER_AUTH_URL}/api/subscription/reminder`,
+      body: {
+        subscriptionId: result.subscription.id,
+        email,
+      },
+      retries: 3,
+    });
+
     return {
       success: true,
-      data: result.restaurant,
+      data: result.subscription,
       userId: result.userId,
     };
   } catch (e) {
