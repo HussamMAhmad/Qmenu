@@ -39,6 +39,7 @@ export const updateExchangeRate = async (exchangeRate: number) => {
 `;
     revalidateTag(`restaurant-data-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
+    revalidateTag(`menu-data`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
     revalidatePath(`/menu/${restaurant.slug}`, "page");
 
