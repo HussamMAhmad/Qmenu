@@ -109,6 +109,8 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
       },
       retries: 3,
     });
+    
+    revalidateTag(`menu-data`, { expire: 0 });
 
     return {
       success: true,
