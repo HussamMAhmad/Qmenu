@@ -25,8 +25,11 @@ export const { POST } = serve<WorkflowPayload>(async (context) => {
     });
   });
 
-  if (!subscription || subscription.status !== "ACTIVE") {
-    console.log("Subscription not found or not active");
+  if (
+    !subscription ||
+    (subscription.status !== "ACTIVE" && subscription.status !== "TRIAL")
+  ) {
+    console.log("Subscription not found or not active/trial");
     return;
   }
 
@@ -57,7 +60,10 @@ export const { POST } = serve<WorkflowPayload>(async (context) => {
       },
     );
 
-    if (!currentSub || currentSub.status !== "ACTIVE") {
+    if (
+      !currentSub ||
+      (currentSub.status !== "ACTIVE" && currentSub.status !== "TRIAL")
+    ) {
       console.log(
         `Subscription no longer active before ${daysBefore}-day reminder. Stopping workflow.`,
       );

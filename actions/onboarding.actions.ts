@@ -30,6 +30,14 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
       return { success: false, error: "المستخدم غير موجود" };
     }
 
+    const existingSlug = await prisma.restaurant.findUnique({
+      where: { slug: data.slug },
+    });
+
+    if (existingSlug) {
+      return { success: false, error: "اسم المعرف هذا موجود بالفعل" };
+    }
+
     const trialEndDate = new Date();
     trialEndDate.setDate(trialEndDate.getDate() + 14);
 
@@ -103,8 +111,14 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
       data: result.subscription,
       userId: result.userId,
     };
-  } catch (e) {
+  } catch (e: any) {
     console.error("failed to complete restaurant onboarding:", e);
+    if (e?.code === "P2002" && e?.meta?.target?.includes("slug")) {
+      return {
+        success: false,
+        error: "اسم المعرف هذا مستخدم بالفعل، يرجى اختيار اسم آخر",
+      };
+    }
     return {
       success: false,
       error: "حدث خطأ أثناء حفظ بيانات المطعم والاشتراك",
