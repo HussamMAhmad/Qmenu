@@ -1,5 +1,5 @@
 import { serve } from "@upstash/workflow/nextjs";
-import { prisma } from "@/lib/prisma.js";
+import { prisma } from "@/lib/prisma";
 import dayjs from "dayjs";
 import { Resend } from "resend";
 
