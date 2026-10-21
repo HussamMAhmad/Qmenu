@@ -42,6 +42,8 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     const trialEndDate = new Date();
     trialEndDate.setDate(trialEndDate.getDate() + 14);
 
+    const slug = data.slug.trim().toLowerCase();
+
     const result = await prisma.$transaction(async (tx) => {
       const updatedUser = await tx.user.update({
         where: { email },
@@ -50,14 +52,14 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
             upsert: {
               create: {
                 name: data.name,
-                slug: data.slug,
+                slug: slug,
                 description: data.description,
                 exchangeRate: data.exchangeRate,
                 whatsappNumber: data.whatsappNumber,
               },
               update: {
                 name: data.name,
-                slug: data.slug,
+                slug: slug,
                 description: data.description,
                 exchangeRate: data.exchangeRate,
                 whatsappNumber: data.whatsappNumber,

@@ -19,6 +19,8 @@ export const getCachedMenu = unstable_cache(
         },
       });
 
+      console.log("📌 نتيجة البحث في قاعدة البيانات:", restaurant ? "تم العثور على المطعم ✅" : "المطعم غير موجود (null) ❌");
+
       if (!restaurant) {
         return { success: false, message: "المطعم غير موجود", result: null };
       }
