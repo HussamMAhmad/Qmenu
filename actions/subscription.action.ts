@@ -112,7 +112,6 @@ export async function verifyAndActivateSubscription(
           amount: actualAmountUSD,
           userId: user.id,
           restaurantId: restaurant.id,
-          planId,
         },
       });
 
