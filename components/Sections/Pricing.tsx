@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Check, ShieldCheck, Sparkles, ArrowLeft } from "lucide-react";
 import { PLANS } from "@/data/constants";
-import { useSearchParams } from "next/navigation";
 
-export default function SubscriptionPage() {
+function SubscriptionContent() {
   const searchParams = useSearchParams();
   const isExpired = searchParams.get("expired") === "true";
 
@@ -50,6 +49,7 @@ export default function SubscriptionPage() {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch relative z-10">
         {PLANS.map((plan) => {
           const isSelected = selectedPlan === plan.id;
+          const IconComponent = plan.icon;
 
           return (
             <div
@@ -84,7 +84,7 @@ export default function SubscriptionPage() {
                     {plan.name}
                   </h3>
                   <span className="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center text-brand-500">
-                    <plan.icon className="w-5 h-5" />
+                    <IconComponent className="w-5 h-5" />
                   </span>
                 </div>
 
@@ -139,5 +139,13 @@ export default function SubscriptionPage() {
         })}
       </div>
     </div>
+  );
+}
+
+export default function SubscriptionPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">جاري تحميل الباقات...</div>}>
+      <SubscriptionContent />
+    </Suspense>
   );
 }
