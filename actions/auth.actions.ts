@@ -8,10 +8,11 @@ export async function SignUp({ name, email, password }: USER) {
   try {
     const existingEmail = await prisma.user.findUnique({
       where: { email },
+      select: { emailVerified: true },
     });
 
-    if(existingEmail){
-      return {success : false , error : "هذا الايميل موجود بالفعل"}
+    if (existingEmail?.emailVerified) {
+      return { success: false, error: "هذا الايميل موجود بالفعل" };
     }
 
     const response = await auth.api.signUpEmail({
