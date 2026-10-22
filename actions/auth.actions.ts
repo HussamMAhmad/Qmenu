@@ -6,8 +6,9 @@ import { redirect } from "next/navigation";
 
 export async function SignUp({ name, email, password }: USER) {
   try {
+    const normalizedEmail = email.trim().toLowerCase();
     const existingEmail = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
       select: { emailVerified: true, id: true },
     });
 
@@ -15,16 +16,27 @@ export async function SignUp({ name, email, password }: USER) {
       if (existingEmail.emailVerified) {
         return { success: false, error: "هذا الايميل مسجل ومفعل بالفعل" };
       } else {
-        await prisma.user.delete({
-          where: { id: existingEmail.id },
+        await auth.api.sendVerificationOTP({
+          body: {
+            email: normalizedEmail,
+            type: "sign-in",
+          },
+          headers: await headers(),
         });
+
+        return {
+          success: true,
+          requiresVerification: true,
+          error:
+            "لديك حساب غير مفعل بهذا البريد. لقد أرسلنا رمز تحقق جديداً إليك.",
+        };
       }
     }
 
     const response = await auth.api.signUpEmail({
       body: {
         name,
-        email,
+        email: normalizedEmail,
         password,
       },
       headers: await headers(),
@@ -32,16 +44,22 @@ export async function SignUp({ name, email, password }: USER) {
 
     const data = await auth.api.sendVerificationOTP({
       body: {
-        email, // required, Email address to send the OTP.
+        email: normalizedEmail, // required, Email address to send the OTP.
         type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
       },
     });
 
     if (!response) return { success: false, error: "failed to create account" };
     return { success: true, data: response };
-  } catch (e) {
+  } catch (e: any) {
     console.log("failed to sign up", e);
-    return { success: false, error: e };
+    if (e?.code === "P2002") {
+      return { success: false, error: "هذا الايميل موجود بالفعل" };
+    }
+    return {
+      success: false,
+      error: e?.message || "حدث خطأ أثناء إنشاء الحساب، يرجى المحاولة لاحقاً",
+    };
   }
 }
 

@@ -15,9 +15,6 @@ export const formSchemaSignUp = z.object({
     .regex(/[@$!%*?&]/, {
       message: "يجب أن تحتوي على رمز خاص واحد على الأقل (@$!%*?&)",
     }),
-  termsAndPolicy: z.boolean().refine((value) => value === true, {
-    message: "يجب ان توافق على شروط الخدمة و سياسة الخصوصية",
-  }),
 });
 
 export const formSchemaSignIn = z.object({

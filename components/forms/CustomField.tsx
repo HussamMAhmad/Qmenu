@@ -57,7 +57,8 @@ function RenderField<TFieldValues extends FieldValues>({
     forgetPassword,
     label,
     className,
-    renderSkeleton
+    renderSkeleton,
+    disabled,
   } = props;
   const [showPassword, setShowPassword] = useState(false);
   switch (fieldtype) {
@@ -71,6 +72,7 @@ function RenderField<TFieldValues extends FieldValues>({
             aria-invalid={fieldState.invalid}
             placeholder={placeholder}
             autoComplete="off"
+            disabled={disabled}
             className={
               className ??
               `w-full pr-10 pl-4 py-5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-brand-500! focus:bg-white! focus:ring-2 focus:ring-brand-500/10! transition-all text-right font-medium`
@@ -96,6 +98,7 @@ function RenderField<TFieldValues extends FieldValues>({
               id={name}
               type="text"
               aria-invalid={fieldState.invalid}
+              disabled={disabled}
               placeholder={placeholder}
               autoComplete="off"
               className={
@@ -134,6 +137,7 @@ function RenderField<TFieldValues extends FieldValues>({
               aria-invalid={fieldState.invalid}
               placeholder={placeholder}
               autoComplete="off"
+              disabled={disabled}
               className="w-full pr-10 pl-4 py-5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-brand-500! focus:bg-white! focus:ring-2 focus:ring-brand-500/10! transition-all text-right font-medium"
             />
             {Icon ? (
@@ -153,41 +157,12 @@ function RenderField<TFieldValues extends FieldValues>({
           </div>
         </div>
       );
-    case FormFieldType.CHECKBOXTERMS:
-      return (
-        <div className="flex items-start gap-2 pt-1">
-          <Checkbox
-            id={name}
-            className="mt-1 w-4 h-4 data-[state=checked]:border-brand-500! data-[state=checked]:bg-brand-500! rounded cursor-pointer"
-            checked={field.value}
-            onCheckedChange={field.onChange}
-          />
-          <label
-            htmlFor={name}
-            className="text-xs text-slate-500 font-medium leading-relaxed"
-          >
-            أوافق على{" "}
-            <Link
-              href="#terms"
-              className="text-brand-500 font-bold hover:underline"
-            >
-              شروط الخدمة
-            </Link>{" "}
-            و{" "}
-            <Link
-              href="#privacy"
-              className="text-brand-500 font-bold hover:underline"
-            >
-              سياسة الخصوصية
-            </Link>
-          </label>
-        </div>
-      );
     case FormFieldType.CHECKBOX:
       return (
         <div className="flex items-center gap-2.5 select-none">
           <Checkbox
             id={name}
+            disabled={disabled}
             checked={field.value}
             onCheckedChange={field.onChange}
             className="h-4 w-4 shrink-0 rounded border-slate-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/20 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-brand-500 data-[state=checked]:border-brand-500 data-[state=checked]:text-white cursor-pointer"
@@ -205,6 +180,7 @@ function RenderField<TFieldValues extends FieldValues>({
         <div className="relative">
           <Input
             {...field}
+            disabled={disabled}
             id={name}
             type="number"
             step="any"
@@ -229,6 +205,7 @@ function RenderField<TFieldValues extends FieldValues>({
           value={field.value || ""}
           onValueChange={field.onChange}
           defaultValue={field.value}
+          disabled={disabled}
         >
           <SelectTrigger className="w-full rounded-xl border border-slate-200 bg-white px-4 py-5 text-sm font-medium text-slate-800 transition-all hover:border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50">
             <SelectValue placeholder={placeholder} />

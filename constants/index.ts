@@ -2,10 +2,10 @@ export const FormDefaultValue = {
   name: "",
   email: "",
   password: "",
-  termsAndPolicy: false,
 };
 
 export const defaultFormItemValues = {
+  categoryId: "",
   nameAr: "",
   nameEn: "",
   description: "",

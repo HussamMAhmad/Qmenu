@@ -133,8 +133,8 @@ export default function SettingQrForm({
           label="ادخل الكود او اختر لونا جاهزا"
           placeholder="#0f172a"
           Icon={FileText}
+          disabled={loading}
         />
-
         <CustomField
           control={form.control}
           name="qrLogo"
@@ -147,20 +147,21 @@ export default function SettingQrForm({
                 onChange={field.onChange}
                 name={field.name}
                 aspectClass="w-full h-56 rounded-2xl"
+                disabled={loading}
               />
             </div>
           )}
         />
-
         <CustomField
           control={form.control}
           name="qrSubtitle"
           fieldtype={FormFieldType.INPUT}
           label="الوصف الترويجي تحت الرمز"
           placeholder="مثال : امسح الكود لتصفح القائمة"
+          disabled={loading}
         />
-
         <CustomButton
+          label="جاري الحفظ"
           isLoading={loading}
           className="w-full mt-4 py-6 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 active:bg-brand-700 focus:ring-4 focus:ring-brand-100 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 disabled:opacity-70 cursor-pointer"
         >

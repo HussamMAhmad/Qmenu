@@ -32,8 +32,11 @@ function SignInForm() {
       if (result?.success) {
         console.log("success signIn");
         router.push(`/onboarding`);
-      }else {
-        setError(result?.error || "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور");
+      } else {
+        setError(
+          result?.error ||
+            "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور",
+        );
       }
     } catch (e) {
       console.log("failed to sign in ", e);
@@ -53,6 +56,7 @@ function SignInForm() {
           label="البريد الالكتروني"
           placeholder="name@example.com"
           Icon={Mail}
+          disabled={loading}
         />
         <CustomField
           control={form.control}
@@ -61,6 +65,7 @@ function SignInForm() {
           placeholder="••••••••"
           Icon={Lock}
           forgetPassword={true}
+          disabled={loading}
         />
       </FieldGroup>
       {error && (
@@ -69,6 +74,7 @@ function SignInForm() {
         </div>
       )}
       <CustomButton
+        label="جاري تسجيل الدخول"
         isLoading={loading}
         className="w-full py-6 px-4 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/35 transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer mt-6"
       >

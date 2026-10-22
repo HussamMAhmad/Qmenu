@@ -7,6 +7,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading: boolean;
   className?: string;
   children: React.ReactNode;
+  label?: string;
 }
 
 function CustomButton({
@@ -14,6 +15,7 @@ function CustomButton({
   className,
   children,
   onClick,
+  label,
 }: ButtonProps) {
   return (
     <Button
@@ -23,7 +25,8 @@ function CustomButton({
     >
       {isLoading ? (
         <div className="flex items-center gap-4">
-          يتم الاّن انشاء الحساب <Spinner className="size-4" />
+          {label ? label : "جاري التحميل"}
+          <Spinner className="size-4" />
         </div>
       ) : (
         children

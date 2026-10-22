@@ -70,6 +70,7 @@ function DeleteItem({ id, catId }: DeleteCategoryProps) {
         </AlertDialogHeader>
         <AlertDialogFooter className="flex-row-reverse justify-start gap-3 pt-4">
           <CustomButton
+            label="جاري الحذف"
             onClick={handleDelete}
             isLoading={loading}
             className="cursor-pointer bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl px-5 h-10 transition-all shadow-sm shadow-red-600/20"

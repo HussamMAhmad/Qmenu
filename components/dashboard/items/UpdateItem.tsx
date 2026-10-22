@@ -155,6 +155,7 @@ function UpdateItem({
             label="القسم الرئيسي"
             placeholder="اختر القسم الذي تنتمي له الوجبة..."
             Icon={TbCategoryPlus}
+            disabled={loading}
           >
             {categories.map((cat) => (
               <SelectItem
@@ -174,6 +175,7 @@ function UpdateItem({
               label="اسم الوجبة (عربي)"
               placeholder="مثال: سلطة سيزر"
               Icon={PiBowlFood}
+              disabled={loading}
             />
             <CustomField
               control={form.control}
@@ -182,6 +184,7 @@ function UpdateItem({
               label="اسم الوجبة (إنجليزي)"
               placeholder="مثال: Caesar Salad"
               Icon={Tag}
+              disabled={loading}
             />
           </div>
           <CustomField
@@ -191,6 +194,7 @@ function UpdateItem({
             label="الوصف"
             placeholder="مكونات الوجبة أو التفاصيل..."
             Icon={FileText}
+            disabled={loading}
           />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <CustomField
@@ -200,6 +204,7 @@ function UpdateItem({
               label="السعر (ل.س)"
               placeholder="0"
               Icon={DollarSign}
+              disabled={loading}
             />
             <CustomField
               control={form.control}
@@ -208,6 +213,7 @@ function UpdateItem({
               label="السعر ($)"
               placeholder="0.00"
               Icon={DollarSign}
+              disabled={loading}
             />
             <CustomField
               control={form.control}
@@ -216,6 +222,7 @@ function UpdateItem({
               label="وقت التحضير"
               placeholder="مثال: 15 دقيقة"
               Icon={Clock}
+              disabled={loading}
             />
           </div>
           <div className="pt-1">
@@ -224,6 +231,7 @@ function UpdateItem({
               name="isAvailable"
               fieldtype={FormFieldType.CHECKBOX}
               label="متاح للطلب والعرض في القائمة"
+              disabled={loading}
             />
           </div>
           <CustomField
@@ -238,12 +246,14 @@ function UpdateItem({
                   onChange={field.onChange}
                   name={field.name}
                   aspectClass="w-full h-48 rounded-xl"
+                  disabled={loading}
                 />
               </div>
             )}
           />
           <AlertDialogFooter className="flex flex-col-reverse sm:flex-row-reverse sm:justify-start gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
             <CustomButton
+              label="جاري التعديل"
               type="submit"
               isLoading={loading}
               className="w-full sm:w-auto cursor-pointer bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-xl px-5 h-10 transition-all shadow-sm shadow-brand-500/20"

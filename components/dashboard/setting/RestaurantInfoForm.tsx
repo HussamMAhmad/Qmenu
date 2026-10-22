@@ -109,6 +109,7 @@ function RestaurantInfoForm({
               label="اسم المطعم"
               placeholder="مثال: مطعم الياسمين الدمشقي"
               Icon={Store}
+              disabled={loading}
             />
           </div>
           <div className="sm:col-span-2">
@@ -119,6 +120,7 @@ function RestaurantInfoForm({
               label="وصف قصير للمنيو"
               placeholder="أشهى المأكولات الشرقية والغربية والوجبات السريعة يومياً من الساعة 12 ظهراً"
               Icon={FileText}
+              disabled={loading}
             />
           </div>
           <div className="sm:col-span-2">
@@ -129,6 +131,7 @@ function RestaurantInfoForm({
               label="رقم الواتساب للطلبات (اختياري)"
               placeholder="+963912345678"
               Icon={Phone}
+              disabled={loading}
             />
           </div>
         </div>
@@ -148,6 +151,7 @@ function RestaurantInfoForm({
               name="showUSD"
               fieldtype={FormFieldType.CHECKBOX}
               label="تفعيل عرض الأسعار بالدولار الأمريكي (USD)"
+              disabled={loading}
             />
           </div>
           {isDollarEnabled && (
@@ -159,6 +163,7 @@ function RestaurantInfoForm({
                 label="سعر صرف الدولار مقابل الليرة المحلية"
                 placeholder="مثال: 15000"
                 Icon={Banknote}
+                disabled={loading}
               />
               <p className="text-[11px] text-slate-400 mt-1.5">
                 سيتم استخدام هذا المعامل لتحويل الأسعار تلقائياً في واجهة
@@ -182,6 +187,7 @@ function RestaurantInfoForm({
                   onChange={field.onChange}
                   name={field.name}
                   aspectClass="w-full h-36 sm:h-40 rounded-xl"
+                  disabled={loading}
                 />
               </div>
             )}
@@ -198,6 +204,7 @@ function RestaurantInfoForm({
                   onChange={field.onChange}
                   name={field.name}
                   aspectClass="w-full h-36 sm:h-40 rounded-xl"
+                  disabled={loading}
                 />
               </div>
             )}
@@ -207,6 +214,7 @@ function RestaurantInfoForm({
 
       <div className="pt-4 flex items-center justify-end border-t border-slate-100">
         <CustomButton
+          label="جاري الحفظ"
           type="submit"
           isLoading={loading}
           className="w-full sm:w-auto h-11 px-8 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs gap-2 shadow-sm transition-all cursor-pointer"

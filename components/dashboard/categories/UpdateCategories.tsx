@@ -88,10 +88,12 @@ function UpdateCategories({
               label="اسم القسم"
               placeholder="مثال: المشويات، المشروبات..."
               Icon={BiCategory }
+              disabled={loading}
             />
           </div>
           <AlertDialogFooter className="flex-row-reverse justify-start gap-3 pt-2">
             <CustomButton
+              label="جاري التعديل"
               type="submit"
               isLoading={loading}
               className="cursor-pointer bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-xl px-5 h-10 transition-all shadow-sm shadow-brand-500/20"

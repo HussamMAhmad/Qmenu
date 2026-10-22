@@ -9,12 +9,14 @@ type fileUploaderProps = {
   onChange: (files: File[]) => void;
   name: string;
   aspectClass?: string;
+  disabled: boolean;
 };
 
 function ImageDropZone({
   files,
   onChange,
   name,
+  disabled,
   aspectClass = "w-32 h-32 rounded-full",
 }: fileUploaderProps) {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -39,10 +41,12 @@ function ImageDropZone({
           : "border-slate-200 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-300"
       }`}
     >
-      <input {...getInputProps()} id={name} />
+      <input {...getInputProps()} id={name} disabled={disabled} />
       {files && files?.length > 0 ? (
         <div className="relative w-full flex flex-col items-center">
-          <div className={`${aspectClass} relative w-full rounded-xl overflow-hidden shadow-inner border border-slate-200 bg-white`}>
+          <div
+            className={`${aspectClass} relative w-full rounded-xl overflow-hidden shadow-inner border border-slate-200 bg-white`}
+          >
             <Image
               src={
                 typeof files === "string"

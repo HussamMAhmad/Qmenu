@@ -19,6 +19,7 @@ function SubscriptionContent() {
 
   return (
     <div
+      id="subscription"
       className="min-h-screen bg-slate-100 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
       dir="rtl"
     >
@@ -144,7 +145,13 @@ function SubscriptionContent() {
 
 export default function SubscriptionPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">جاري تحميل الباقات...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          جاري تحميل الباقات...
+        </div>
+      }
+    >
       <SubscriptionContent />
     </Suspense>
   );

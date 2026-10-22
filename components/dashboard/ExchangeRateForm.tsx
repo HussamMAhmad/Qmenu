@@ -32,12 +32,12 @@ function ExchangeRateForm({ exchangeRate }: { exchangeRate: number }) {
         const update = await updateExchangeRate(values.exchangeRate);
         if (update?.data) {
           toast.success(update.message);
-        }else{
+        } else {
           toast.error(update.message);
         }
       } catch (e) {
         console.log("failed to update the exchangeRate", e);
-          toast.error("فشل تعديل سعر الصرف");
+        toast.error("فشل تعديل سعر الصرف");
       }
     });
   };
@@ -64,8 +64,10 @@ function ExchangeRateForm({ exchangeRate }: { exchangeRate: number }) {
             name="exchangeRate"
             fieldtype={FormFieldType.NUMBER}
             label="سعر صرف الدولار مقابل الليرة"
+            disabled={isPending}
           />
           <CustomButton
+            label="جاري الحفظ"
             isLoading={isPending}
             className="w-full mt-4 py-6 px-6 rounded-xl font-bold text-white bg-brand-500 hover:bg-brand-600 active:bg-brand-700 focus:ring-4 focus:ring-brand-100 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 disabled:opacity-70 cursor-pointer"
           >

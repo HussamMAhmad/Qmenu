@@ -12,6 +12,7 @@ import { FormDefaultValue } from "@/constants";
 import { useState } from "react";
 import { SignUp } from "@/actions/auth.actions";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 function SignUpForm() {
   const router = useRouter();
@@ -28,6 +29,8 @@ function SignUpForm() {
       if (result?.success) {
         console.log("success signUp");
         router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
+      } else {
+        toast.error(result?.error);
       }
     } catch (e) {
       console.log("failed to sign up ", e);
@@ -46,6 +49,7 @@ function SignUpForm() {
           label="الاسم الكامل"
           Icon={User}
           placeholder="ادخل الاسم"
+          disabled={isloading}
         />
         <CustomField
           control={form.control}
@@ -54,6 +58,7 @@ function SignUpForm() {
           label="البريد الالكتروني"
           placeholder="name@example.com"
           Icon={Mail}
+          disabled={isloading}
         />
         <CustomField
           control={form.control}
@@ -61,14 +66,11 @@ function SignUpForm() {
           fieldtype={FormFieldType.PASSWORD}
           placeholder="••••••••"
           Icon={Lock}
-        />
-        <CustomField
-          control={form.control}
-          name="termsAndPolicy"
-          fieldtype={FormFieldType.CHECKBOXTERMS}
+          disabled={isloading}
         />
       </FieldGroup>
       <CustomButton
+      label="جاري انشاء الحساب"
         isLoading={isloading}
         className="w-full py-6 px-4 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/35 transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer mt-6"
       >

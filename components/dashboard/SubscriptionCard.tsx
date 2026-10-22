@@ -6,15 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import dayjs from "dayjs";
 
-// const subscription = {
-//   planName: "الخطة التجريبية (Free)",
-//   isFree: true,
-//   daysLeft: 12,
-//   totalDays: 30,
-//   maxDishes: 20,
-//   currentDishes: 14,
-// };
-
 async function SubscriptionCard({
   subscription,
   dishesCount,
@@ -113,7 +104,7 @@ async function SubscriptionCard({
         />
       </div>
 
-      <Link href="/subscription/checkout" className="block mt-5">
+      <Link href="/#subscription" className="block mt-5">
         <Button
           variant="outline"
           className="h-10 w-full rounded-xl border-white/10 bg-white/5 text-xs font-bold text-white hover:bg-white/10 hover:text-white transition-all"

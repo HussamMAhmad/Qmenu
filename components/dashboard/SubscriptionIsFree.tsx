@@ -1,8 +1,7 @@
-import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles , ArrowLeft} from "lucide-react";
-import { Button } from "../ui/button";
+import { Sparkles, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 function SubscriptionIsFree({ daysLeft }: { daysLeft: number }) {
   return (
@@ -29,10 +28,13 @@ function SubscriptionIsFree({ daysLeft }: { daysLeft: number }) {
               </p>
             </div>
           </div>
-          <Button className="cursor-pointer h-11 gap-2 rounded-xl bg-brand-500 px-5 font-bold text-white hover:bg-brand-600">
+          <Link
+            href="/#subscription"
+            className="cursor-pointer inline-flex items-center justify-center h-11 gap-2 rounded-xl bg-brand-500 px-5 font-bold text-white hover:bg-brand-600 transition-all"
+          >
             ترقية الاشتراك
             <ArrowLeft className="h-4 w-4" />
-          </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

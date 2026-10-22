@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { Toaster } from "sonner";
+import Link from "next/link";
 
 async function layout({ children }: { children: React.ReactNode }) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -113,6 +114,25 @@ async function layout({ children }: { children: React.ReactNode }) {
               },
             }}
           />
+          <p className="mt-4 text-center text-[11px] leading-relaxed text-slate-500">
+            بمحاولة التسجيل أو الدخول عبر Google، فإنك توافق على{" "}
+            <Link
+              href="/terms"
+              target="_blank"
+              className="font-medium text-brand-600 underline underline-offset-2 hover:text-brand-700"
+            >
+              شروط الخدمة
+            </Link>{" "}
+            و{" "}
+            <Link
+              href="/privacy"
+              target="_blank"
+              className="font-medium text-brand-600 underline underline-offset-2 hover:text-brand-700"
+            >
+              سياسة الخصوصية
+            </Link>
+            .
+          </p>
           <div className="mt-8 text-center text-xs text-slate-400 font-medium">
             © 2026 جميع الحقوق محفوظة لمنصة منيوك (Q-Menu)
           </div>

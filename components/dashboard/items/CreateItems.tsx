@@ -129,6 +129,7 @@ function CreateItems({
             label="القسم الرئيسي"
             placeholder="اختر القسم الذي تنتمي له الوجبة..."
             Icon={TbCategoryPlus}
+            disabled={loading}
           >
             {categories.map((cat) => (
               <SelectItem
@@ -148,23 +149,26 @@ function CreateItems({
               label="اسم الوجبة (عربي)"
               placeholder="مثال: سلطة سيزر"
               Icon={PiBowlFood}
+              disabled={loading}
             />
             <CustomField
               control={form.control}
               name="nameEn"
               fieldtype={FormFieldType.INPUT}
-              label="اسم الوجبة (إنجليزي)"
+              label="اسم الوجبة (إنجليزي) / (اختياري)"
               placeholder="مثال: Caesar Salad"
               Icon={Tag}
+              disabled={loading}
             />
           </div>
           <CustomField
             control={form.control}
             name="description"
             fieldtype={FormFieldType.INPUT}
-            label="الوصف"
+            label="الوصف (اختياري)"
             placeholder="مكونات الوجبة أو التفاصيل..."
             Icon={FileText}
+            disabled={loading}
           />
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <CustomField
@@ -174,6 +178,7 @@ function CreateItems({
               label="السعر (ل.س)"
               placeholder="0"
               Icon={DollarSign}
+              disabled={loading}
             />
             <CustomField
               control={form.control}
@@ -182,14 +187,16 @@ function CreateItems({
               label="السعر ($)"
               placeholder="0.00"
               Icon={DollarSign}
+              disabled={loading}
             />
             <CustomField
               control={form.control}
               name="prepTime"
               fieldtype={FormFieldType.INPUT}
-              label="وقت التحضير"
+              label="وقت التحضير (اختياري)"
               placeholder="مثال: 15 دقيقة"
               Icon={Clock}
+              disabled={loading}
             />
           </div>
           <div className="pt-1">
@@ -198,6 +205,7 @@ function CreateItems({
               name="isAvailable"
               fieldtype={FormFieldType.CHECKBOX}
               label="متاح للطلب والعرض في القائمة"
+              disabled={loading}
             />
           </div>
           <CustomField
@@ -212,12 +220,14 @@ function CreateItems({
                   onChange={field.onChange}
                   name={field.name}
                   aspectClass="w-full h-40 rounded-xl"
+                  disabled={loading}
                 />
               </div>
             )}
           />
           <AlertDialogFooter className="flex flex-col-reverse sm:flex-row-reverse sm:justify-start gap-2 sm:gap-3 pt-3 border-t border-slate-100 shrink-0">
             <CustomButton
+            label="جاري انشاء منتج"
               type="submit"
               isLoading={loading}
               className="w-full sm:w-auto cursor-pointer bg-brand-500 hover:bg-brand-600 text-white font-medium rounded-xl px-5 h-10 transition-all shadow-sm shadow-brand-500/20"
