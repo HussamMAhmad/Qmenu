@@ -78,29 +78,29 @@ export async function verifyAndActivateSubscription(
     let isTxValid = false;
     let actualAmountUSD = 0;
 
-    // if (resData.success && resData.data?.found === true) {
-    //   const txCurrency = resData.data.transaction.currency;
-    //   const rawAmount = parseFloat(resData.data.transaction.amount);
+    if (resData.success && resData.data?.found === true) {
+      const txCurrency = resData.data.transaction.currency;
+      const rawAmount = parseFloat(resData.data.transaction.amount);
 
-    //   if (txCurrency !== "USD") {
-    //     return {
-    //       success: false,
-    //       message:
-    //         "عذراً، يجب أن تكون عملية التحويل بالدولار الأمريكي (USD) حصراً.",
-    //     };
-    //   }
+      if (txCurrency !== "USD") {
+        return {
+          success: false,
+          message:
+            "عذراً، يجب أن تكون عملية التحويل بالدولار الأمريكي (USD) حصراً.",
+        };
+      }
 
-    //   actualAmountUSD = rawAmount;
-    //   isTxValid = actualAmountUSD >= requiredAmountUSD;
-    // }
+      actualAmountUSD = rawAmount;
+      isTxValid = actualAmountUSD >= requiredAmountUSD;
+    }
 
-    // if (!isTxValid) {
-    //   return {
-    //     success: false,
-    //     message:
-    //       "لم يتم العثور على حركة تحويل مطابقة بالدولار أو أن المبلغ المحول غير كافٍ.",
-    //   };
-    // }
+    if (!isTxValid) {
+      return {
+        success: false,
+        message:
+          "لم يتم العثور على حركة تحويل مطابقة بالدولار أو أن المبلغ المحول غير كافٍ.",
+      };
+    }
 
     const startDate = new Date();
     const endDate = new Date();

@@ -12,6 +12,15 @@ export const getRestaurant = async (userId: string) =>
           exchangeRate: true,
           slug: true,
           categories: true,
+          subscriptions: {
+            select: {
+              id: true,
+              name: true,
+              status: true,
+              startDate: true,
+              renewalDate: true,
+            },
+          },
         },
       });
     },

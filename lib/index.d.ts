@@ -64,6 +64,16 @@ type RestaurantInfo = {
   logo?: string | null;
 };
 
+type Status = "TRIAL" | "ACTIVE" | "EXPIRED";
+
+type Subscription = {
+  id: string;
+  name: string;
+  status: Status;
+  startDate: Date;
+  renewalDate: Date;
+};
+
 type Item = {
   id: string;
   categoryId: string;

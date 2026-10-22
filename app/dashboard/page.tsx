@@ -8,6 +8,9 @@ import {
   Menu,
   FolderKanban,
   Utensils,
+  Plus,
+  Settings,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,34 +18,39 @@ import SubscriptionCard from "@/components/dashboard/SubscriptionCard";
 import { OverviewCard } from "@/components/dashboard/OverviewCard";
 import QrCardOverview from "@/components/dashboard/QrCardOverview";
 import SubscriptionIsFree from "@/components/dashboard/SubscriptionIsFree";
-import RecentDishes from "@/components/dashboard/RecentDishes";
 import ExchangeRateForm from "@/components/dashboard/ExchangeRateForm";
 import { getRestaurant, getSetting } from "@/lib/queries/dashboard";
 import { getCurrentUser } from "@/lib/auth-helper";
 import { countItems } from "@/lib/queries/dashboard";
+import dayjs from "dayjs";
 
 export default async function DashboardOverviewPage() {
-  const subscription = {
-    planName: "الخطة التجريبية (Free)",
-    isFree: true,
-    daysLeft: 12,
-    totalDays: 30,
-    maxDishes: 20,
-    currentDishes: 14,
-  };
   const user = await getCurrentUser();
   const restaurant = await getRestaurant(user.id);
   const restaurantName = restaurant?.name ?? "مطعم غير معروف";
   const exchangeRate = Number(restaurant?.exchangeRate) ?? "0";
   const setting = await getSetting(user.id);
   const dishesCount = await countItems(user.id);
-  const categoriesCount = restaurant?.categories.length;
-  const slug = restaurant?.slug;
+  const categoriesCount = restaurant?.categories.length ?? 0;
+  const slug = restaurant?.slug ?? "";
   const menuUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/menu/${slug}`;
+  const subscrption = restaurant?.subscriptions;
+  
+  let maxDishes = 0;
+  if (subscrption?.status === "TRIAL") {
+    maxDishes = 15;
+  } else if (subscrption?.status === "ACTIVE") {
+    maxDishes = 100;
+  }
+  
+  const isTrial = subscrption?.status === "TRIAL";
+  const now = dayjs();
+  const renewal = dayjs(subscrption?.renewalDate);
+  const daysLeft = Math.max(0, renewal.diff(now, "day"));
+
   return (
     <main className="min-h-screen bg-[#f7f8fa] px-2 py-4 text-slate-800 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1440px] space-y-6">
-        {/* Header */}
         <header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="mb-3 flex items-center gap-2">
@@ -86,20 +94,25 @@ export default async function DashboardOverviewPage() {
                 </div>
                 <ExchangeRateForm exchangeRate={exchangeRate} />
               </div>
-              <SubscriptionCard />
+              <SubscriptionCard
+                subscription={subscrption}
+                dishesCount={dishesCount}
+                maxDishes={maxDishes}
+              />
             </div>
           </CardContent>
         </Card>
+
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <OverviewCard
             title="الوجبات المعروضة"
             value={dishesCount}
-            valueSuffix={`/ ${subscription.maxDishes}`}
+            valueSuffix={`/ ${maxDishes}`}
             subtext={
               <p className="text-slate-500">
                 متبقي{" "}
                 <span className="font-extrabold text-brand-700">
-                  {subscription.maxDishes - dishesCount}
+                  {Math.max(0, maxDishes - dishesCount)}
                 </span>{" "}
                 وجبات
               </p>
@@ -137,18 +150,57 @@ export default async function DashboardOverviewPage() {
           />
         </section>
 
-        {/* Bottom workspace */}
         <section className="grid items-start gap-5 lg:grid-cols-[0.8fr_1.45fr]">
           <QrCardOverview menuUrl={menuUrl} setting={setting.data} />
+          
           <div className="space-y-5">
-            {subscription.isFree && (
-              <SubscriptionIsFree daysLeft={subscription.daysLeft} />
-            )}
-            {/* Recent dishes */}
-            <RecentDishes />
+            {isTrial && <SubscriptionIsFree daysLeft={daysLeft} />}
+
+            <div className="rounded-3xl border border-white/10 bg-white p-5 backdrop-blur-sm space-y-4 shadow-sm border-slate-200 bg-white">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-brand-600" />
+                  إجراءات سريعة لإدارة المنيو
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Link href="/dashboard/categories" className="block">
+                  <Button
+                    variant="outline"
+                    className="w-full h-12 flex flex-col items-center justify-center gap-1 rounded-2xl border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-all"
+                  >
+                    <Plus className="h-4 w-4 text-brand-600" />
+                    إضافة وجبة جديدة
+                  </Button>
+                </Link>
+
+                <Link href="/dashboard/setting" className="block">
+                  <Button
+                    variant="outline"
+                    className="w-full h-12 flex flex-col items-center justify-center gap-1 rounded-2xl border-slate-200 bg-slate-50 text-xs font-semibold text-slate-700 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-all"
+                  >
+                    <Settings className="h-4 w-4 text-slate-600" />
+                    إعدادات المطعم
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                <div className="truncate">
+                  <p className="text-[10px] text-slate-400">رابط المنيو العام الخاص بك</p>
+                  <p className="text-xs font-mono text-brand-600 font-bold truncate">{slug}</p>
+                </div>
+                <Link href={menuUrl} target="_blank">
+                  <Button size="sm" className="rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs gap-1 shadow-sm">
+                    معاينة <ExternalLink className="h-3 w-3" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
-        {/* Footer hint */}
+
         <div className="flex items-center justify-center gap-2 pb-2 text-[10px] text-slate-400">
           <Clock3 className="h-3.5 w-3.5" />
           آخر البيانات المعروضة هي بيانات الحساب الحالية
