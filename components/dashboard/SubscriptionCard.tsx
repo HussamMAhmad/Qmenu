@@ -61,7 +61,7 @@ function SubscriptionCard() {
         />
       </div>
 
-      <Link href="/subscription" className="block mt-5">
+      <Link href="/subscription/checkout" className="block mt-5">
         <Button
           variant="outline"
           className="h-10 w-full rounded-xl border-white/10 bg-white/5 text-xs font-bold text-white hover:bg-white/10 hover:text-white transition-all"

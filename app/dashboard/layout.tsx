@@ -20,7 +20,7 @@ export default async function DashboardLayout({
   const subStatus = await checkSubscription(restaurant.id);
 
   if (!subStatus.isActive) {
-    redirect("/subscription");
+    redirect("/subscription/checkout");
   }
 
   return (
