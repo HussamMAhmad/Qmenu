@@ -1,13 +1,13 @@
 import { IoQrCode } from "react-icons/io5";
 import { FaDatabase, FaMobileAlt, FaChartPie, FaPalette } from "react-icons/fa";
 import { MdElectricBolt } from "react-icons/md";
-import { Zap, Crown, Sparkles, Wallet, Smartphone } from "lucide-react";
+import { Zap, Crown, Sparkles } from "lucide-react";
 
 export const LINKS = [
   { name: "المميزات", url: "#features" },
   { name: "كيف نعمل", url: "#how-it-works" },
-  { name: "الاسعار", url: "#pricing" },
-  { name: "الاسئلة الشائعة", url: "#qustions" },
+  { name: "الاسعار", url: "#subscription" },
+  { name: "الاسئلة الشائعة", url: "#faq" },
 ];
 
 export const FEATURES = [
