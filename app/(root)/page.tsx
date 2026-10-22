@@ -1,6 +1,14 @@
 import React from "react";
-import { Header , Footer} from "@/components/Layouts";
-import { Main, Features , HowItWorks , Pricing , Faq, FinalCall} from "@/components/Sections";
+import { Header, Footer } from "@/components/Layouts";
+import {
+  Main,
+  Features,
+  HowItWorks,
+  Pricing,
+  Faq,
+  FinalCall,
+  HowItWorksSection,
+} from "@/components/Sections";
 
 function Home() {
   return (
@@ -8,7 +16,7 @@ function Home() {
       <Header />
       <Main />
       <Features />
-      <HowItWorks />
+      <HowItWorksSection />
       <Pricing />
       <Faq />
       <FinalCall />
