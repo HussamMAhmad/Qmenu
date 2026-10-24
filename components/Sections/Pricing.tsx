@@ -21,7 +21,7 @@ function PricingContent() {
 
   return (
     <section
-      id="pricing"
+      id="subscription"
       className="bg-white scroll-mt-24 px-4 sm:px-6 lg:px-12 py-16 sm:py-24"
       dir="rtl"
     >
