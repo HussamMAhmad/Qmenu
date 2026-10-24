@@ -18,6 +18,7 @@ function Home() {
       <Features />
       <HowItWorksSection />
       <Pricing />
+      <HowItWorksSection />
       <Faq />
       <FinalCall />
       <Footer />

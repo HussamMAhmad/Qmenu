@@ -66,6 +66,7 @@ function ImageDropZone({
           </div>
           <button
             type="button"
+            disabled={disabled}
             onClick={handleRemove}
             className="absolute top-2 left-2 z-10 p-1.5 rounded-full bg-slate-900/70 hover:bg-rose-600 text-white transition-colors shadow-md"
             title="إزالة الصورة"

@@ -44,7 +44,6 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     const trialEndDate = new Date();
     trialEndDate.setDate(trialEndDate.getDate() + 14);
 
-
     const result = await prisma.$transaction(async (tx) => {
       const updatedUser = await tx.user.update({
         where: { email },
@@ -109,8 +108,6 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
       },
       retries: 3,
     });
-    
-    revalidateTag(`menu-data`, { expire: 0 });
 
     return {
       success: true,

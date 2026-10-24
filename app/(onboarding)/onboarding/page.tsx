@@ -11,7 +11,7 @@ export default async function RestaurantOnboardingForm() {
     headers: await headers(),
   });
   if (!session?.user) {
-    redirect("/login");
+    redirect("/sign-up");
   }
   const restaurant = await prisma.restaurant.findUnique({
     where: { userId: session.user.id },

@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/lib/auth-helper";
 import { revalidateTag, revalidatePath } from "next/cache";
 import cloudinary from "@/lib/cloudinary/cloudinary";
 import { MAX_SIZE } from "@/constants";
+import { countItems } from "@/lib/queries/dashboard";
+import { PLANS } from "@/data/constants";
 
 export const updateExchangeRate = async (exchangeRate: number) => {
   try {
@@ -249,7 +251,7 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
           userId: user.id,
         },
       },
-      select: { id: true },
+      select: { id: true, items: true },
     });
 
     if (!category) {
@@ -265,6 +267,7 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
       },
       select: {
         slug: true,
+        subscriptions: true,
       },
     });
 
@@ -273,6 +276,32 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
         success: false,
         message: "القسم غير موجود أو لا تملك صلاحية الإضافة عليه",
       };
+    }
+
+    const currentCount = await prisma.item.count({
+      where: {
+        category: { resturant: { userId: user.id } },
+      },
+    });
+
+    const subStatus = restaurant.subscriptions?.status;
+    const subName = restaurant.subscriptions?.name;
+
+    if (subStatus === "ACTIVE" && subName === PLANS[0].id) {
+      if (currentCount >= 100) {
+        return {
+          success: false,
+          message: "تم الوصول الى الحد المسموح به من الوجبات (100 وجبة)",
+        };
+      }
+    } else if (subStatus === "TRIAL" || !subStatus) {
+      if (currentCount >= 15) {
+        return {
+          success: false,
+          message:
+            "تم الوصول الى الحد المسموح به من الوجبات (15 وجبة في النسخة التجريبية)",
+        };
+      }
     }
 
     const cleanNameAr = data.nameAr.trim();
@@ -348,19 +377,49 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
       imgPublicId = uploadResult.public_id;
     }
 
-    const result = await prisma.item.create({
-      data: {
-        nameAr: cleanNameAr,
-        nameEn: cleanNameEn,
-        description: data.description,
-        priceSyp: data.priceSyp,
-        priceUsd: data.priceUsd,
-        prepTime: data.prepTime,
-        isAvailable: data.isAvailable,
-        categoryId: data.categoryId,
-        imageUrl: imgUrl,
-        imagePublicUrl: imgPublicId,
-      },
+    const result = await prisma.$transaction(async (tx) => {
+      const strictCount = await tx.item.count({
+        where: { category: { resturant: { userId: user.id } } },
+      });
+
+      if (
+        subStatus === "ACTIVE" &&
+        subName === PLANS[0].id &&
+        strictCount >= 100
+      ) {
+        throw new Error("LIMIT_REACHED_100");
+      }
+      if ((subStatus === "TRIAL" || !subStatus) && strictCount >= 15) {
+        throw new Error("LIMIT_REACHED_15");
+      }
+
+      const existingItem = await tx.item.findFirst({
+        where: {
+          categoryId: data.categoryId,
+          nameAr: { equals: cleanNameAr, mode: "insensitive" },
+        },
+      });
+
+      if (existingItem) {
+        throw new Error("DUPLICATE_ITEM");
+      }
+
+      const newItem = await tx.item.create({
+        data: {
+          nameAr: cleanNameAr,
+          nameEn: cleanNameEn,
+          description: data.description,
+          priceSyp: data.priceSyp,
+          priceUsd: data.priceUsd,
+          prepTime: data.prepTime,
+          isAvailable: data.isAvailable,
+          categoryId: data.categoryId,
+          imageUrl: imgUrl,
+          imagePublicUrl: imgPublicId,
+        },
+      });
+
+      return { restaurantSlug: restaurant.slug, newItem };
     });
 
     revalidatePath(`/menu/${restaurant.slug}`, "page");
@@ -369,9 +428,32 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`items-count-${user.id}`, { expire: 0 });
 
-    return { success: true, message: "تم اضافة الوجبة بنجاح", data: result };
-  } catch (e) {
+    return {
+      success: true,
+      message: "تم اضافة الوجبة بنجاح",
+      data: result.newItem,
+    };
+  } catch (e: any) {
     console.log("failed to create item", e);
+    if (e.message === "LIMIT_REACHED_15") {
+      return {
+        success: false,
+        message:
+          "تم الوصول الى الحد المسموح به من الوجبات (15 وجبة في النسخة التجريبية)",
+      };
+    }
+    if (e.message === "LIMIT_REACHED_100") {
+      return {
+        success: false,
+        message: "تم الوصول الى الحد المسموح به من الوجبات (100 وجبة)",
+      };
+    }
+    if (e.message === "DUPLICATE_ITEM") {
+      return {
+        success: false,
+        message: "هذه الوجبة موجودة بالفعل في هذا القسم",
+      };
+    }
     return { success: false, message: "حدث خطا اثناء انشاء وجبة جديدة" };
   }
 };
@@ -950,6 +1032,7 @@ export const updateResSetting = async (
 
     revalidatePath(`/menu/${restaurant.slug}`, "page");
     revalidateTag(`restaurant-setting-${user.id}`, { expire: 0 });
+    revalidateTag(`menu-data`, { expire: 0 });
     revalidatePath("/dashboard", "layout");
 
     return {
