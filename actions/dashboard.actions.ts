@@ -4,7 +4,6 @@ import { getCurrentUser } from "@/lib/auth-helper";
 import { revalidateTag, revalidatePath } from "next/cache";
 import cloudinary from "@/lib/cloudinary/cloudinary";
 import { MAX_SIZE } from "@/constants";
-import { countItems } from "@/lib/queries/dashboard";
 import { PLANS } from "@/data/constants";
 
 export const updateExchangeRate = async (exchangeRate: number) => {
@@ -100,6 +99,7 @@ export const createCategory = async (cat: string) => {
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidatePath(`/menu/${restaurant.slug}`, "page");
+    revalidateTag(`menu-data`, { expire: 0 });
 
     return { success: true, message: "تم انشاء قسم جديد بنجاح", data: result };
   } catch (e) {
@@ -168,7 +168,7 @@ export const updateCategory = async (cat: string, id: string) => {
 
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidatePath(`/menu/${restaurant.slug}`, "page");
-
+    revalidateTag(`menu-data`, { expire: 0 });
     return { success: true, message: "تم التعديل بنجاح", data: result };
   } catch (e) {
     console.log("failed to create category", e);
@@ -226,7 +226,7 @@ export const deleteCategory = async (id: string) => {
     }
 
     revalidatePath(`/menu/${restaurant.slug}`, "page");
-
+    revalidateTag(`menu-data`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard/categories", "layout");
     return { success: true, message: "تم الحذف بنجاح", data: result };
@@ -423,7 +423,7 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
     });
 
     revalidatePath(`/menu/${restaurant.slug}`, "page");
-
+    revalidateTag(`menu-data`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`items-count-${user.id}`, { expire: 0 });
@@ -591,7 +591,7 @@ export const updateItem = async (
     });
 
     revalidatePath(`/menu/${restaurant.slug}`, "page");
-
+    revalidateTag(`menu-data`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
 
@@ -667,7 +667,7 @@ export const deleteItem = async (id: string, catId: string) => {
     }
 
     revalidatePath(`/menu/${restaurant.slug}`, "page");
-
+    revalidateTag(`menu-data`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`items-count-${user.id}`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
@@ -740,6 +740,7 @@ export const changeIsAvailable = async (
     revalidateTag(`items-${user.id}`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidatePath(`/menu/${restaurant.slug}`, "page");
+    revalidateTag(`menu-data`, { expire: 0 });
     return { success: true, message: "نجاح تعديل حالة الظهور", data: result };
   } catch (e) {
     console.log("failed to change isAvailable", e);
@@ -1031,8 +1032,8 @@ export const updateResSetting = async (
     });
 
     revalidatePath(`/menu/${restaurant.slug}`, "page");
-    revalidateTag(`restaurant-setting-${user.id}`, { expire: 0 });
     revalidateTag(`menu-data`, { expire: 0 });
+    revalidateTag(`restaurant-setting-${user.id}`, { expire: 0 });
     revalidatePath("/dashboard", "layout");
 
     return {
