@@ -5,3 +5,4 @@ export { default as Pricing } from "./Pricing";
 export { default as Faq } from "./Faq";
 export { default as FinalCall } from "./FinalCall";
 export { default as HowItWorksSection } from "./HowItWorksSection";
+export { default as LivePreview } from "./LivePreview";

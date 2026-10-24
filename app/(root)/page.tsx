@@ -8,6 +8,7 @@ import {
   Faq,
   FinalCall,
   HowItWorksSection,
+  LivePreview
 } from "@/components/Sections";
 
 function Home() {
@@ -16,7 +17,7 @@ function Home() {
       <Header />
       <Main />
       <Features />
-      <HowItWorksSection />
+      <LivePreview />
       <Pricing />
       <HowItWorksSection />
       <Faq />
