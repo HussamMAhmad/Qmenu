@@ -30,7 +30,7 @@ function SignUpForm() {
         console.log("success signUp");
         router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
       } else {
-        toast.error(result?.error);
+        toast.error(result?.message);
       }
     } catch (e) {
       console.log("failed to sign up ", e);
@@ -70,7 +70,7 @@ function SignUpForm() {
         />
       </FieldGroup>
       <CustomButton
-      label="جاري انشاء الحساب"
+        label="جاري انشاء الحساب"
         isLoading={isloading}
         className="w-full py-6 px-4 bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-xl hover:shadow-brand-500/35 transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer mt-6"
       >

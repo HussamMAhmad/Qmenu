@@ -34,7 +34,7 @@ function SignInForm() {
         router.push(`/onboarding`);
       } else {
         setError(
-          result?.error ||
+          result?.message ||
             "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور",
         );
       }

@@ -46,7 +46,7 @@ export default function OnboardingForm() {
         setIsComplete(true);
       } else {
         setServerError(
-          res.error || "حدث خطأ أثناء حفظ البيانات، يرجى المحاولة لاحقاً",
+          res.message || "حدث خطأ أثناء حفظ البيانات، يرجى المحاولة لاحقاً",
         );
       }
     } catch {
