@@ -24,6 +24,7 @@ function Header() {
               alt="Q-Menu Logo"
               fill
               priority
+              sizes="40px"
               className="object-contain p-1.5"
             />
           </div>

@@ -51,12 +51,8 @@ function Header({
         fill
         className="object-cover opacity-85"
         priority
-        unoptimized
-        quality={75}
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
-        onError={(e: any) => {
-          e.currentTarget.src = cover;
-        }}
+        quality={80}
+        sizes="100vw"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-brand-50 via-slate-950/20 to-black/50"></div>
       <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] sm:w-[90%] max-w-5xl z-20 flex justify-between items-center gap-2">

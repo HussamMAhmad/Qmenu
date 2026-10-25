@@ -11,12 +11,7 @@ interface GridItemsProps {
   addToCart: (item: Item, qtyToAdd?: number) => void;
 }
 
-function GridItems({
-  currentItems,
-  lang,
-  addToCart,
-  ShowUsd,
-}: GridItemsProps) {
+function GridItems({ currentItems, lang, addToCart, ShowUsd }: GridItemsProps) {
   const [open, setOpen] = useState(false);
   const [selectedItemDetail, setSelectedItemDetail] = useState<Item | null>(
     null,
@@ -51,7 +46,8 @@ function GridItems({
                       loading={index < 4 ? "eager" : "lazy"}
                       priority={index === 0}
                       unoptimized
-                      sizes="(max-width: 768px) 100vw, 300px"
+                      quality={75}
+                      sizes="(max-width: 360px) 100vw, (max-width: 640px) 50vw, (max-width: 1024px) 33vw, 250px"
                       className="object-cover"
                     />
                   ) : (
@@ -81,7 +77,7 @@ function GridItems({
                       </p>
                     )}
                   </div>
-                  
+
                   <div className="pt-2.5 border-t border-brand-200/60 flex items-center justify-between gap-2">
                     <div className="flex flex-col">
                       <span className="font-black text-xs sm:text-sm text-slate-900">

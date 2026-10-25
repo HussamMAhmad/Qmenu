@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect , useMemo} from "react";
 import Header from "./Header";
 import Info from "./Info";
 import CategoriesTitles from "./CtegoriesTitles";
@@ -57,28 +57,24 @@ export default function PublicMenu({
     );
   };
 
-  const allItems = restaurant?.categories?.flatMap((cat) => cat.items);
+  const allItems = useMemo(() => {
+    return restaurant?.categories?.flatMap((cat) => cat.items) || [];
+  }, [restaurant]);
 
-  const getFilteredItems = () => {
-    let items = allItems;
-
-    // if (activeCategory !== "all") {
-    items = allItems.filter((i) => i.categoryId === activeCategory);
-    // }
+const currentItems = useMemo(() => {
+    let items = allItems.filter((i) => i.categoryId === activeCategory);
 
     if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase().trim();
       items = items.filter(
         (item) =>
-          item.nameAr.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (item.nameEn &&
-            item.nameEn.toLowerCase().includes(searchQuery.toLowerCase())),
+          item.nameAr.toLowerCase().includes(query) ||
+          (item.nameEn && item.nameEn.toLowerCase().includes(query)),
       );
     }
 
     return items;
-  };
-
-  const currentItems = getFilteredItems();
+  }, [allItems, activeCategory, searchQuery]);
 
   return (
     <div

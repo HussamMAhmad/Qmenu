@@ -409,6 +409,7 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
               resource_type: "image",
               quality: "auto",
               fetch_format: "auto",
+              transformation: [{ width: 1200, height: 1200, crop: "limit" }],
             },
             function (error, result) {
               if (error) {

@@ -20,7 +20,14 @@ interface CarditemDes {
   addToCart: (item: Item, qtyToAdd?: number) => void;
 }
 
-function CardItemDes({ open, setOpen, item, lang, addToCart , ShowUsd }: CarditemDes) {
+function CardItemDes({
+  open,
+  setOpen,
+  item,
+  lang,
+  addToCart,
+  ShowUsd,
+}: CarditemDes) {
   const [detailQty, setDetailQty] = useState<number>(1);
   useEffect(() => {
     if (open) {
@@ -43,13 +50,11 @@ function CardItemDes({ open, setOpen, item, lang, addToCart , ShowUsd }: Cardite
                   src={item.imageUrl}
                   alt={item.nameAr}
                   fill
-                  sizes="(max-width: 768px) 100vw, 300px"
+                  sizes="(max-width: 360px) 100vw, (max-width: 640px) 50vw, (max-width: 1024px) 33vw, 250px"
                   className="object-contain"
                   unoptimized
                   loading="lazy"
-                  onError={(e: any) => {
-                    e.currentTarget.src = imgError;
-                  }}
+                  quality={75}
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 gap-1.5 select-none">

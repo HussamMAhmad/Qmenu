@@ -8,10 +8,7 @@ export default function Footer() {
     <footer className="border-t border-slate-200 bg-white px-5 pb-8 pt-12 sm:px-8 lg:px-12" dir="rtl">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          
-          {/* عمود الشعار والنبذة */}
           <div>
-            {/* حاوية الشعار المضبوطة بأبعاد صحيحة لتعمل مع next/image */}
             <div className="relative h-10 w-32">
               <Image
                 src={icon}
@@ -26,8 +23,6 @@ export default function Footer() {
             <p className="mt-4 max-w-xs text-sm leading-7 text-slate-500 font-medium">
               Q-Menu — طريقة عصرية لإنشاء وإدارة قوائم الطعام الرقمية للمطاعم بسهولة واحترافية.
             </p>
-
-            {/* أيقونات التواصل السريع */}
             <div className="mt-5 flex items-center gap-2.5">
               <a
                 href="mailto:hello@q-menu.example"
@@ -55,7 +50,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* عمود المنصة */}
           <div>
             <h3 className="font-black text-slate-900">
               المنصة
