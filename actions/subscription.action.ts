@@ -8,6 +8,7 @@ import { Resend } from "resend";
 import { Client } from "@upstash/workflow";
 import { sendEmail } from "@/lib/nodemailer/email-service";
 import { SUBSCRIPTION_ACTIVE_TEMPLATE } from "@/components/EmailTemplate/email-templete-auth";
+import { ShamSchema } from "@/lib/validation";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -42,6 +43,17 @@ export async function verifyAndActivateSubscription(
   planId: string,
 ) {
   try {
+    const validationResult = ShamSchema.safeParse({
+      transaction: transactionId,
+    });
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       return { success: false, message: "غير مصرح لك بالقيام بهذا الإجراء" };
@@ -59,7 +71,7 @@ export async function verifyAndActivateSubscription(
     const restaurant = user.restaurant;
 
     const existingTransaction = await prisma.subscriptionPayment.findUnique({
-      where: { transactionId },
+      where: { transactionId : cleanData.transaction },
     });
 
     if (existingTransaction) {
@@ -69,7 +81,13 @@ export async function verifyAndActivateSubscription(
       };
     }
 
-    const requiredAmountUSD = PLANS_PRICES[planId as PLANS] || 12;
+    if (!planId || !(planId in PLANS_PRICES)) {
+      return { success: false, message: "خطة الاشتراكات غير صالحة" };
+    }
+
+    const selectedPlan = PLANS_PRICES[planId as keyof typeof PLANS_PRICES];
+
+    const price = selectedPlan.price;
 
     const url = `https://tsa-api.com/api/v1?resource=shamcash&action=find_tx&tx=${transactionId}&account_address=${MY_SHAM_ADDRESS}&api_key=${TSA_API_KEY}`;
     const response = await fetch(url, { cache: "no-store" });
@@ -91,7 +109,7 @@ export async function verifyAndActivateSubscription(
       }
 
       actualAmountUSD = rawAmount;
-      isTxValid = actualAmountUSD >= requiredAmountUSD;
+      isTxValid = actualAmountUSD >= price;
     }
 
     if (!isTxValid) {
@@ -121,7 +139,7 @@ export async function verifyAndActivateSubscription(
         where: { restaurantId: restaurant.id },
         create: {
           name: planId,
-          price: requiredAmountUSD,
+          price: price,
           currency: "USD",
           frequency: "MONTHLY",
           status: "ACTIVE",
@@ -131,7 +149,7 @@ export async function verifyAndActivateSubscription(
         },
         update: {
           name: planId,
-          price: requiredAmountUSD,
+          price: price,
           currency: "USD",
           status: "ACTIVE",
           startDate,
@@ -145,7 +163,7 @@ export async function verifyAndActivateSubscription(
       const subject = "🎉 تم تفعيل اشتراك مطعمك بنجاح - Q-Menu";
       const template = SUBSCRIPTION_ACTIVE_TEMPLATE.replace(
         "{{requiredAmountUSD}}",
-        requiredAmountUSD.toString(),
+        price.toString(),
       );
       await sendEmail(user.email, subject, template);
     } catch (emailError) {

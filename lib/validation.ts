@@ -17,18 +17,26 @@ export const formSchemaSignUp = z.object({
     }),
 });
 
+export type SignUpType = z.infer<typeof formSchemaSignUp>;
+
 export const formSchemaSignIn = z.object({
   email: z.email({ message: "البريد الإلكتروني غير صحيح" }),
   password: z.string().min(1, { message: "كلمة المرور مطلوبة" }),
 });
 
+export type SignIn = z.infer<typeof formSchemaSignIn>;
+
 export const formSchemaResetPassword = z.object({
   password: z.string().min(1, { message: "كلمة المرور مطلوبة" }),
 });
 
+export type ResetPassword = z.infer<typeof formSchemaResetPassword>;
+
 export const formSchemaForgetPassword = z.object({
   email: z.email({ message: "البريد الإلكتروني غير صحيح" }),
 });
+
+export type ForgetPassoword = z.infer<typeof formSchemaForgetPassword>;
 
 export const restaurantOnboardingSchema = z.object({
   name: z
@@ -57,11 +65,15 @@ export const restaurantOnboardingSchema = z.object({
     .optional(),
 });
 
+export type RestaurantOnBoarding = z.infer<typeof restaurantOnboardingSchema>;
+
 export const exchangeRateOverview = z.object({
   exchangeRate: z
     .number({ message: "يرجى إدخال رقم صحيح لسعر الصرف" })
     .positive({ message: "سعر الصرف يجب أن يكون أكبر من 0" }),
 });
+
+export type ExchangeRate = z.infer<typeof exchangeRateOverview>;
 
 export const Category = z.object({
   name: z
@@ -69,6 +81,8 @@ export const Category = z.object({
     .min(2, { message: "اسم القسم يجب أن يكون مكوناً من حرفين على الأقل" })
     .max(50, { message: "اسم القسم طويل جداً" }),
 });
+
+export type Category = z.infer<typeof Category>;
 
 export const CreateItemsSchema = z.object({
   categoryId: z.string().min(1, { message: "يرجى اختيار القسم الرئيسي" }),
@@ -97,11 +111,15 @@ export const CreateItemsSchema = z.object({
   imageUrl: z.union([z.string(), z.any()]).nullable().optional(),
 });
 
+export type CreateItems = z.infer<typeof CreateItemsSchema>;
+
 export const QrSetting = z.object({
   qrColor: z.string(),
   qrSubtitle: z.string(),
   qrLogo: z.union([z.string(), z.any()]).nullable().optional(),
 });
+
+export type QrSetting = z.infer<typeof QrSetting>;
 
 export const SettingInfoSchema = z.object({
   name: z
@@ -123,6 +141,8 @@ export const SettingInfoSchema = z.object({
   logo: z.union([z.string(), z.any()]).nullable().optional(),
 });
 
+export type SettingInfo = z.infer<typeof SettingInfoSchema>;
+
 export const SyriatelSchema = z.object({
   transaction: z
     .string()
@@ -130,9 +150,13 @@ export const SyriatelSchema = z.object({
     .regex(/^[0-9]+$/, "رقم العملية يجب أن يحتوي على أرقام فقط"),
 });
 
+export type Syriatel = z.infer<typeof SyriatelSchema>;
+
 export const ShamSchema = z.object({
   transaction: z
     .string()
     .min(1, "رقم العملية مطلوب")
     .regex(/^[0-9a-zA-Z]+$/, "رقم العملية غير صحيح"),
 });
+
+export type ShamInput = z.infer<typeof ShamSchema>;

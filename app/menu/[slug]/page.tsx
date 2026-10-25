@@ -12,7 +12,7 @@ export default async function MenuPage({
   let restaurant;
   try {
     const data = await getCachedMenu(slug);
-    
+
     if (!data || !data.success || !data.result) {
       notFound();
     }
@@ -32,8 +32,8 @@ export default async function MenuPage({
         <h1 className="text-xl font-bold text-red-600 mb-2">
           خطأ في الاتصال بقاعدة البيانات أو السيرفر
         </h1>
-        <p className="text-sm text-gray-600 bg-gray-100 p-4 rounded-lg dir-ltr text-left overflow-auto">
-          {e.message || JSON.stringify(e)}
+        <p className="text-sm text-slate-500 mb-2">
+          نواجه حالياً مشكلة مؤقتة في الاتصال. يرجى المحاولة مرة أخرى لاحقاً.
         </p>
       </div>
     );

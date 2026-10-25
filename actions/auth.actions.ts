@@ -3,62 +3,92 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  formSchemaSignUp,
+  formSchemaSignIn,
+  formSchemaResetPassword,
+  formSchemaForgetPassword,
+} from "@/lib/validation";
 
 export async function SignUp({ name, email, password }: USER) {
   try {
-    const normalizedEmail = email.trim().toLowerCase();
+    const validationResult = formSchemaSignUp.safeParse({
+      name,
+      email,
+      password,
+    });
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+    const normalizedEmail = cleanData.email.trim().toLowerCase();
+
     const existingEmail = await prisma.user.findUnique({
       where: { email: normalizedEmail },
       select: { emailVerified: true, id: true },
     });
 
     if (existingEmail) {
-      if (existingEmail.emailVerified) {
-        return { success: false, error: "هذا الايميل مسجل ومفعل بالفعل" };
-      } else {
-        await auth.api.sendVerificationOTP({
-          body: {
-            email: normalizedEmail,
-            type: "sign-in",
-          },
-          headers: await headers(),
-        });
-
-        return {
-          success: true,
-          requiresVerification: true,
-          error:
-            "لديك حساب غير مفعل بهذا البريد. لقد أرسلنا رمز تحقق جديداً إليك.",
-        };
+      if (!existingEmail.emailVerified) {
+        try {
+          await auth.api.sendVerificationOTP({
+            body: {
+              email: normalizedEmail,
+              type: "sign-in",
+            },
+            headers: await headers(),
+          });
+        } catch (err) {
+          console.error("فشل إعادة إرسال رمز التحقق:", err);
+        }
       }
+
+      return {
+        success: true,
+        requiresVerification: true,
+        message: "إذا كان البريد الإلكتروني صحيحاً ولم يتم تفعيله بعد، فقد أرسلنا لك رمز تحقق جديداً.",
+      };
     }
 
     const response = await auth.api.signUpEmail({
       body: {
-        name,
+        name: cleanData.name,
         email: normalizedEmail,
-        password,
+        password: cleanData.password,
       },
       headers: await headers(),
     });
 
-    const data = await auth.api.sendVerificationOTP({
+    if (!response) {
+      return { success: false, message: "فشل في إنشاء الحساب" };
+    }
+
+    await auth.api.sendVerificationOTP({
       body: {
-        email: normalizedEmail, // required, Email address to send the OTP.
-        type: "sign-in", // required, Type of the OTP. `sign-in`, `email-verification`, or `forget-password`.
+        email: normalizedEmail,
+        type: "sign-in",
       },
+      headers: await headers(),
     });
 
-    if (!response) return { success: false, error: "failed to create account" };
-    return { success: true, data: response };
+    return {
+      success: true,
+      requiresVerification: true,
+      message: "تم إنشاء الحساب بنجاح. يرجى التحقق من بريدك الإلكتروني لإدخال رمز التحقق.",
+    };
+    
   } catch (e: any) {
-    console.log("failed to sign up", e);
+    console.error("failed to sign up", e);
     if (e?.code === "P2002") {
-      return { success: false, error: "هذا الايميل موجود بالفعل" };
+      return { success: false, message: "حدث خطأ أثناء معالجة الطلب، يرجى المحاولة لاحقاً" };
     }
     return {
       success: false,
-      error: e?.message || "حدث خطأ أثناء إنشاء الحساب، يرجى المحاولة لاحقاً",
+      message: e?.message || "حدث خطأ أثناء إنشاء الحساب، يرجى المحاولة لاحقاً",
     };
   }
 }
@@ -71,21 +101,38 @@ export async function SignIn({
   password: string;
 }) {
   try {
+    const validationResult = formSchemaSignIn.safeParse({
+      email,
+      password,
+    });
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const response = await auth.api.signInEmail({
       body: {
-        email,
-        password,
+        email: cleanData.email,
+        password: cleanData.password,
         callbackURL: "/dashboard",
-      }, // we can handle the error if it is't show on screen
+      },
     });
     if (!response)
       return {
         success: false,
-        error: "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور",
+        message: "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور",
       };
     return { success: true, data: response };
   } catch (e) {
     console.log("failed to sign in", e);
+    return {
+      success: false,
+      message: "بيانات الدخول غير صحيحة، يرجى التأكد من البريد وكلمة المرور",
+    };
   }
 }
 
@@ -102,9 +149,21 @@ export async function SignOut() {
 
 export async function resetPasswordRequest(email: string) {
   try {
+    const validationResult = formSchemaForgetPassword.safeParse({
+      email,
+    });
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const data = await auth.api.requestPasswordReset({
       body: {
-        email,
+        email: cleanData.email.trim().toLowerCase(),
         redirectTo: "/reset-password",
       },
     });
@@ -114,7 +173,7 @@ export async function resetPasswordRequest(email: string) {
     console.log("failed to reset password", e);
     return {
       success: false,
-      error: e instanceof Error ? e.message : "فشلت عملية طلب إعادة التعيين",
+      message: e instanceof Error ? e.message : "فشلت عملية طلب إعادة التعيين",
     };
   }
 }
@@ -134,9 +193,22 @@ export async function resetPassword({
       };
     }
 
+    const validationResult = formSchemaResetPassword.safeParse({
+      token,
+      password,
+    });
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const data = await auth.api.resetPassword({
       body: {
-        newPassword: password,
+        newPassword: cleanData.password,
         token,
       },
     });

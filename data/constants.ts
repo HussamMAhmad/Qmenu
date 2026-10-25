@@ -138,8 +138,7 @@ export const PLANS = [
   },
 ];
 
-
-export const PLANS_PRICES: Record<PLANS, number> = {
-  starter: 6,
-  pro: 12,
-};
+export const PLANS_PRICES = {
+  starter: { price: 12, limit: 15 },
+  pro: { price: 15, limit: null },
+} as const;

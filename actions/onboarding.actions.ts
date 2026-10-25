@@ -4,12 +4,22 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { Client } from "@upstash/workflow";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { restaurantOnboardingSchema } from "@/lib/validation";
 
 const client = new Client({ token: process.env.QSTASH_TOKEN! });
 
 export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
   try {
+    const validationResult = restaurantOnboardingSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -17,7 +27,7 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     if (!session?.user?.email) {
       return {
         success: false,
-        error: "غير مصرح لك بالوصول، يرجى تسجيل الدخول",
+        message: "غير مصرح لك بالوصول، يرجى تسجيل الدخول",
       };
     }
 
@@ -28,17 +38,17 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     });
 
     if (!user) {
-      return { success: false, error: "المستخدم غير موجود" };
+      return { success: false, message: "المستخدم غير موجود" };
     }
 
-    const slug = data.slug.trim().toLowerCase();
+    const slug = cleanData.slug.trim().toLowerCase();
 
     const existingSlug = await prisma.restaurant.findUnique({
-      where: { slug: data.slug },
+      where: { slug },
     });
 
     if (existingSlug) {
-      return { success: false, error: "اسم المعرف هذا موجود بالفعل" };
+      return { success: false, message: "اسم المعرف هذا موجود بالفعل" };
     }
 
     const trialEndDate = new Date();
@@ -51,18 +61,18 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
           restaurant: {
             upsert: {
               create: {
-                name: data.name,
-                slug: slug,
-                description: data.description,
-                exchangeRate: data.exchangeRate,
-                whatsappNumber: data.whatsappNumber,
+                name: cleanData.name,
+                slug,
+                description: cleanData.description,
+                exchangeRate: cleanData.exchangeRate,
+                whatsappNumber: cleanData.whatsappNumber,
               },
               update: {
-                name: data.name,
-                slug: slug,
-                description: data.description,
-                exchangeRate: data.exchangeRate,
-                whatsappNumber: data.whatsappNumber,
+                name: cleanData.name,
+                slug,
+                description: cleanData.description,
+                exchangeRate: cleanData.exchangeRate,
+                whatsappNumber: cleanData.whatsappNumber,
               },
             },
           },
@@ -119,12 +129,12 @@ export const CompleteOnboarding = async (data: RestaurantOnboarding) => {
     if (e?.code === "P2002" && e?.meta?.target?.includes("slug")) {
       return {
         success: false,
-        error: "اسم المعرف هذا مستخدم بالفعل، يرجى اختيار اسم آخر",
+        message: "اسم المعرف هذا مستخدم بالفعل، يرجى اختيار اسم آخر",
       };
     }
     return {
       success: false,
-      error: "حدث خطأ أثناء حفظ بيانات المطعم والاشتراك",
+      message: "حدث خطأ أثناء حفظ بيانات المطعم والاشتراك",
     };
   }
 };

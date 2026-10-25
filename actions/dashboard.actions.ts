@@ -5,9 +5,26 @@ import { revalidateTag, revalidatePath } from "next/cache";
 import cloudinary from "@/lib/cloudinary/cloudinary";
 import { MAX_SIZE } from "@/constants";
 import { PLANS } from "@/data/constants";
+import {
+  exchangeRateOverview,
+  Category,
+  CreateItemsSchema,
+  QrSetting,
+  SettingInfoSchema,
+} from "@/lib/validation";
 
 export const updateExchangeRate = async (exchangeRate: number) => {
   try {
+    const validationResult = exchangeRateOverview.safeParse({ exchangeRate });
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const user = await getCurrentUser();
 
     if (!user) {
@@ -28,12 +45,12 @@ export const updateExchangeRate = async (exchangeRate: number) => {
         id: restaurant.id,
       },
       data: {
-        exchangeRate,
+        exchangeRate: cleanData.exchangeRate,
       },
     });
     await prisma.$executeRaw`
   UPDATE "item"
-  SET "priceUsd" = ROUND(("priceSyp" / ${exchangeRate})::numeric, 2)
+  SET "priceUsd" = ROUND(("priceSyp" / ${cleanData.exchangeRate})::numeric, 2)
   FROM "category"
   WHERE "item"."categoryId" = "category"."id"
     AND "category"."resturantId" = ${restaurant.id}
@@ -55,8 +72,18 @@ export const updateExchangeRate = async (exchangeRate: number) => {
   }
 };
 
-export const createCategory = async (cat: string) => {
+export const createCategory = async (name: string) => {
   try {
+    const validationResult = Category.safeParse({ name });
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const user = await getCurrentUser();
 
     if (!user) {
@@ -80,7 +107,7 @@ export const createCategory = async (cat: string) => {
     const existingCategory = await prisma.category.findFirst({
       where: {
         resturantId: restaurant.id,
-        name: { equals: cat.trim(), mode: "insensitive" },
+        name: { equals: cleanData.name.trim(), mode: "insensitive" },
       },
     });
 
@@ -90,7 +117,7 @@ export const createCategory = async (cat: string) => {
 
     const result = await prisma.category.create({
       data: {
-        name: cat,
+        name: cleanData.name,
         resturantId: restaurant.id,
       },
     });
@@ -108,8 +135,18 @@ export const createCategory = async (cat: string) => {
   }
 };
 
-export const updateCategory = async (cat: string, id: string) => {
+export const updateCategory = async (name: string, id: string) => {
   try {
+    const validationResult = Category.safeParse({ name });
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data.name;
+
     const user = await getCurrentUser();
 
     if (!user) {
@@ -129,7 +166,7 @@ export const updateCategory = async (cat: string, id: string) => {
     if (!restaurant) {
       return { success: false, message: "المطعم غير موجود" };
     }
-    const name = cat.trim();
+
     const categoryToUpdate = await prisma.category.findFirst({
       where: {
         id,
@@ -146,7 +183,8 @@ export const updateCategory = async (cat: string, id: string) => {
     const existingCategory = await prisma.category.findFirst({
       where: {
         resturantId: restaurant.id,
-        name: { equals: name, mode: "insensitive" },
+        name: { equals: cleanData, mode: "insensitive" },
+        id: { not: id },
       },
     });
 
@@ -162,7 +200,7 @@ export const updateCategory = async (cat: string, id: string) => {
         id,
       },
       data: {
-        name,
+        name: cleanData,
       },
     });
 
@@ -171,7 +209,7 @@ export const updateCategory = async (cat: string, id: string) => {
     revalidateTag(`menu-data`, { expire: 0 });
     return { success: true, message: "تم التعديل بنجاح", data: result };
   } catch (e) {
-    console.log("failed to create category", e);
+    console.log("failed to update category", e);
     return { success: false, message: "حدث خطا اثناء تعديل قسم جديد" };
   }
 };
@@ -238,6 +276,16 @@ export const deleteCategory = async (id: string) => {
 
 export const createItem = async (data: CreateItem, formData: FormData) => {
   try {
+    const validationResult = CreateItemsSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const user = await getCurrentUser();
 
     if (!user) {
@@ -304,12 +352,12 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
       }
     }
 
-    const cleanNameAr = data.nameAr.trim();
-    const cleanNameEn = data.nameEn?.trim() || "";
+    const cleanNameAr = cleanData.nameAr.trim();
+    const cleanNameEn = cleanData.nameEn?.trim() || "";
 
     const existingItem = await prisma.item.findFirst({
       where: {
-        categoryId: data.categoryId,
+        categoryId: cleanData.categoryId,
         nameAr: { equals: cleanNameAr, mode: "insensitive" },
       },
       select: { imageUrl: true, imagePublicUrl: true },
@@ -395,7 +443,7 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
 
       const existingItem = await tx.item.findFirst({
         where: {
-          categoryId: data.categoryId,
+          categoryId: cleanData.categoryId,
           nameAr: { equals: cleanNameAr, mode: "insensitive" },
         },
       });
@@ -408,12 +456,12 @@ export const createItem = async (data: CreateItem, formData: FormData) => {
         data: {
           nameAr: cleanNameAr,
           nameEn: cleanNameEn,
-          description: data.description,
-          priceSyp: data.priceSyp,
-          priceUsd: data.priceUsd,
-          prepTime: data.prepTime,
-          isAvailable: data.isAvailable,
-          categoryId: data.categoryId,
+          description: cleanData.description,
+          priceSyp: cleanData.priceSyp,
+          priceUsd: cleanData.priceUsd,
+          prepTime: cleanData.prepTime,
+          isAvailable: cleanData.isAvailable,
+          categoryId: cleanData.categoryId,
           imageUrl: imgUrl,
           imagePublicUrl: imgPublicId,
         },
@@ -464,15 +512,55 @@ export const updateItem = async (
   formData: FormData,
 ) => {
   try {
+    const validationResult = CreateItemsSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const user = await getCurrentUser();
 
     if (!user) {
       return { success: false, message: "غير مصرح لك بالقيام بهذا الإجراء" };
     }
 
+    const existingItem = await prisma.item.findFirst({
+      where: {
+        id,
+        category: {
+          resturant: {
+            userId: user.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+        imageUrl: true,
+        imagePublicUrl: true,
+        category: {
+          select: {
+            resturant: {
+              select: { slug: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!existingItem) {
+      return {
+        success: false,
+        message: "الوجبة غير موجودة أو لا تملك صلاحية التعديل عليها",
+      };
+    }
+
     const category = await prisma.category.findFirst({
       where: {
-        id: data.categoryId,
+        id: cleanData.categoryId,
         resturant: {
           userId: user.id,
         },
@@ -487,29 +575,24 @@ export const updateItem = async (
       };
     }
 
-    const restaurant = await prisma.restaurant.findUnique({
+    const cleanNameAr = cleanData.nameAr.trim();
+    const cleanNameEn = cleanData.nameEn?.trim() || "";
+
+    const duplicateItem = await prisma.item.findFirst({
       where: {
-        userId: user.id,
+        categoryId: cleanData.categoryId,
+        nameAr: { equals: cleanNameAr, mode: "insensitive" },
+        id: { not: id },
       },
-      select: {
-        slug: true,
-      },
+      select: { id: true },
     });
 
-    if (!restaurant) {
+    if (duplicateItem) {
       return {
         success: false,
-        message: "القسم غير موجود أو لا تملك صلاحية الإضافة عليه",
+        message: "يوجد وجبة أخرى بنفس الاسم في هذا القسم",
       };
     }
-
-    const existingItem = await prisma.item.findFirst({
-      where: {
-        categoryId: data.categoryId,
-        nameAr: { equals: data.nameAr, mode: "insensitive" },
-      },
-      select: { imageUrl: true, imagePublicUrl: true },
-    });
 
     const removeLogo = formData.get("removeLogo");
     const file = formData.get("file") as File;
@@ -550,7 +633,7 @@ export const updateItem = async (
           .upload_stream(
             {
               folder: "qmenu/items",
-              resource_type: "auto",
+              resource_type: "image",
               quality: "auto",
               fetch_format: "auto",
             },
@@ -569,9 +652,6 @@ export const updateItem = async (
       imgPublicId = uploadResult.public_id;
     }
 
-    const cleanNameAr = data.nameAr.trim();
-    const cleanNameEn = data.nameEn?.trim() || "";
-
     const result = await prisma.item.update({
       where: {
         id,
@@ -579,25 +659,25 @@ export const updateItem = async (
       data: {
         nameAr: cleanNameAr,
         nameEn: cleanNameEn,
-        description: data.description,
-        priceSyp: data.priceSyp,
-        priceUsd: data.priceUsd,
-        prepTime: data.prepTime,
-        isAvailable: data.isAvailable,
-        categoryId: data.categoryId,
+        description: cleanData.description,
+        priceSyp: cleanData.priceSyp,
+        priceUsd: cleanData.priceUsd,
+        prepTime: cleanData.prepTime,
+        isAvailable: cleanData.isAvailable,
+        categoryId: cleanData.categoryId,
         imageUrl: imgUrl,
         imagePublicUrl: imgPublicId,
       },
     });
-
-    revalidatePath(`/menu/${restaurant.slug}`, "page");
+    const slug = existingItem.category.resturant.slug;
+    revalidatePath(`/menu/${slug}`, "page");
     revalidateTag(`menu-data`, { expire: 0 });
     revalidateTag(`categories-${user.id}`, { expire: 0 });
     revalidateTag(`items-${user.id}`, { expire: 0 });
 
     return { success: true, message: "تم تعديل الوجبة بنجاح", data: result };
   } catch (e) {
-    console.log("failed to create item", e);
+    console.log("failed to update item", e);
     return { success: false, message: "حدث خطا اثناء تعديل وجبة جديدة" };
   }
 };
@@ -750,6 +830,16 @@ export const changeIsAvailable = async (
 
 export const updateSetting = async (data: QrSetting, formData: FormData) => {
   try {
+    const validationResult = QrSetting.safeParse(data);
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
+
     const user = await getCurrentUser();
 
     if (!user) {
@@ -814,7 +904,7 @@ export const updateSetting = async (data: QrSetting, formData: FormData) => {
           .upload_stream(
             {
               folder: "qmenu/logo",
-              resource_type: "auto",
+              resource_type: "image",
               transformation: [
                 { width: 300, height: 300, crop: "limit" },
                 {
@@ -843,15 +933,15 @@ export const updateSetting = async (data: QrSetting, formData: FormData) => {
         restaurantId: restaurant.id,
       },
       update: {
-        qrColor: data.qrColor,
-        qrSubtitle: data.qrSubtitle,
+        qrColor: cleanData.qrColor,
+        qrSubtitle: cleanData.qrSubtitle,
         qrLogo: logoUrl,
         qrLogoPublicId: logoPublicId,
       },
       create: {
         restaurantId: restaurant.id,
-        qrColor: data.qrColor,
-        qrSubtitle: data.qrSubtitle,
+        qrColor: cleanData.qrColor,
+        qrSubtitle: cleanData.qrSubtitle,
         qrLogo: logoUrl,
         qrLogoPublicId: logoPublicId,
       },
@@ -872,6 +962,15 @@ export const updateResSetting = async (
   formData: FormData,
 ) => {
   try {
+    const validationResult = SettingInfoSchema.safeParse(data);
+
+    if (!validationResult.success) {
+      const errorMessage =
+        validationResult.error.issues[0]?.message || "بيانات غير صالحة";
+      return { success: false, message: errorMessage };
+    }
+
+    const cleanData = validationResult.data;
     const user = await getCurrentUser();
 
     if (!user) {
@@ -943,7 +1042,7 @@ export const updateResSetting = async (
           .upload_stream(
             {
               folder: "qmenu/logRes",
-              resource_type: "auto",
+              resource_type: "image",
               quality: "auto",
               fetch_format: "auto",
             },
@@ -995,7 +1094,7 @@ export const updateResSetting = async (
           .upload_stream(
             {
               folder: "qmenu/cover",
-              resource_type: "auto",
+              resource_type: "image",
               quality: "auto",
               fetch_format: "auto",
             },
@@ -1019,11 +1118,11 @@ export const updateResSetting = async (
         id: restaurant.id,
       },
       data: {
-        name: data.name,
-        description: data.description,
-        exchangeRate: data.exchangeRate,
-        whatsappNumber: data.whatsappNumber,
-        showUSD: data.showUSD ?? true,
+        name: cleanData.name,
+        description: cleanData.description,
+        exchangeRate: cleanData.exchangeRate,
+        whatsappNumber: cleanData.whatsappNumber,
+        showUSD: cleanData.showUSD ?? true,
         imageCoverUrl: imgUrl,
         imageCoverPublicUrl: imgPublicId,
         logo: logoUrl,
