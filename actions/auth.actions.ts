@@ -33,24 +33,26 @@ export async function SignUp({ name, email, password }: USER) {
     });
 
     if (existingEmail) {
-      if (!existingEmail.emailVerified) {
-        try {
-          await auth.api.sendVerificationOTP({
-            body: {
-              email: normalizedEmail,
-              type: "sign-in",
-            },
-            headers: await headers(),
-          });
-        } catch (err) {
-          console.error("فشل إعادة إرسال رمز التحقق:", err);
-        }
+      if (existingEmail.emailVerified) {
+        return { success: false, message: "هذا الايميل موجود بالفعل" };
+      }
+      try {
+        await auth.api.sendVerificationOTP({
+          body: {
+            email: normalizedEmail,
+            type: "sign-in",
+          },
+          headers: await headers(),
+        });
+      } catch (err) {
+        console.error("فشل إعادة إرسال رمز التحقق:", err);
       }
 
       return {
         success: true,
         requiresVerification: true,
-        message: "إذا كان البريد الإلكتروني صحيحاً ولم يتم تفعيله بعد، فقد أرسلنا لك رمز تحقق جديداً.",
+        message:
+          "إذا كان البريد الإلكتروني صحيحاً ولم يتم تفعيله بعد، فقد أرسلنا لك رمز تحقق جديداً.",
       };
     }
 
@@ -78,13 +80,16 @@ export async function SignUp({ name, email, password }: USER) {
     return {
       success: true,
       requiresVerification: true,
-      message: "تم إنشاء الحساب بنجاح. يرجى التحقق من بريدك الإلكتروني لإدخال رمز التحقق.",
+      message:
+        "تم إنشاء الحساب بنجاح. يرجى التحقق من بريدك الإلكتروني لإدخال رمز التحقق.",
     };
-    
   } catch (e: any) {
     console.error("failed to sign up", e);
     if (e?.code === "P2002") {
-      return { success: false, message: "حدث خطأ أثناء معالجة الطلب، يرجى المحاولة لاحقاً" };
+      return {
+        success: false,
+        message: "حدث خطأ أثناء معالجة الطلب، يرجى المحاولة لاحقاً",
+      };
     }
     return {
       success: false,
