@@ -83,6 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       dir="rtl"
       lang="ar"
       className={`${cairo.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
     >
       <body className="min-h-full flex flex-col font-cairo selection:bg-brand-500 selection:text-white">
         {children}
